@@ -1,0 +1,221 @@
+<!-- templates/production.html -->
+{% extends 'base.html' %}
+{% block title %}Plano de Produção - PCP Game{% endblock %}
+{% block content %}
+<h2 class="mb-4">Plano de Produção</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <!-- Tabela para a Família Colméia -->
+    <h4>Família Colméia</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Demanda Prevista</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Demanda Real</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Estoques Iniciais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Produção Planejada</th>
+                {% for period in periods %}
+                    <td>
+                        {% if period < current_period %}
+                            <!-- Campo somente leitura para períodos passados -->
+                            <input type="text" class="form-control" value="{{ colmeia_fields[period].data }}" readonly>
+                        {% else %}
+                            <!-- Campo editável para períodos futuros -->
+                            {{ colmeia_fields[period](class="form-control") }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Produção Real</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Estoques Finais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Vendas Perdidas</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Vendas</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Tabela para a Família Piquet -->
+    <h4>Família Piquet</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Demanda Prevista</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Demanda Real</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Estoques Iniciais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Produção Planejada</th>
+                {% for period in periods %}
+                    <td>
+                        {% if period < current_period %}
+                            <input type="text" class="form-control" value="{{ piquet_fields[period].data }}" readonly>
+                        {% else %}
+                            {{ piquet_fields[period](class="form-control") }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Produção Real</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Estoques Finais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Vendas Perdidas</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Vendas</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Tabela para a Família Maxim -->
+    <h4>Família Maxim</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Demanda Prevista</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Demanda Real</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Estoques Iniciais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Produção Planejada</th>
+                {% for period in periods %}
+                    <td>
+                        {% if period < current_period %}
+                            <input type="text" class="form-control" value="{{ maxim_fields[period].data }}" readonly>
+                        {% else %}
+                            {{ maxim_fields[period](class="form-control") }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Produção Real</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Estoques Finais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Vendas Perdidas</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Vendas</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Botão para submeter o formulário -->
+    <button type="submit" class="btn btn-primary">Salvar Plano de Produção</button>
+</form>
+{% endblock %}

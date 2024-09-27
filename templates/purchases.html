@@ -1,0 +1,129 @@
+<!-- templates/purchases.html -->
+{% extends 'base.html' %}
+{% block title %}Plano de Compras - PCP Game{% endblock %}
+{% block content %}
+<h2 class="mb-4">Plano de Compras</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <!-- Tabela para Fio Algodão -->
+    <h4>Fio de Algodão</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Consumo Previsto</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Compras Planejadas</th>
+                {% for period in periods %}
+                    <td>{{ fio_algodao_fields[period](class="form-control") }}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Compras Reais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Estoques Finais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Tabela para Fio Sintético -->
+    <h4>Fio Sintético</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Consumo Previsto</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Compras Planejadas</th>
+                {% for period in periods %}
+                    <td>{{ fio_sintetico_fields[period](class="form-control") }}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Compras Reais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Estoques Finais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Tabela para Corantes -->
+    <h4>Corantes</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Consumo Previsto</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Compras Planejadas</th>
+                {% for period in periods %}
+                    <td>{{ corantes_fields[period](class="form-control") }}</td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Compras Reais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Estoques Finais</th>
+                {% for period in periods %}
+                    <td></td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Botão para submeter o formulário -->
+    <button type="submit" class="btn btn-primary">Salvar Plano de Compras</button>
+</form>
+{% endblock %}

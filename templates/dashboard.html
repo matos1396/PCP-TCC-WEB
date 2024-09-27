@@ -1,0 +1,27 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %}
+{% block title %}Dashboard - PCP Game{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Dashboard</h2>
+        <p class="lead">Bem-vindo, {{ current_user.group_name }}!</p>
+
+        <!-- Informações sobre o período atual -->
+        <p>Você está atualmente no período {{ current_user.current_period }}.</p>
+
+        <div class="list-group">
+            <a href="{{ url_for('production') }}" class="list-group-item list-group-item-action">Plano de Produção</a>
+            <a href="{{ url_for('purchases') }}" class="list-group-item list-group-item-action">Plano de Compras</a>
+            <a href="{{ url_for('results') }}" class="list-group-item list-group-item-action">Resultados</a>
+        </div>
+
+        <!-- Botão para voltar o período simulado (Apenas para testes) -->
+        <div class="mt-3">
+            <form method="POST" action="{{ url_for('rollback_period') }}">
+                <button type="submit" class="btn btn-warning">Voltar Período (Apenas para Testes)</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

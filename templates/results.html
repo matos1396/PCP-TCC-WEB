@@ -1,0 +1,50 @@
+<!-- templates/results.html -->
+{% extends 'base.html' %}
+{% block title %}Resultados - PCP Game{% endblock %}
+{% block content %}
+<h2 class="mb-4">Resultados</h2>
+
+<h3>Planos de Produção</h3>
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Período</th>
+            <th>Colméia</th>
+            <th>Piquet</th>
+            <th>Maxim</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for plan in production_plans %}
+        <tr>
+            <td>{{ plan.period }}</td>
+            <td>{{ plan.family_colmeia }}</td>
+            <td>{{ plan.family_piquet }}</td>
+            <td>{{ plan.family_maxim }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Planos de Compras</h3>
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Período</th>
+            <th>Fio de Algodão</th>
+            <th>Fio Sintético</th>
+            <th>Corantes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for purchase in purchase_plans %}
+        <tr>
+            <td>{{ purchase.period }}</td>
+            <td>{{ purchase.fio_algodao }}</td>
+            <td>{{ purchase.fio_sintetico }}</td>
+            <td>{{ purchase.corantes }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

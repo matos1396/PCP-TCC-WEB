@@ -1,0 +1,5 @@
+/* static/styles.css */
+/* Estilos customizados podem ser adicionados aqui, se necessário */
+body {
+    padding-top: 56px; /* Para evitar que o conteúdo fique atrás da navbar */
+}

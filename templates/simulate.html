@@ -1,0 +1,14 @@
+<!-- templates/simulate.html -->
+{% extends 'base.html' %}
+{% block title %}Simular Período - PCP Game{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Simular Período</h1>
+    <!-- Formulário para enviar a simulação -->
+    <form method="POST" action="{{ url_for('simulate') }}">
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Simular Próximo Período</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

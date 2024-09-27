@@ -1,0 +1,15 @@
+<!-- templates/index.html -->
+{% extends 'base.html' %}
+{% block title %}Início - PCP Game{% endblock %}
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Bem-vindo ao PCP Game</h1>
+    <p class="lead">Simule e gerencie o Planejamento e Controle da Produção.</p>
+    <hr class="my-4">
+    {% if not current_user.is_authenticated %}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}" role="button">Login</a>
+    {% else %}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('dashboard') }}" role="button">Ir para o Dashboard</a>
+    {% endif %}
+</div>
+{% endblock %}
