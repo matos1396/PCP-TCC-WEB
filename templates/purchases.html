@@ -27,7 +27,15 @@
             <tr>
                 <th>Compras Planejadas</th>
                 {% for period in periods %}
-                    <td>{{ fio_algodao_fields[period](class="form-control") }}</td>
+                    <td>
+                        {% if period < current_period %}
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control" name="{{ fio_algodao_fields[period].name }}" value="{{ fio_algodao_fields[period].data }}" readonly>
+                        {% else %}
+                            <!-- Campo editável para períodos futuros -->
+                            {{ fio_algodao_fields[period](class="form-control") }}
+                        {% endif %}
+                    </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -66,7 +74,15 @@
             <tr>
                 <th>Compras Planejadas</th>
                 {% for period in periods %}
-                    <td>{{ fio_sintetico_fields[period](class="form-control") }}</td>
+                    <td>
+                        {% if period < current_period %}
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control" name="{{ fio_sintetico_fields[period].name }}" value="{{ fio_sintetico_fields[period].data }}" readonly>
+                        {% else %}
+                            <!-- Campo editável para períodos futuros -->
+                            {{ fio_sintetico_fields[period](class="form-control") }}
+                        {% endif %}
+                    </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -105,7 +121,15 @@
             <tr>
                 <th>Compras Planejadas</th>
                 {% for period in periods %}
-                    <td>{{ corantes_fields[period](class="form-control") }}</td>
+                    <td>
+                        {% if period < current_period %}
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control" name="{{ corantes_fields[period].name }}" value="{{ corantes_fields[period].data }}" readonly>
+                        {% else %}
+                            <!-- Campo editável para períodos futuros -->
+                            {{ corantes_fields[period](class="form-control") }}
+                        {% endif %}
+                    </td>
                 {% endfor %}
             </tr>
             <tr>

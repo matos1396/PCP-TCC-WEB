@@ -1,7 +1,7 @@
 # forms.py
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, IntegerField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Optional
 
 class LoginForm(FlaskForm):
     group_name = StringField('Nome do Grupo', validators=[DataRequired()])
@@ -9,7 +9,6 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 class ProductionForm(FlaskForm):
-    # Períodos de 13 a 18
     periods = range(13, 25)
 
     # Campos para Família Colméia
@@ -24,24 +23,21 @@ class ProductionForm(FlaskForm):
     for period in periods:
         vars()['maxim_' + str(period)] = IntegerField(f'Maxim (Período {period})', validators=[DataRequired()])
 
-    # Botão de submissão
     submit = SubmitField('Salvar Plano de Produção')
 
 class PurchaseForm(FlaskForm):
-    # Períodos de 13 a 18
     periods = range(13, 25)
 
-    # Campos para Família Colméia
+    # Campos para Fio Algodão
     for period in periods:
-        vars()['fio_algodao_' + str(period)] = IntegerField(f'Fio Algodão (Período {period})', validators=[DataRequired()])
+        vars()['fio_algodao_' + str(period)] = IntegerField(f'Fio Algodão (Período {period})', validators=[Optional()])
 
-    # Campos para Família Piquet
+    # Campos para Fio Sintético
     for period in periods:
-        vars()['fio_sintetico_' + str(period)] = IntegerField(f'Fio Sintético (Período {period})', validators=[DataRequired()])
+        vars()['fio_sintetico_' + str(period)] = IntegerField(f'Fio Sintético (Período {period})', validators=[Optional()])
 
-    # Campos para Família Maxim
+    # Campos para Corantes
     for period in periods:
-        vars()['corantes_' + str(period)] = IntegerField(f'Corantes (Período {period})', validators=[DataRequired()])
+        vars()['corantes_' + str(period)] = IntegerField(f'Corantes (Período {period})', validators=[Optional()])
 
-    # Botão de submissão
-    submit = SubmitField('Salvar Plano de Produção')
+    submit = SubmitField('Salvar Plano de Compras')

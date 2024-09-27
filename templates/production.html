@@ -41,8 +41,8 @@
                 {% for period in periods %}
                     <td>
                         {% if period < current_period %}
-                            <!-- Campo somente leitura para períodos passados -->
-                            <input type="text" class="form-control" value="{{ colmeia_fields[period].data }}" readonly>
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control" name="{{ colmeia_fields[period].name }}" value="{{ colmeia_fields[period].data }}" readonly>
                         {% else %}
                             <!-- Campo editável para períodos futuros -->
                             {{ colmeia_fields[period](class="form-control") }}
@@ -112,8 +112,10 @@
                 {% for period in periods %}
                     <td>
                         {% if period < current_period %}
-                            <input type="text" class="form-control" value="{{ piquet_fields[period].data }}" readonly>
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control" name="{{ piquet_fields[period].name }}" value="{{ piquet_fields[period].data }}" readonly>
                         {% else %}
+                            <!-- Campo editável para períodos futuros -->
                             {{ piquet_fields[period](class="form-control") }}
                         {% endif %}
                     </td>
@@ -181,7 +183,8 @@
                 {% for period in periods %}
                     <td>
                         {% if period < current_period %}
-                            <input type="text" class="form-control" value="{{ maxim_fields[period].data }}" readonly>
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control" name="{{ maxim_fields[period].name }}" value="{{ maxim_fields[period].data }}" readonly>
                         {% else %}
                             {{ maxim_fields[period](class="form-control") }}
                         {% endif %}

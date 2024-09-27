@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
+# TODO: Adicionar depois password_hash antes de salvar no banco de dados
 # Modelo de Grupo (Group)
 class Group(db.Model, UserMixin):
     __tablename__ = 'group'
@@ -12,14 +13,12 @@ class Group(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     group_name = db.Column(db.String(150), unique=True, nullable=False)  # Nome do grupo
     password = db.Column(db.String(150), nullable=False)
-    current_period = db.Column(db.Integer, nullable=False, default=1)  # Período atual do grupo
-    modified_period = db.Column(db.Integer, nullable=False)  # Período no qual foi feita a alteração
+    current_period = db.Column(db.Integer, nullable=False, default=13)  # Período atual do grupo
 
     # Relacionamento com ProductionPlan e PurchasePlan (backref em ambos os modelos)
     production_plans = db.relationship('ProductionPlan', backref='group', lazy=True)
     purchase_plans = db.relationship('PurchasePlan', backref='group', lazy=True)
 
-    # Adicione outros campos relevantes para o grupo se necessário (ex: email, senha, etc.)
 
 # Modelo de Plano de Produção (ProductionPlan)
 class ProductionPlan(db.Model):
@@ -28,9 +27,8 @@ class ProductionPlan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)  # Grupo associado
     period_number = db.Column(db.Integer, nullable=False)  # Número do período (Ex: 1, 2, 3...)
-
-    # Família de Produtos
-    family = db.Column(db.String(50), nullable=False)  # Ex: Colméia, Piquet, Maxim
+    modified_period = db.Column(db.Integer, nullable=False)  # Período no qual foi feita a alteração
+    family = db.Column(db.String(50), nullable=False)  # Família
 
     # Informações do Plano de Produção
     demanda_prevista = db.Column(db.Integer, nullable=True)  # Demanda prevista
@@ -41,8 +39,6 @@ class ProductionPlan(db.Model):
     estoques_finais = db.Column(db.Integer, nullable=True)  # Estoques Finais (após simulação)
     vendas_perdidas = db.Column(db.Integer, nullable=True)  # Vendas Perdidas
     vendas = db.Column(db.Integer, nullable=True)  # Vendas Efetivadas
-    
-    # Relacionamento com o grupo (via ForeignKey group_id)
 
 # Modelo de Plano de Compras (PurchasePlan)
 class PurchasePlan(db.Model):
@@ -51,8 +47,8 @@ class PurchasePlan(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)  # Grupo associado
     period_number = db.Column(db.Integer, nullable=False)  # Número do período (Ex: 1, 2, 3...)
+    modified_period = db.Column(db.Integer, nullable=False) # Período no qual foi feita a alteração
 
-    # Tipo de Material
     material = db.Column(db.String(50), nullable=False)  # Ex: Fio Algodão, Fio Sintético, Corantes
 
     # Informações do Plano de Compras
