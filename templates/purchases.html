@@ -28,7 +28,7 @@
                 <th>Compras Planejadas</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < current_period %}
+                        {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control" name="{{ fio_algodao_fields[period].name }}" value="{{ fio_algodao_fields[period].data }}" readonly>
                         {% else %}
@@ -75,7 +75,7 @@
                 <th>Compras Planejadas</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < current_period %}
+                        {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control" name="{{ fio_sintetico_fields[period].name }}" value="{{ fio_sintetico_fields[period].data }}" readonly>
                         {% else %}
@@ -122,7 +122,7 @@
                 <th>Compras Planejadas</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < current_period %}
+                        {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control" name="{{ corantes_fields[period].name }}" value="{{ corantes_fields[period].data }}" readonly>
                         {% else %}

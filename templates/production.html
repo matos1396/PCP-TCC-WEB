@@ -40,7 +40,7 @@
                 <th>Produção Planejada</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < current_period %}
+                        {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control" name="{{ colmeia_fields[period].name }}" value="{{ colmeia_fields[period].data }}" readonly>
                         {% else %}
@@ -111,7 +111,7 @@
                 <th>Produção Planejada</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < current_period %}
+                        {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control" name="{{ piquet_fields[period].name }}" value="{{ piquet_fields[period].data }}" readonly>
                         {% else %}
@@ -182,7 +182,7 @@
                 <th>Produção Planejada</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < current_period %}
+                        {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control" name="{{ maxim_fields[period].name }}" value="{{ maxim_fields[period].data }}" readonly>
                         {% else %}

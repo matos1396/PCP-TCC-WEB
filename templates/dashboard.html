@@ -8,7 +8,7 @@
         <p class="lead">Bem-vindo, {{ current_user.group_name }}!</p>
 
         <!-- Informações sobre o período atual -->
-        <p>Você está atualmente no período {{ current_user.current_period }}.</p>
+        <p>Você está atualmente no período {{ current_user.periodo_atual }}.</p>
 
         <div class="list-group">
             <a href="{{ url_for('production') }}" class="list-group-item list-group-item-action">Plano de Produção</a>
@@ -20,6 +20,13 @@
         <div class="mt-3">
             <form method="POST" action="{{ url_for('rollback_period') }}">
                 <button type="submit" class="btn btn-warning">Voltar Período (Apenas para Testes)</button>
+            </form>
+        </div>
+
+        <!-- Adicionar botão para resetar o jogo -->
+        <div class="mt-3">
+            <form method="POST" action="{{ url_for('reset') }}">
+                <button type="submit" class="btn btn-danger">Resetar Jogo - Limpar Banco de Dados e Reiniciar (Apenas para Testes)</button>
             </form>
         </div>
     </div>

@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField, IntegerField, SubmitField
 from wtforms.validators import DataRequired, Optional
 
 class LoginForm(FlaskForm):
-    group_name = StringField('Nome do Grupo', validators=[DataRequired()])
+    grupo_nome = StringField('Nome do Grupo', validators=[DataRequired()])
     password = PasswordField('Senha', validators=[DataRequired()])
     submit = SubmitField('Login')
 

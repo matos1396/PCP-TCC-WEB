@@ -3,7 +3,7 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from forms import LoginForm, ProductionForm, PurchaseForm
-from models import Group, ProductionPlan, PurchasePlan, db
+from models import Grupo, PlanoProducao, PlanoCompras, db
 
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Group.query.get(int(user_id))
+    return Grupo.query.get(int(user_id))
 
 
 # Importar rotas
@@ -30,7 +30,7 @@ def index():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = Group.query.filter_by(group_name=form.group_name.data).first()
+        user = Grupo.query.filter_by(grupo_nome=form.grupo_nome.data).first()
         if user and user.password == form.password.data:
             login_user(user)
             return redirect(url_for('dashboard'))
@@ -56,7 +56,7 @@ def dashboard():
 def production():
     form = ProductionForm()
 
-    current_period = current_user.current_period
+    periodo_atual = current_user.periodo_atual
     periods = list(range(13, 25))
 
     colmeia_fields = {period: getattr(form, f'colmeia_{period}') for period in periods}
@@ -65,91 +65,91 @@ def production():
 
     if request.method == 'POST':
         for period in periods:
-            if period >= current_period:
+            if period >= periodo_atual:
                 # *** Família Colméia ***
-                planned_production = colmeia_fields[period].data
-                existing_plan = ProductionPlan.query.filter_by(
-                    period_number=period, family='Colméia', group_id=current_user.id
-                ).order_by(ProductionPlan.modified_period.desc()).first()
+                producao_planejada = colmeia_fields[period].data
+                existing_plan = PlanoProducao.query.filter_by(
+                    periodo_numero=period, familia='Colméia', grupo_id=current_user.id
+                ).order_by(PlanoProducao.periodo_modificado.desc()).first()
 
                 if existing_plan:
-                    if existing_plan.modified_period == current_period:
+                    if existing_plan.periodo_modificado == periodo_atual:
                         # Atualizar plano existente
-                        existing_plan.planned_production = planned_production
+                        existing_plan.producao_planejada = producao_planejada
                     else:
                         # Criar novo plano
-                        new_plan = ProductionPlan(
-                            period_number=period,
-                            family='Colméia',
-                            planned_production=planned_production,
-                            modified_period=current_period,
-                            group_id=current_user.id
+                        new_plan = PlanoProducao(
+                            periodo_numero=period,
+                            familia='Colméia',
+                            producao_planejada=producao_planejada,
+                            periodo_modificado=periodo_atual,
+                            grupo_id=current_user.id
                         )
                         db.session.add(new_plan)
                 else:
                     # Caso não exista plano, criar outro
-                    new_plan = ProductionPlan(
-                        period_number=period,
-                        family='Colméia',
-                        planned_production=planned_production,
-                        modified_period=current_period,
-                        group_id=current_user.id
+                    new_plan = PlanoProducao(
+                        periodo_numero=period,
+                        familia='Colméia',
+                        producao_planejada=producao_planejada,
+                        periodo_modificado=periodo_atual,
+                        grupo_id=current_user.id
                     )
                     db.session.add(new_plan)
 
                 # Mesma lógica para as outras famílias
-                planned_production = piquet_fields[period].data
-                existing_plan = ProductionPlan.query.filter_by(
-                    period_number=period, family='Piquet', group_id=current_user.id
-                ).order_by(ProductionPlan.modified_period.desc()).first()
+                producao_planejada = piquet_fields[period].data
+                existing_plan = PlanoProducao.query.filter_by(
+                    periodo_numero=period, familia='Piquet', grupo_id=current_user.id
+                ).order_by(PlanoProducao.periodo_modificado.desc()).first()
 
                 if existing_plan:
-                    if existing_plan.modified_period == current_period:
-                        existing_plan.planned_production = planned_production
+                    if existing_plan.periodo_modificado == periodo_atual:
+                        existing_plan.producao_planejada = producao_planejada
                     else:
-                        new_plan = ProductionPlan(
-                            period_number=period,
-                            family='Piquet',
-                            planned_production=planned_production,
-                            modified_period=current_period,
-                            group_id=current_user.id
+                        new_plan = PlanoProducao(
+                            periodo_numero=period,
+                            familia='Piquet',
+                            producao_planejada=producao_planejada,
+                            periodo_modificado=periodo_atual,
+                            grupo_id=current_user.id
                             )
                         db.session.add(new_plan)
                 else:
-                    new_plan = ProductionPlan(
-                        period_number=period,
-                        family='Piquet',
-                        planned_production=planned_production,
-                        modified_period=current_period,
-                        group_id=current_user.id
+                    new_plan = PlanoProducao(
+                        periodo_numero=period,
+                        familia='Piquet',
+                        producao_planejada=producao_planejada,
+                        periodo_modificado=periodo_atual,
+                        grupo_id=current_user.id
                     )
                     db.session.add(new_plan)
 
                 # Mesma lógica para as outras famílias
-                planned_production = maxim_fields[period].data
-                existing_plan = ProductionPlan.query.filter_by(
-                    period_number=period, family='Maxim', group_id=current_user.id
-                ).order_by(ProductionPlan.modified_period.desc()).first()
+                producao_planejada = maxim_fields[period].data
+                existing_plan = PlanoProducao.query.filter_by(
+                    periodo_numero=period, familia='Maxim', grupo_id=current_user.id
+                ).order_by(PlanoProducao.periodo_modificado.desc()).first()
 
                 if existing_plan:
-                    if existing_plan.modified_period == current_period:
-                        existing_plan.planned_production = planned_production
+                    if existing_plan.periodo_modificado == periodo_atual:
+                        existing_plan.producao_planejada = producao_planejada
                     else:
-                        new_plan = ProductionPlan(
-                            period_number=period,
-                            family='Maxim',
-                            planned_production=planned_production,
-                            modified_period=current_period,
-                            group_id=current_user.id
+                        new_plan = PlanoProducao(
+                            periodo_numero=period,
+                            familia='Maxim',
+                            producao_planejada=producao_planejada,
+                            periodo_modificado=periodo_atual,
+                            grupo_id=current_user.id
                         )
                         db.session.add(new_plan)
                 else:
-                    new_plan = ProductionPlan(
-                        period_number=period,
-                        family='Maxim',
-                        planned_production=planned_production,
-                        modified_period=current_period,
-                        group_id=current_user.id
+                    new_plan = PlanoProducao(
+                        periodo_numero=period,
+                        familia='Maxim',
+                        producao_planejada=producao_planejada,
+                        periodo_modificado=periodo_atual,
+                        grupo_id=current_user.id
                     )
                     db.session.add(new_plan)
 
@@ -159,29 +159,29 @@ def production():
 
     elif request.method == 'GET':
         for period in periods:
-            colmeia_plan = ProductionPlan.query.filter_by(
-                period_number=period, family='Colméia', group_id=current_user.id
-            ).filter(ProductionPlan.modified_period <= current_period).order_by(ProductionPlan.modified_period.desc()).first()
+            colmeia_plan = PlanoProducao.query.filter_by(
+                periodo_numero=period, familia='Colméia', grupo_id=current_user.id
+            ).filter(PlanoProducao.periodo_modificado <= periodo_atual).order_by(PlanoProducao.periodo_modificado.desc()).first()
             if colmeia_plan:
-                colmeia_fields[period].data = colmeia_plan.planned_production
+                colmeia_fields[period].data = colmeia_plan.producao_planejada
 
-            piquet_plan = ProductionPlan.query.filter_by(
-                period_number=period, family='Piquet', group_id=current_user.id
-            ).filter(ProductionPlan.modified_period <= current_period).order_by(ProductionPlan.modified_period.desc()).first()
+            piquet_plan = PlanoProducao.query.filter_by(
+                periodo_numero=period, familia='Piquet', grupo_id=current_user.id
+            ).filter(PlanoProducao.periodo_modificado <= periodo_atual).order_by(PlanoProducao.periodo_modificado.desc()).first()
             if piquet_plan:
-                piquet_fields[period].data = piquet_plan.planned_production
+                piquet_fields[period].data = piquet_plan.producao_planejada
 
-            maxim_plan = ProductionPlan.query.filter_by(
-                period_number=period, family='Maxim', group_id=current_user.id
-            ).filter(ProductionPlan.modified_period <= current_period).order_by(ProductionPlan.modified_period.desc()).first()
+            maxim_plan = PlanoProducao.query.filter_by(
+                periodo_numero=period, familia='Maxim', grupo_id=current_user.id
+            ).filter(PlanoProducao.periodo_modificado <= periodo_atual).order_by(PlanoProducao.periodo_modificado.desc()).first()
             if maxim_plan:
-                maxim_fields[period].data = maxim_plan.planned_production
+                maxim_fields[period].data = maxim_plan.producao_planejada
 
     return render_template(
         'production.html',
         form=form,
         periods=periods,
-        current_period=current_period,
+        periodo_atual=periodo_atual,
         colmeia_fields=colmeia_fields,
         piquet_fields=piquet_fields,
         maxim_fields=maxim_fields
@@ -193,7 +193,7 @@ def production():
 def purchases():
     form = PurchaseForm()
 
-    current_period = current_user.current_period  # Período atual do grupo
+    periodo_atual = current_user.periodo_atual  # Período atual do grupo
     periods = list(range(13, 25))  # Períodos de 13 a 24
 
     # Preparando dicionários de campos dinamicamente para os materiais
@@ -203,88 +203,88 @@ def purchases():
 
     if request.method == 'POST':
         for period in periods:
-            if period >= current_period:
+            if period >= periodo_atual:
                 # *** Fio Algodão ***
-                planned_purchase = fio_algodao_fields[period].data
-                algodao_plan = PurchasePlan.query.filter_by(
-                    period_number=period, material='Fio Algodao', group_id=current_user.id
-                ).order_by(PurchasePlan.modified_period.desc()).first()
+                compra_planejada = fio_algodao_fields[period].data
+                algodao_plan = PlanoCompras.query.filter_by(
+                    periodo_numero=period, material='Fio Algodao', grupo_id=current_user.id
+                ).order_by(PlanoCompras.periodo_modificado.desc()).first()
 
                 if algodao_plan:
-                    if algodao_plan.modified_period == current_period:
-                        algodao_plan.planned_purchase = planned_purchase
+                    if algodao_plan.periodo_modificado == periodo_atual:
+                        algodao_plan.compra_planejada = compra_planejada
                     else:
-                        new_plan = PurchasePlan(
-                            period_number=period,
+                        new_plan = PlanoCompras(
+                            periodo_numero=period,
                             material='Fio Algodao',
-                            planned_purchase=planned_purchase,
-                            modified_period=current_period,
-                            group_id=current_user.id
+                            compra_planejada=compra_planejada,
+                            periodo_modificado=periodo_atual,
+                            grupo_id=current_user.id
                         )
                         db.session.add(new_plan)
                 else:
-                    new_plan = PurchasePlan(
-                        period_number=period,
+                    new_plan = PlanoCompras(
+                        periodo_numero=period,
                         material='Fio Algodao',
-                        planned_purchase=planned_purchase,
-                        modified_period=current_period,
-                        group_id=current_user.id
+                        compra_planejada=compra_planejada,
+                        periodo_modificado=periodo_atual,
+                        grupo_id=current_user.id
                     )
                     db.session.add(new_plan)
 
                 # *** Fio Sintético ***
-                planned_purchase = fio_sintetico_fields[period].data
-                sintetico_plan = PurchasePlan.query.filter_by(
-                    period_number=period, material='Fio Sintetico', group_id=current_user.id
-                ).order_by(PurchasePlan.modified_period.desc()).first()
+                compra_planejada = fio_sintetico_fields[period].data
+                sintetico_plan = PlanoCompras.query.filter_by(
+                    periodo_numero=period, material='Fio Sintetico', grupo_id=current_user.id
+                ).order_by(PlanoCompras.periodo_modificado.desc()).first()
 
                 if sintetico_plan:
-                    if sintetico_plan.modified_period == current_period:
-                        sintetico_plan.planned_purchase = planned_purchase
+                    if sintetico_plan.periodo_modificado == periodo_atual:
+                        sintetico_plan.compra_planejada = compra_planejada
                     else:
-                        new_plan = PurchasePlan(
-                            period_number=period,
+                        new_plan = PlanoCompras(
+                            periodo_numero=period,
                             material='Fio Sintetico',
-                            planned_purchase=planned_purchase,
-                            modified_period=current_period,
-                            group_id=current_user.id
+                            compra_planejada=compra_planejada,
+                            periodo_modificado=periodo_atual,
+                            grupo_id=current_user.id
                         )
                         db.session.add(new_plan)
                 else:
-                    new_plan = PurchasePlan(
-                        period_number=period,
+                    new_plan = PlanoCompras(
+                        periodo_numero=period,
                         material='Fio Sintetico',
-                        planned_purchase=planned_purchase,
-                        modified_period=current_period,
-                        group_id=current_user.id
+                        compra_planejada=compra_planejada,
+                        periodo_modificado=periodo_atual,
+                        grupo_id=current_user.id
                     )
                     db.session.add(new_plan)
 
                 # *** Corantes ***
-                planned_purchase = corantes_fields[period].data
-                corantes_plan = PurchasePlan.query.filter_by(
-                    period_number=period, material='Corantes', group_id=current_user.id
-                ).order_by(PurchasePlan.modified_period.desc()).first()
+                compra_planejada = corantes_fields[period].data
+                corantes_plan = PlanoCompras.query.filter_by(
+                    periodo_numero=period, material='Corantes', grupo_id=current_user.id
+                ).order_by(PlanoCompras.periodo_modificado.desc()).first()
 
                 if corantes_plan:
-                    if corantes_plan.modified_period == current_period:
-                        corantes_plan.planned_purchase = planned_purchase
+                    if corantes_plan.periodo_modificado == periodo_atual:
+                        corantes_plan.compra_planejada = compra_planejada
                     else:
-                        new_plan = PurchasePlan(
-                            period_number=period,
+                        new_plan = PlanoCompras(
+                            periodo_numero=period,
                             material='Corantes',
-                            planned_purchase=planned_purchase,
-                            modified_period=current_period,
-                            group_id=current_user.id
+                            compra_planejada=compra_planejada,
+                            periodo_modificado=periodo_atual,
+                            grupo_id=current_user.id
                         )
                         db.session.add(new_plan)
                 else:
-                    new_plan = PurchasePlan(
-                        period_number=period,
+                    new_plan = PlanoCompras(
+                        periodo_numero=period,
                         material='Corantes',
-                        planned_purchase=planned_purchase,
-                        modified_period=current_period,
-                        group_id=current_user.id
+                        compra_planejada=compra_planejada,
+                        periodo_modificado=periodo_atual,
+                        grupo_id=current_user.id
                     )
                     db.session.add(new_plan)
 
@@ -295,31 +295,31 @@ def purchases():
     elif request.method == 'GET':
         for period in periods:
             # *** Fio Algodão ***
-            algodao_plan = PurchasePlan.query.filter_by(
-                period_number=period, material='Fio Algodao', group_id=current_user.id
-            ).filter(PurchasePlan.modified_period <= current_period).order_by(PurchasePlan.modified_period.desc()).first()
+            algodao_plan = PlanoCompras.query.filter_by(
+                periodo_numero=period, material='Fio Algodao', grupo_id=current_user.id
+            ).filter(PlanoCompras.periodo_modificado <= periodo_atual).order_by(PlanoCompras.periodo_modificado.desc()).first()
             if algodao_plan:
-                fio_algodao_fields[period].data = algodao_plan.planned_purchase
+                fio_algodao_fields[period].data = algodao_plan.compra_planejada
 
             # *** Fio Sintético ***
-            sintetico_plan = PurchasePlan.query.filter_by(
-                period_number=period, material='Fio Sintetico', group_id=current_user.id
-            ).filter(PurchasePlan.modified_period <= current_period).order_by(PurchasePlan.modified_period.desc()).first()
+            sintetico_plan = PlanoCompras.query.filter_by(
+                periodo_numero=period, material='Fio Sintetico', grupo_id=current_user.id
+            ).filter(PlanoCompras.periodo_modificado <= periodo_atual).order_by(PlanoCompras.periodo_modificado.desc()).first()
             if sintetico_plan:
-                fio_sintetico_fields[period].data = sintetico_plan.planned_purchase
+                fio_sintetico_fields[period].data = sintetico_plan.compra_planejada
 
             # *** Corantes ***
-            corantes_plan = PurchasePlan.query.filter_by(
-                period_number=period, material='Corantes', group_id=current_user.id
-            ).filter(PurchasePlan.modified_period <= current_period).order_by(PurchasePlan.modified_period.desc()).first()
+            corantes_plan = PlanoCompras.query.filter_by(
+                periodo_numero=period, material='Corantes', grupo_id=current_user.id
+            ).filter(PlanoCompras.periodo_modificado <= periodo_atual).order_by(PlanoCompras.periodo_modificado.desc()).first()
             if corantes_plan:
-                corantes_fields[period].data = corantes_plan.planned_purchase
+                corantes_fields[period].data = corantes_plan.compra_planejada
 
     return render_template(
         'purchases.html',
         form=form,
         periods=periods,
-        current_period=current_period,
+        periodo_atual=periodo_atual,
         fio_algodao_fields=fio_algodao_fields,
         fio_sintetico_fields=fio_sintetico_fields,
         corantes_fields=corantes_fields
@@ -333,23 +333,23 @@ def purchases():
 @login_required
 def simulate():
     # Pega o grupo completo do usuário autenticado
-    group = current_user
+    grupo = current_user
 
     # Obter o período atual
-    current_period = group.current_period
+    periodo_atual = grupo.periodo_atual
 
     # Cálculos da simulação para o período atual
 
     ######### TODO: Aplicar lógica do game
-    production_plans = ProductionPlan.query.filter_by(group_id=group.id, period_number=current_period).all()
-    purchase_plans = PurchasePlan.query.filter_by(group_id=group.id, period_number=current_period).all()
+    planos_producao = PlanoProducao.query.filter_by(grupo_id=grupo.id, periodo_numero=periodo_atual).all()
+    planos_compra = PlanoCompras.query.filter_by(grupo_id=grupo.id, periodo_numero=periodo_atual).all()
     #########
 
     # Avançar para o próximo período
-    group.current_period += 1  # Incrementa o período atual do grupo
+    grupo.periodo_atual += 1  # Incrementa o período atual do grupo
     db.session.commit()
 
-    flash(f"Simulação completada! Agora você está no período {group.current_period}.", "success")
+    flash(f"Simulação completada! Agora você está no período {grupo.periodo_atual}.", "success")
     return redirect(url_for('dashboard'))
 
 
@@ -357,9 +357,9 @@ def simulate():
 @app.route('/results')
 @login_required
 def results():
-    production_plans = ProductionPlan.query.filter_by(group_id=current_user.id).all()
-    purchase_plans = PurchasePlan.query.filter_by(group_id=current_user.id).all()
-    return render_template('results.html', production_plans=production_plans, purchase_plans=purchase_plans)
+    planos_producao = PlanoProducao.query.filter_by(grupo_id=current_user.id).all()
+    planos_compra = PlanoCompras.query.filter_by(grupo_id=current_user.id).all()
+    return render_template('results.html', planos_producao=planos_producao, planos_compra=planos_compra)
 
 
 #### BOTÃO PARA DEBUG ####
@@ -367,15 +367,34 @@ def results():
 @app.route('/rollback_period', methods=['POST'])
 @login_required
 def rollback_period():
-    group = current_user
+    grupo = current_user
 
     # Apenas volte o período se o período atual for maior que 1 (não pode ser menor que 1)
-    if group.current_period > 1:
-        group.current_period -= 1
+    if grupo.periodo_atual > 1:
+        grupo.periodo_atual -= 1
         db.session.commit()
-        flash(f"O período foi revertido! Agora você está no período {group.current_period}.", "success")
+        flash(f"O período foi revertido! Agora você está no período {grupo.periodo_atual}.", "success")
     else:
         flash("Você já está no primeiro período. Não é possível voltar mais.", "warning")
+
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/reset', methods=['POST'])
+@login_required
+def reset():
+    if current_user.is_authenticated:
+        # Limpa os dados das tabelas de produção e compras
+        db.session.query(PlanoProducao).delete()
+        db.session.query(PlanoCompras).delete()
+
+        # Reinicia o periodo_atual de todos os grupos para 13
+        groups = Grupo.query.all()
+        for grupo in groups:
+            grupo.periodo_atual = 13
+
+        db.session.commit()
+        flash('Banco de dados resetado e período atual reiniciado para 13.', 'success')
 
     return redirect(url_for('dashboard'))
 
