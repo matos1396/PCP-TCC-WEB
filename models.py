@@ -13,7 +13,7 @@ class Grupo(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     grupo_nome = db.Column(db.String(150), unique=True, nullable=False)  # Nome do grupo
     password = db.Column(db.String(150), nullable=False)
-    periodo_atual = db.Column(db.Integer, nullable=False, default=13)  # Período atual do grupo
+    periodo_atual = db.Column(db.Integer, nullable=False, default=12)  # Período atual do grupo
     estilo_demanda_id = db.Column(db.Integer, db.ForeignKey('estilo_demanda.id'), nullable=True)
 
     # Relacionamento com PlanoProducao e PlanoCompras (backref em ambos os modelos)

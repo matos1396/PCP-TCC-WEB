@@ -3,7 +3,7 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from forms import LoginForm, ProductionForm, PurchaseForm
-from models import Grupo, PlanoProducao, PlanoCompras, db
+from models import Grupo, PlanoProducao, PlanoCompras, PrevisaoDemanda, db
 
 
 app = Flask(__name__)
@@ -56,135 +56,138 @@ def dashboard():
 def production():
     form = ProductionForm()
 
-    periodo_atual = current_user.periodo_atual
     periods = list(range(13, 25))
+    periodo_atual = current_user.periodo_atual
+    estilo_demanda = current_user.estilo_demanda
 
-    colmeia_fields = {period: getattr(form, f'colmeia_{period}') for period in periods}
-    piquet_fields = {period: getattr(form, f'piquet_{period}') for period in periods}
-    maxim_fields = {period: getattr(form, f'maxim_{period}') for period in periods}
+
+    # Capos para previsao
+    previsoes_por_familia = {
+        'Colmeia': {period: getattr(form, f'colmeia_demanda_prevista_{period}') for period in periods},
+        'Piquet': {period: getattr(form, f'piquet_demanda_prevista_{period}') for period in periods},
+        'Maxim': {period: getattr(form, f'maxim_demanda_prevista_{period}') for period in periods}
+    }
+
+    producao_planejada_por_familia = {
+        'Colmeia': {period: getattr(form, f'colmeia_{period}') for period in periods},
+        'Piquet': {period: getattr(form, f'piquet_{period}') for period in periods},
+        'Maxim': {period: getattr(form, f'maxim_{period}') for period in periods}
+    }
+
+    # Campos Estoques Iniciais - somente ler 
+    estoques_iniciais_por_familia = {
+        'Colmeia': {period: getattr(form, f'colmeia_estoque_inicial_{period}') for period in periods},
+        'Piquet': {period: getattr(form, f'piquet_estoque_inicial_{period}') for period in periods},
+        'Maxim': {period: getattr(form, f'maxim_estoque_inicial_{period}') for period in periods}
+    }
+    estoques_finais_por_familia = {
+        'Colmeia': {period: getattr(form, f'colmeia_estoque_final_{period}') for period in periods},
+        'Piquet': {period: getattr(form, f'piquet_estoque_final_{period}') for period in periods},
+        'Maxim': {period: getattr(form, f'maxim_estoque_final_{period}') for period in periods}
+    }
+
+    # Campos vendas - somente ler
+    vendas_perdidas_por_familia = {
+        'Colmeia': {period: getattr(form, f'colmeia_vendas_perdidas_{period}') for period in periods},
+        'Piquet': {period: getattr(form, f'piquet_vendas_perdidas_{period}') for period in periods},
+        'Maxim': {period: getattr(form, f'maxim_vendas_perdidas_{period}') for period in periods}
+    }
+
+    vendas_por_familia = {
+        'Colmeia': {period: getattr(form, f'colmeia_vendas_{period}') for period in periods},
+        'Piquet': {period: getattr(form, f'piquet_vendas_{period}') for period in periods},
+        'Maxim': {period: getattr(form, f'maxim_vendas_{period}') for period in periods}
+    }
+
 
     if request.method == 'POST':
-        for period in periods:
-            if period >= periodo_atual:
-                # *** Família Colméia ***
-                producao_planejada = colmeia_fields[period].data
-                existing_plan = PlanoProducao.query.filter_by(
-                    periodo_numero=period, familia='Colméia', grupo_id=current_user.id
-                ).order_by(PlanoProducao.periodo_modificado.desc()).first()
+        for familia in ['Colmeia', 'Piquet', 'Maxim']:
+            estoque_anterior = None  # Estoque inicial para o primeiro período será recuperado do banco de dados
 
-                if existing_plan:
-                    if existing_plan.periodo_modificado == periodo_atual:
-                        # Atualizar plano existente
-                        existing_plan.producao_planejada = producao_planejada
-                    else:
-                        # Criar novo plano
-                        new_plan = PlanoProducao(
-                            periodo_numero=period,
-                            familia='Colméia',
-                            producao_planejada=producao_planejada,
-                            periodo_modificado=periodo_atual,
-                            grupo_id=current_user.id
-                        )
-                        db.session.add(new_plan)
-                else:
-                    # Caso não exista plano, criar outro
-                    new_plan = PlanoProducao(
-                        periodo_numero=period,
-                        familia='Colméia',
-                        producao_planejada=producao_planejada,
-                        periodo_modificado=periodo_atual,
-                        grupo_id=current_user.id
-                    )
-                    db.session.add(new_plan)
+            for period in periods:
+                if period >= periodo_atual:
+                    # Obtenha os valores de produção planejada e demanda prevista para o período atual
+                    producao_planejada = producao_planejada_por_familia[familia][period].data
+                    demanda_prevista = previsoes_por_familia[familia][period].data
+                    print("#######################", demanda_prevista)
+                    # # Para o primeiro período (inicial), recupere o estoque inicial do banco de dados ou use o valor inicial predefinido
+                    # if period == periodo_atual:
+                    #     estoque_inicial = estoques_iniciais_por_familia[familia][period].data
+                    #     estoque_anterior = estoque_inicial  # Use para o próximo período
+                    # else:
+                    #     # Calcular o estoque inicial com base no estoque anterior
+                    #     estoque_inicial = estoque_anterior + producao_planejada - demanda_prevista
+                    #     estoque_anterior = estoque_inicial  # Atualizar para o próximo período
 
-                # Mesma lógica para as outras famílias
-                producao_planejada = piquet_fields[period].data
-                existing_plan = PlanoProducao.query.filter_by(
-                    periodo_numero=period, familia='Piquet', grupo_id=current_user.id
-                ).order_by(PlanoProducao.periodo_modificado.desc()).first()
+                    # Atualizar ou criar novo plano de produção
+                    existing_plan = PlanoProducao.query.filter_by(
+                        periodo_numero=period, familia=familia, grupo_id=current_user.id
+                    ).order_by(PlanoProducao.periodo_modificado.desc()).first()
 
-                if existing_plan:
-                    if existing_plan.periodo_modificado == periodo_atual:
-                        existing_plan.producao_planejada = producao_planejada
-                    else:
-                        new_plan = PlanoProducao(
-                            periodo_numero=period,
-                            familia='Piquet',
-                            producao_planejada=producao_planejada,
-                            periodo_modificado=periodo_atual,
-                            grupo_id=current_user.id
+                    if existing_plan:
+                        print("SIM", demanda_prevista)
+                        if existing_plan.periodo_modificado == periodo_atual:
+                            # Atualizar o plano existente
+                            existing_plan.producao_planejada = producao_planejada
+                            existing_plan.demanda_prevista = demanda_prevista
+                            #existing_plan.estoques_iniciais = estoque_inicial
+                        else:
+                            # Criar um novo plano
+                            new_plan = PlanoProducao(
+                                periodo_numero=period,
+                                familia=familia,
+                                producao_planejada=producao_planejada,
+                                demanda_prevista=demanda_prevista,
+                                #estoques_iniciais=estoque_inicial,
+                                periodo_modificado=periodo_atual,
+                                grupo_id=current_user.id
                             )
-                        db.session.add(new_plan)
-                else:
-                    new_plan = PlanoProducao(
-                        periodo_numero=period,
-                        familia='Piquet',
-                        producao_planejada=producao_planejada,
-                        periodo_modificado=periodo_atual,
-                        grupo_id=current_user.id
-                    )
-                    db.session.add(new_plan)
-
-                # Mesma lógica para as outras famílias
-                producao_planejada = maxim_fields[period].data
-                existing_plan = PlanoProducao.query.filter_by(
-                    periodo_numero=period, familia='Maxim', grupo_id=current_user.id
-                ).order_by(PlanoProducao.periodo_modificado.desc()).first()
-
-                if existing_plan:
-                    if existing_plan.periodo_modificado == periodo_atual:
-                        existing_plan.producao_planejada = producao_planejada
+                            db.session.add(new_plan)
                     else:
+                        # Criar um novo plano se não houver plano existente
                         new_plan = PlanoProducao(
                             periodo_numero=period,
-                            familia='Maxim',
+                            familia=familia,
                             producao_planejada=producao_planejada,
+                            demanda_prevista=demanda_prevista,
+                            #estoques_iniciais=estoque_inicial,
                             periodo_modificado=periodo_atual,
                             grupo_id=current_user.id
                         )
                         db.session.add(new_plan)
-                else:
-                    new_plan = PlanoProducao(
-                        periodo_numero=period,
-                        familia='Maxim',
-                        producao_planejada=producao_planejada,
-                        periodo_modificado=periodo_atual,
-                        grupo_id=current_user.id
-                    )
-                    db.session.add(new_plan)
 
         db.session.commit()
         flash('Plano de produção salvo com sucesso!', 'success')
         return redirect(url_for('dashboard'))
 
     elif request.method == 'GET':
-        for period in periods:
-            colmeia_plan = PlanoProducao.query.filter_by(
-                periodo_numero=period, familia='Colméia', grupo_id=current_user.id
-            ).filter(PlanoProducao.periodo_modificado <= periodo_atual).order_by(PlanoProducao.periodo_modificado.desc()).first()
-            if colmeia_plan:
-                colmeia_fields[period].data = colmeia_plan.producao_planejada
+        # Preencher o formulário com os dados do banco de dados
+        for familia in ['Colmeia', 'Piquet', 'Maxim']:
+            for period in periods:
+                plan = PlanoProducao.query.filter_by(
+                    periodo_numero=period, familia=familia, grupo_id=current_user.id
+                ).filter(PlanoProducao.periodo_modificado <= periodo_atual).order_by(PlanoProducao.periodo_modificado.desc()).first()
 
-            piquet_plan = PlanoProducao.query.filter_by(
-                periodo_numero=period, familia='Piquet', grupo_id=current_user.id
-            ).filter(PlanoProducao.periodo_modificado <= periodo_atual).order_by(PlanoProducao.periodo_modificado.desc()).first()
-            if piquet_plan:
-                piquet_fields[period].data = piquet_plan.producao_planejada
-
-            maxim_plan = PlanoProducao.query.filter_by(
-                periodo_numero=period, familia='Maxim', grupo_id=current_user.id
-            ).filter(PlanoProducao.periodo_modificado <= periodo_atual).order_by(PlanoProducao.periodo_modificado.desc()).first()
-            if maxim_plan:
-                maxim_fields[period].data = maxim_plan.producao_planejada
+                if plan:
+                    # Preencher os campos de produção planejada, demanda prevista e estoques iniciais
+                    producao_planejada_por_familia[familia][period].data = plan.producao_planejada
+                    previsoes_por_familia[familia][period].data = plan.demanda_prevista
+                    estoques_iniciais_por_familia[familia][period].data = plan.estoques_iniciais
+                    estoques_finais_por_familia[familia][period].data = plan.estoques_finais
+                    vendas_perdidas_por_familia[familia][period].data = plan.vendas_perdidas
+                    vendas_por_familia[familia][period].data = plan.vendas
 
     return render_template(
         'production.html',
         form=form,
         periods=periods,
         periodo_atual=periodo_atual,
-        colmeia_fields=colmeia_fields,
-        piquet_fields=piquet_fields,
-        maxim_fields=maxim_fields
+        producao_planejada_por_familia=producao_planejada_por_familia,
+        previsoes_por_familia=previsoes_por_familia,
+        estoques_iniciais_por_familia=estoques_iniciais_por_familia,
+        estoques_finais_por_familia=estoques_finais_por_familia,
+        vendas_perdidas_por_familia = vendas_perdidas_por_familia,
+        vendas_por_familia=vendas_por_familia
     )
 
 
@@ -323,6 +326,7 @@ def purchases():
         fio_algodao_fields=fio_algodao_fields,
         fio_sintetico_fields=fio_sintetico_fields,
         corantes_fields=corantes_fields
+
     )
 
 

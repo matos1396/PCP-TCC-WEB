@@ -21,7 +21,17 @@
             <tr>
                 <th>Demanda Prevista</th>
                 {% for period in periods %}
-                    <td></td>
+                    <td>
+                        {% if period < periodo_atual %}
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control demanda-prevista" 
+                               id="colmeia_demanda_prevista_{{ period }}" 
+                               data-familia="Colmeia" data-period="{{ period }}" 
+                               value="{{ previsoes_por_familia['Colmeia'][period].data }}" readonly>
+                        {% else %}
+                            {{ previsoes_por_familia['Colmeia'][period](class="form-control demanda-prevista", id="colmeia_demanda_prevista_" ~ period, data_familia="Colmeia", data_period=period) }}
+                        {% endif %}
+                    </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -33,7 +43,11 @@
             <tr>
                 <th>Estoques Iniciais</th>
                 {% for period in periods %}
-                    <td></td>
+                    <td>
+                        <input type="number" class="form-control estoque-inicial" 
+                               id="colmeia_estoque_inicial_{{ period }}" 
+                               value="{{ estoques_iniciais_por_familia['Colmeia'][period].data }}" readonly>
+                    </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -42,10 +56,12 @@
                     <td>
                         {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
-                        <input type="number" class="form-control" name="{{ colmeia_fields[period].name }}" value="{{ colmeia_fields[period].data }}" readonly>
+                        <input type="number" class="form-control producao-planejada" 
+                               id="colmeia_producao_planejada_{{ period }}" 
+                               data-familia="Colmeia" data-period="{{ period }}"
+                               value="{{ producao_planejada_por_familia['Colmeia'][period].data }}" readonly>
                         {% else %}
-                            <!-- Campo editável para períodos futuros -->
-                            {{ colmeia_fields[period](class="form-control") }}
+                            {{ producao_planejada_por_familia['Colmeia'][period](class="form-control producao-planejada", id="colmeia_producao_planejada_" ~ period, data_familia="Colmeia", data_period=period) }}
                         {% endif %}
                     </td>
                 {% endfor %}
@@ -59,19 +75,31 @@
             <tr>
                 <th>Estoques Finais</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control estoque-final" 
+                           id="colmeia_estoque_final_{{ period }}" 
+                           value="{{ estoques_finais_por_familia['Colmeia'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Vendas Perdidas</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control venda-perdida" 
+                           id="colmeia_vendas_perdidas_{{ period }}" 
+                           value="{{ vendas_perdidas_por_familia['Colmeia'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Vendas</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control vendas" 
+                           id="colmeia_vendas_{{ period }}" 
+                           value="{{ vendas_por_familia['Colmeia'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
         </tbody>
@@ -92,7 +120,14 @@
             <tr>
                 <th>Demanda Prevista</th>
                 {% for period in periods %}
-                    <td></td>
+                    <td>
+                        {% if period < periodo_atual %}
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control" name="{{ previsoes_por_familia['Piquet'][period].name }}" value="{{ previsoes_por_familia['Piquet'][period].data }}" readonly>
+                        {% else %}
+                            {{ previsoes_por_familia['Piquet'][period](class="form-control") }}
+                        {% endif %}
+                    </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -104,7 +139,9 @@
             <tr>
                 <th>Estoques Iniciais</th>
                 {% for period in periods %}
-                    <td></td>
+                    <td>
+                        <input type="number" class="form-control" name="{{ estoques_iniciais_por_familia['Piquet'][period].name }}" value="{{ estoques_iniciais_por_familia['Piquet'][period].data }}" readonly>
+                    </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -113,10 +150,10 @@
                     <td>
                         {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
-                        <input type="number" class="form-control" name="{{ piquet_fields[period].name }}" value="{{ piquet_fields[period].data }}" readonly>
+                        <input type="number" class="form-control" name="{{ producao_planejada_por_familia['Piquet'][period].name }}" value="{{ producao_planejada_por_familia['Piquet'][period].data }}" readonly>
                         {% else %}
                             <!-- Campo editável para períodos futuros -->
-                            {{ piquet_fields[period](class="form-control") }}
+                            {{ producao_planejada_por_familia['Piquet'][period](class="form-control") }}
                         {% endif %}
                     </td>
                 {% endfor %}
@@ -163,7 +200,14 @@
             <tr>
                 <th>Demanda Prevista</th>
                 {% for period in periods %}
-                    <td></td>
+                    <td>
+                        {% if period < periodo_atual %}
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control" name="{{ previsoes_por_familia['Maxim'][period].name }}" value="{{ previsoes_por_familia['Maxim'][period].data }}" readonly>
+                        {% else %}
+                            {{ previsoes_por_familia['Maxim'][period](class="form-control") }}
+                        {% endif %}
+                    </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -175,7 +219,9 @@
             <tr>
                 <th>Estoques Iniciais</th>
                 {% for period in periods %}
-                    <td></td>
+                    <td>
+                        <input type="number" class="form-control" name="{{ estoques_iniciais_por_familia['Maxim'][period].name }}" value="{{ estoques_iniciais_por_familia['Maxim'][period].data }}" readonly>
+                    </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -184,9 +230,10 @@
                     <td>
                         {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
-                        <input type="number" class="form-control" name="{{ maxim_fields[period].name }}" value="{{ maxim_fields[period].data }}" readonly>
+                        <input type="number" class="form-control" name="{{ producao_planejada_por_familia['Maxim'][period].name }}" value="{{ producao_planejada_por_familia['Maxim'][period].data }}" readonly>
                         {% else %}
-                            {{ maxim_fields[period](class="form-control") }}
+                            <!-- Campo editável para períodos futuros -->
+                            {{ producao_planejada_por_familia['Maxim'][period](class="form-control") }}
                         {% endif %}
                     </td>
                 {% endfor %}
@@ -221,4 +268,82 @@
     <!-- Botão para submeter o formulário -->
     <button type="submit" class="btn btn-primary">Salvar Plano de Produção</button>
 </form>
+
+<!-- JavaScript para atualizar os estoques iniciais -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Declarar periods como uma variável global para evitar conflito
+        const periods = JSON.parse('{{ periods|tojson }}');
+        console.log(periods);
+    
+        function recalcularEstoques(familia) {
+            for (let i = 0; i <= periods.length; i++) {
+                let period = periods[i];
+                let nextPeriod = periods[i + 1];
+    
+                // Obter os valores do estoque inicial, produção planejada e demanda prevista
+                let estoqueInicialElem = document.getElementById(`${familia}_estoque_inicial_${period}`);
+                let producaoPlanejadaElem = document.getElementById(`${familia}_producao_planejada_${period}`);
+                let demandaPrevistaElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
+                let estoquesFinaisElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
+                let vendasFinaisElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
+                let vendasPerdidasElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
+                
+                // Verificar se os elementos existem antes de acessar seus valores
+                if (estoqueInicialElem && producaoPlanejadaElem && demandaPrevistaElem) {
+                    let estoqueInicial = parseFloat(estoqueInicialElem.value) || 0;
+                    let estoqueFinal = parseFloat(estoquesFinaisElem.value) || 0;
+                    let producaoPlanejada = parseFloat(producaoPlanejadaElem.value) || 0;
+                    let demandaPrevista = parseFloat(demandaPrevistaElem.value) || 0;
+    
+                    // Calcular o estoque final e atualizar o estoque inicial do próximo período
+                    let estoqueInicialFinal = estoqueInicial + producaoPlanejada - demandaPrevista;
+                    let estoqueFinalFinal = producaoPlanejada - demandaPrevista + estoqueInicial
+
+                    let nextEstoqueInicialElem = document.getElementById(`${familia}_estoque_inicial_${nextPeriod}`);
+                    if (nextEstoqueInicialElem) {
+                        nextEstoqueInicialElem.value = estoqueInicialFinal.toFixed(0);
+                    }
+                    let nextEstoquesFinaisElem = document.getElementById(`${familia}_estoque_final_${period}`);
+                    if (nextEstoquesFinaisElem) {
+                        nextEstoquesFinaisElem.value = estoqueFinalFinal.toFixed(0);
+                    }
+                }
+            }
+        }
+    
+        // Função para adicionar event listeners para as famílias
+        function adicionarListenersParaFamilia(familia) {
+            // Adicionar event listeners para todos os inputs de produção planejada e demanda prevista
+            periods.forEach(function(period) {
+                const producaoPlanejadaInput = document.getElementById(`${familia}_producao_planejada_${period}`);
+                const demandaPrevistaInput = document.getElementById(`${familia}_demanda_prevista_${period}`);
+    
+                if (producaoPlanejadaInput) {
+                    producaoPlanejadaInput.addEventListener('input', function() {
+                        recalcularEstoques(familia);  // Recalcular estoques quando o valor mudar
+                    });
+                }
+    
+                if (demandaPrevistaInput) {
+                    demandaPrevistaInput.addEventListener('input', function() {
+                        recalcularEstoques(familia);  // Recalcular estoques quando o valor mudar
+                    });
+                }
+            });
+        }
+    
+        // Adicionar event listeners para cada família (Colmeia, Piquet, Maxim)
+        adicionarListenersParaFamilia('colmeia');
+        //adicionarListenersParaFamilia('piquet');
+        //adicionarListenersParaFamilia('maxim');
+    
+        // Inicialmente calcular os estoques quando a página for carregada
+        recalcularEstoques('colmeia');
+        //recalcularEstoques('piquet');
+        //recalcularEstoques('maxim');
+    });
+
+</script>
+
 {% endblock %}
