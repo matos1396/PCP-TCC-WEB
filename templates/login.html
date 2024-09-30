@@ -6,9 +6,9 @@
 <form method="POST" novalidate>
     {{ form.hidden_tag() }}
     <div class="form-group">
-        {{ form.group_name.label(class="form-label") }}
-        {{ form.group_name(class="form-control{% if form.group_name.errors %} is-invalid{% endif %}", placeholder="Digite o nome do grupo") }}
-        {% for error in form.group_name.errors %}
+        {{ form.grupo_nome.label(class="form-label") }}
+        {{ form.grupo_nome(class="form-control{% if form.grupo_nome.errors %} is-invalid{% endif %}", placeholder="Digite o nome do grupo") }}
+        {% for error in form.grupo_nome.errors %}
             <div class="invalid-feedback">
                 {{ error }}
             </div>

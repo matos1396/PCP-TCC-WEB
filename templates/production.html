@@ -26,6 +26,7 @@
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control demanda-prevista" 
                                id="colmeia_demanda_prevista_{{ period }}" 
+                               name="{{ previsoes_por_familia['Colmeia'][period].name }}"
                                data-familia="Colmeia" data-period="{{ period }}" 
                                value="{{ previsoes_por_familia['Colmeia'][period].data }}" readonly>
                         {% else %}
@@ -46,6 +47,7 @@
                     <td>
                         <input type="number" class="form-control estoque-inicial" 
                                id="colmeia_estoque_inicial_{{ period }}" 
+                               name="{{ estoques_iniciais_por_familia['Colmeia'][period].name }}"
                                value="{{ estoques_iniciais_por_familia['Colmeia'][period].data }}" readonly>
                     </td>
                 {% endfor %}
@@ -58,6 +60,7 @@
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control producao-planejada" 
                                id="colmeia_producao_planejada_{{ period }}" 
+                               name="{{ producao_planejada_por_familia['Colmeia'][period].name }}"
                                data-familia="Colmeia" data-period="{{ period }}"
                                value="{{ producao_planejada_por_familia['Colmeia'][period].data }}" readonly>
                         {% else %}
@@ -78,6 +81,7 @@
                 <td>
                     <input type="number" class="form-control estoque-final" 
                            id="colmeia_estoque_final_{{ period }}" 
+                           name="{{ estoques_finais_por_familia['Colmeia'][period].name }}"
                            value="{{ estoques_finais_por_familia['Colmeia'][period].data }}" readonly>
                 </td>
                 {% endfor %}
@@ -88,6 +92,7 @@
                 <td>
                     <input type="number" class="form-control venda-perdida" 
                            id="colmeia_vendas_perdidas_{{ period }}" 
+                           name="{{ vendas_perdidas_por_familia['Colmeia'][period].name }}"
                            value="{{ vendas_perdidas_por_familia['Colmeia'][period].data }}" readonly>
                 </td>
                 {% endfor %}
@@ -98,6 +103,7 @@
                 <td>
                     <input type="number" class="form-control vendas" 
                            id="colmeia_vendas_{{ period }}" 
+                           name="{{ vendas_por_familia['Colmeia'][period].name }}"
                            value="{{ vendas_por_familia['Colmeia'][period].data }}" readonly>
                 </td>
                 {% endfor %}
@@ -275,27 +281,28 @@
         // Declarar periods como uma variável global para evitar conflito
         const periods = JSON.parse('{{ periods|tojson }}');
         console.log(periods);
-    
+
         function recalcularEstoques(familia) {
             for (let i = 0; i <= periods.length; i++) {
                 let period = periods[i];
                 let nextPeriod = periods[i + 1];
-    
+
                 // Obter os valores do estoque inicial, produção planejada e demanda prevista
                 let estoqueInicialElem = document.getElementById(`${familia}_estoque_inicial_${period}`);
                 let producaoPlanejadaElem = document.getElementById(`${familia}_producao_planejada_${period}`);
                 let demandaPrevistaElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
-                let estoquesFinaisElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
-                let vendasFinaisElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
-                let vendasPerdidasElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
-                
+                let estoquesFinaisElem = document.getElementById(`${familia}_estoque_final_${period}`);
+                let vendasFinaisElem = document.getElementById(`${familia}_vendas_${period}`);
+                let vendasPerdidasElem = document.getElementById(`${familia}_vendas_perdidas_${period}`);
+
                 // Verificar se os elementos existem antes de acessar seus valores
                 if (estoqueInicialElem && producaoPlanejadaElem && demandaPrevistaElem) {
                     let estoqueInicial = parseFloat(estoqueInicialElem.value) || 0;
                     let estoqueFinal = parseFloat(estoquesFinaisElem.value) || 0;
                     let producaoPlanejada = parseFloat(producaoPlanejadaElem.value) || 0;
                     let demandaPrevista = parseFloat(demandaPrevistaElem.value) || 0;
-    
+                    console.log(estoqueFinal)
+
                     // Calcular o estoque final e atualizar o estoque inicial do próximo período
                     let estoqueInicialFinal = estoqueInicial + producaoPlanejada - demandaPrevista;
                     let estoqueFinalFinal = producaoPlanejada - demandaPrevista + estoqueInicial
@@ -342,8 +349,34 @@
         recalcularEstoques('colmeia');
         //recalcularEstoques('piquet');
         //recalcularEstoques('maxim');
-    });
 
+        document.querySelector('form').addEventListener('submit', function(event) {
+            
+            recalcularEstoques('colmeia');
+            console.log("ENTROU AQUI #######")
+            //recalcularEstoques('piquet');
+            //recalcularEstoques('maxim');
+        
+            // Atualizar valores do formulário com os calculados
+            periods.forEach(function(period) {
+                let estoqueInicialColmeia = document.getElementById(`colmeia_estoque_inicial_${period}`).value;
+                let estoqueInicialInput = document.querySelector(`input[name="colmeia_estoque_inicial_${period}"]`);
+                if (estoqueInicialInput) {
+                    estoqueInicialInput.value = estoqueInicialColmeia;
+                }
+
+                let producaoPlanejadaColmeia = document.getElementById(`colmeia_producao_planejada_${period}`).value;
+                let producaoPlanejadaInput = document.querySelector(`input[name="colmeia_producao_planejada_${period}"]`);
+                if (producaoPlanejadaInput) {
+                    producaoPlanejadaInput.value = producaoPlanejadaColmeia;
+                }
+            });
+
+        // Agora o formulário será submetido com os valores atualizados
+        });
+
+    });
+        
 </script>
 
 {% endblock %}

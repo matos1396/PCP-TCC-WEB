@@ -80,6 +80,7 @@ def production():
         'Piquet': {period: getattr(form, f'piquet_estoque_inicial_{period}') for period in periods},
         'Maxim': {period: getattr(form, f'maxim_estoque_inicial_{period}') for period in periods}
     }
+
     estoques_finais_por_familia = {
         'Colmeia': {period: getattr(form, f'colmeia_estoque_final_{period}') for period in periods},
         'Piquet': {period: getattr(form, f'piquet_estoque_final_{period}') for period in periods},
@@ -109,7 +110,10 @@ def production():
                     # Obtenha os valores de produção planejada e demanda prevista para o período atual
                     producao_planejada = producao_planejada_por_familia[familia][period].data
                     demanda_prevista = previsoes_por_familia[familia][period].data
-                    print("#######################", demanda_prevista)
+                    estoque_inicial = estoques_iniciais_por_familia[familia][period].data
+                    estoque_final = estoques_finais_por_familia[familia][period].data
+                    
+                    print("#######################", estoque_inicial)
                     # # Para o primeiro período (inicial), recupere o estoque inicial do banco de dados ou use o valor inicial predefinido
                     # if period == periodo_atual:
                     #     estoque_inicial = estoques_iniciais_por_familia[familia][period].data
@@ -125,12 +129,13 @@ def production():
                     ).order_by(PlanoProducao.periodo_modificado.desc()).first()
 
                     if existing_plan:
-                        print("SIM", demanda_prevista)
+                        print("SIM", familia,demanda_prevista)
                         if existing_plan.periodo_modificado == periodo_atual:
                             # Atualizar o plano existente
                             existing_plan.producao_planejada = producao_planejada
                             existing_plan.demanda_prevista = demanda_prevista
-                            #existing_plan.estoques_iniciais = estoque_inicial
+                            existing_plan.estoques_iniciais = estoque_inicial
+                            existing_plan.estoques_finais = estoque_final
                         else:
                             # Criar um novo plano
                             new_plan = PlanoProducao(
@@ -138,7 +143,7 @@ def production():
                                 familia=familia,
                                 producao_planejada=producao_planejada,
                                 demanda_prevista=demanda_prevista,
-                                #estoques_iniciais=estoque_inicial,
+                                estoques_iniciais=estoque_inicial,
                                 periodo_modificado=periodo_atual,
                                 grupo_id=current_user.id
                             )

@@ -32,14 +32,14 @@ class PlanoProducao(db.Model):
     familia = db.Column(db.String(50), nullable=False)  # Família
 
     # Informações do Plano de Produção
-    demanda_prevista = db.Column(db.Integer, nullable=True)  # Demanda prevista
-    demanda_real = db.Column(db.Integer, nullable=True)  # Demanda real (após simulação)
-    estoques_iniciais = db.Column(db.Integer, nullable=True)  # Estoques Iniciais
-    producao_planejada = db.Column(db.Integer, nullable=False)  # Produção planejada
-    producao_real = db.Column(db.Integer, nullable=True)  # Produção real (após simulação)
-    estoques_finais = db.Column(db.Integer, nullable=True)  # Estoques Finais (após simulação)
-    vendas_perdidas = db.Column(db.Integer, nullable=True)  # Vendas Perdidas
-    vendas = db.Column(db.Integer, nullable=True)  # Vendas Efetivadas
+    demanda_prevista = db.Column(db.Float, nullable=True)  # Demanda prevista
+    demanda_real = db.Column(db.Float, nullable=True)  # Demanda real (após simulação)
+    estoques_iniciais = db.Column(db.Float, nullable=True)  # Estoques Iniciais
+    producao_planejada = db.Column(db.Float, nullable=False)  # Produção planejada
+    producao_real = db.Column(db.Float, nullable=True)  # Produção real (após simulação)
+    estoques_finais = db.Column(db.Float, nullable=True)  # Estoques Finais (após simulação)
+    vendas_perdidas = db.Column(db.Float, nullable=True)  # Vendas Perdidas
+    vendas = db.Column(db.Float, nullable=True)  # Vendas Efetivadas
 
 # Modelo de Plano de Compras (PlanoCompras)
 class PlanoCompras(db.Model):
@@ -53,12 +53,12 @@ class PlanoCompras(db.Model):
     material = db.Column(db.String(50), nullable=False)  # Ex: Fio Algodão, Fio Sintético, Corantes
 
     # Informações do Plano de Compras
-    consumo_previsto = db.Column(db.Integer, nullable=True)  # Consumo previsto
-    consumo_real = db.Column(db.Integer, nullable=True)  # Consumo real (após simulação)
-    estoques_iniciais = db.Column(db.Integer, nullable=True)  # Estoques Iniciais
-    compra_planejada = db.Column(db.Integer, nullable=False)  # Compras planejadas
-    compra_real = db.Column(db.Integer, nullable=True)  # Compras reais (após simulação)
-    estoques_finais = db.Column(db.Integer, nullable=True)  # Estoques Finais (após simulação)
+    consumo_previsto = db.Column(db.Float, nullable=True)  # Consumo previsto
+    consumo_real = db.Column(db.Float, nullable=True)  # Consumo real (após simulação)
+    estoques_iniciais = db.Column(db.Float, nullable=True)  # Estoques Iniciais
+    compra_planejada = db.Column(db.Float, nullable=False)  # Compras planejadas
+    compra_real = db.Column(db.Float, nullable=True)  # Compras reais (após simulação)
+    estoques_finais = db.Column(db.Float, nullable=True)  # Estoques Finais (após simulação)
 
 
 

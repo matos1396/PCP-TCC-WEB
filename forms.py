@@ -16,37 +16,37 @@ class ProductionForm(FlaskForm):
         # Campo para Produção Planejada
         vars()['colmeia_' + str(period)] = DecimalField(f'Colméia (Período {period})', validators=[DataRequired()])
         # Campo para Demanda Prevista
-        vars()['colmeia_demanda_prevista_' + str(period)] = IntegerField(f'Demanda Prevista Colméia (Período {period})', validators=[DataRequired()])
+        vars()['colmeia_demanda_prevista_' + str(period)] = DecimalField(f'Demanda Prevista Colméia (Período {period})', validators=[DataRequired()])
         # Campos para Estoques Iniciais (Produção)
-        vars()['colmeia_estoque_inicial_' + str(period)] = IntegerField(f'Colmeia Estoque Inicial (Período {period})', validators=[Optional()])
-        vars()['colmeia_estoque_final_' + str(period)] = IntegerField(f'Colmeia Estoque Final (Período {period})', validators=[Optional()])
-        vars()['colmeia_vendas_perdidas_' + str(period)] = IntegerField(f'Colmeia Vendas Perdidas (Período {period})', validators=[Optional()])
-        vars()['colmeia_vendas_' + str(period)] = IntegerField(f'Colmeia Vendas (Período {period})', validators=[Optional()])
+        vars()['colmeia_estoque_inicial_' + str(period)] = DecimalField(f'Colmeia Estoque Inicial (Período {period})', validators=[Optional()])
+        vars()['colmeia_estoque_final_' + str(period)] = DecimalField(f'Colmeia Estoque Final (Período {period})', validators=[DataRequired()])
+        vars()['colmeia_vendas_perdidas_' + str(period)] = DecimalField(f'Colmeia Vendas Perdidas (Período {period})', validators=[Optional()])
+        vars()['colmeia_vendas_' + str(period)] = DecimalField(f'Colmeia Vendas (Período {period})', validators=[Optional()])
 
     # Campos para Família Piquet
     for period in periods:
         # Campo para Produção Planejada
-        vars()['piquet_' + str(period)] = IntegerField(f'Piquet (Período {period})', validators=[DataRequired()])
+        vars()['piquet_' + str(period)] = DecimalField(f'Piquet (Período {period})', validators=[DataRequired()])
         # Campo para Demanda Prevista
-        vars()['piquet_demanda_prevista_' + str(period)] = IntegerField(f'Demanda Prevista Piquet (Período {period})', validators=[DataRequired()])
+        vars()['piquet_demanda_prevista_' + str(period)] = DecimalField(f'Demanda Prevista Piquet (Período {period})', validators=[DataRequired()])
         # Campos para Estoques Iniciais (Produção)
-        vars()['piquet_estoque_inicial_' + str(period)] = IntegerField(f'Piquet Estoque Inicial (Período {period})', validators=[Optional()])
-        vars()['piquet_estoque_final_' + str(period)] = IntegerField(f'Piquet Estoque Final (Período {period})', validators=[Optional()])
-        vars()['piquet_vendas_perdidas_' + str(period)] = IntegerField(f'Piquet Vendas Perdidas (Período {period})', validators=[Optional()])
-        vars()['piquet_vendas_' + str(period)] = IntegerField(f'Piquet Vendas (Período {period})', validators=[Optional()])
+        vars()['piquet_estoque_inicial_' + str(period)] = DecimalField(f'Piquet Estoque Inicial (Período {period})', validators=[Optional()])
+        vars()['piquet_estoque_final_' + str(period)] = DecimalField(f'Piquet Estoque Final (Período {period})', validators=[Optional()])
+        vars()['piquet_vendas_perdidas_' + str(period)] = DecimalField(f'Piquet Vendas Perdidas (Período {period})', validators=[Optional()])
+        vars()['piquet_vendas_' + str(period)] = DecimalField(f'Piquet Vendas (Período {period})', validators=[Optional()])
 
 
     # Campos para Família Maxim
     for period in periods:
         # Campo para Produção Planejada
-        vars()['maxim_' + str(period)] = IntegerField(f'Maxim (Período {period})', validators=[DataRequired()])
+        vars()['maxim_' + str(period)] = DecimalField(f'Maxim (Período {period})', validators=[DataRequired()])
         # Campo para Demanda Prevista
-        vars()['maxim_demanda_prevista_' + str(period)] = IntegerField(f'Demanda Prevista Maxim (Período {period})', validators=[DataRequired()])
+        vars()['maxim_demanda_prevista_' + str(period)] = DecimalField(f'Demanda Prevista Maxim (Período {period})', validators=[DataRequired()])
         # Campos para Estoques Iniciais (Produção)
-        vars()['maxim_estoque_inicial_' + str(period)] = IntegerField(f'Maxim Estoque Inicial (Período {period})', validators=[Optional()])
-        vars()['maxim_estoque_final_' + str(period)] = IntegerField(f'Maxim Estoque Final (Período {period})', validators=[Optional()])
-        vars()['maxim_vendas_perdidas_' + str(period)] = IntegerField(f'Maxim Vendas Perdidas (Período {period})', validators=[Optional()])
-        vars()['maxim_vendas_' + str(period)] = IntegerField(f'Maxim Vendas (Período {period})', validators=[Optional()])
+        vars()['maxim_estoque_inicial_' + str(period)] = DecimalField(f'Maxim Estoque Inicial (Período {period})', validators=[Optional()])
+        vars()['maxim_estoque_final_' + str(period)] = DecimalField(f'Maxim Estoque Final (Período {period})', validators=[Optional()])
+        vars()['maxim_vendas_perdidas_' + str(period)] = DecimalField(f'Maxim Vendas Perdidas (Período {period})', validators=[Optional()])
+        vars()['maxim_vendas_' + str(period)] = DecimalField(f'Maxim Vendas (Período {period})', validators=[Optional()])
 
 
     # Botão para Submeter o Formulário
