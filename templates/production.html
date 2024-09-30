@@ -129,9 +129,13 @@
                     <td>
                         {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
-                        <input type="number" class="form-control" name="{{ previsoes_por_familia['Piquet'][period].name }}" value="{{ previsoes_por_familia['Piquet'][period].data }}" readonly>
+                        <input type="number" class="form-control demanda-prevista" 
+                               id="piquet_demanda_prevista_{{ period }}" 
+                               name="{{ previsoes_por_familia['Piquet'][period].name }}"
+                               data-familia="Piquet" data-period="{{ period }}" 
+                               value="{{ previsoes_por_familia['Piquet'][period].data }}" readonly>
                         {% else %}
-                            {{ previsoes_por_familia['Piquet'][period](class="form-control") }}
+                            {{ previsoes_por_familia['Piquet'][period](class="form-control demanda-prevista", id="piquet_demanda_prevista_" ~ period, data_familia="Piquet", data_period=period) }}
                         {% endif %}
                     </td>
                 {% endfor %}
@@ -146,7 +150,10 @@
                 <th>Estoques Iniciais</th>
                 {% for period in periods %}
                     <td>
-                        <input type="number" class="form-control" name="{{ estoques_iniciais_por_familia['Piquet'][period].name }}" value="{{ estoques_iniciais_por_familia['Piquet'][period].data }}" readonly>
+                        <input type="number" class="form-control estoque-inicial" 
+                               id="piquet_estoque_inicial_{{ period }}" 
+                               name="{{ estoques_iniciais_por_familia['Piquet'][period].name }}"
+                               value="{{ estoques_iniciais_por_familia['Piquet'][period].data }}" readonly>
                     </td>
                 {% endfor %}
             </tr>
@@ -156,10 +163,13 @@
                     <td>
                         {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
-                        <input type="number" class="form-control" name="{{ producao_planejada_por_familia['Piquet'][period].name }}" value="{{ producao_planejada_por_familia['Piquet'][period].data }}" readonly>
+                        <input type="number" class="form-control producao-planejada" 
+                               id="piquet_producao_planejada_{{ period }}" 
+                               name="{{ producao_planejada_por_familia['Piquet'][period].name }}"
+                               data-familia="Piquet" data-period="{{ period }}"
+                               value="{{ producao_planejada_por_familia['Piquet'][period].data }}" readonly>
                         {% else %}
-                            <!-- Campo editável para períodos futuros -->
-                            {{ producao_planejada_por_familia['Piquet'][period](class="form-control") }}
+                            {{ producao_planejada_por_familia['Piquet'][period](class="form-control producao-planejada", id="piquet_producao_planejada_" ~ period, data_familia="Piquet", data_period=period) }}
                         {% endif %}
                     </td>
                 {% endfor %}
@@ -173,19 +183,34 @@
             <tr>
                 <th>Estoques Finais</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control estoque-final" 
+                           id="piquet_estoque_final_{{ period }}" 
+                           name="{{ estoques_finais_por_familia['Piquet'][period].name }}"
+                           value="{{ estoques_finais_por_familia['Piquet'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Vendas Perdidas</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control venda-perdida" 
+                           id="piquet_vendas_perdidas_{{ period }}" 
+                           name="{{ vendas_perdidas_por_familia['Piquet'][period].name }}"
+                           value="{{ vendas_perdidas_por_familia['Piquet'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Vendas</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control vendas" 
+                           id="piquet_vendas_{{ period }}" 
+                           name="{{ vendas_por_familia['Piquet'][period].name }}"
+                           value="{{ vendas_por_familia['Piquet'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
         </tbody>
@@ -209,9 +234,13 @@
                     <td>
                         {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
-                        <input type="number" class="form-control" name="{{ previsoes_por_familia['Maxim'][period].name }}" value="{{ previsoes_por_familia['Maxim'][period].data }}" readonly>
+                        <input type="number" class="form-control demanda-prevista" 
+                               id="maxim_demanda_prevista_{{ period }}" 
+                               name="{{ previsoes_por_familia['Maxim'][period].name }}"
+                               data-familia="Maxim" data-period="{{ period }}" 
+                               value="{{ previsoes_por_familia['Maxim'][period].data }}" readonly>
                         {% else %}
-                            {{ previsoes_por_familia['Maxim'][period](class="form-control") }}
+                            {{ previsoes_por_familia['Maxim'][period](class="form-control demanda-prevista", id="maxim_demanda_prevista_" ~ period, data_familia="Maxim", data_period=period) }}
                         {% endif %}
                     </td>
                 {% endfor %}
@@ -226,7 +255,10 @@
                 <th>Estoques Iniciais</th>
                 {% for period in periods %}
                     <td>
-                        <input type="number" class="form-control" name="{{ estoques_iniciais_por_familia['Maxim'][period].name }}" value="{{ estoques_iniciais_por_familia['Maxim'][period].data }}" readonly>
+                        <input type="number" class="form-control estoque-inicial" 
+                               id="maxim_estoque_inicial_{{ period }}" 
+                               name="{{ estoques_iniciais_por_familia['Maxim'][period].name }}"
+                               value="{{ estoques_iniciais_por_familia['Maxim'][period].data }}" readonly>
                     </td>
                 {% endfor %}
             </tr>
@@ -236,10 +268,13 @@
                     <td>
                         {% if period < periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
-                        <input type="number" class="form-control" name="{{ producao_planejada_por_familia['Maxim'][period].name }}" value="{{ producao_planejada_por_familia['Maxim'][period].data }}" readonly>
+                        <input type="number" class="form-control producao-planejada" 
+                               id="maxim_producao_planejada_{{ period }}" 
+                               name="{{ producao_planejada_por_familia['Maxim'][period].name }}"
+                               data-familia="Maxim" data-period="{{ period }}"
+                               value="{{ producao_planejada_por_familia['Maxim'][period].data }}" readonly>
                         {% else %}
-                            <!-- Campo editável para períodos futuros -->
-                            {{ producao_planejada_por_familia['Maxim'][period](class="form-control") }}
+                            {{ producao_planejada_por_familia['Maxim'][period](class="form-control producao-planejada", id="maxim_producao_planejada_" ~ period, data_familia="Maxim", data_period=period) }}
                         {% endif %}
                     </td>
                 {% endfor %}
@@ -253,19 +288,34 @@
             <tr>
                 <th>Estoques Finais</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control estoque-final" 
+                           id="maxim_estoque_final_{{ period }}" 
+                           name="{{ estoques_finais_por_familia['Maxim'][period].name }}"
+                           value="{{ estoques_finais_por_familia['Maxim'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Vendas Perdidas</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control venda-perdida" 
+                           id="maxim_vendas_perdidas_{{ period }}" 
+                           name="{{ vendas_perdidas_por_familia['Maxim'][period].name }}"
+                           value="{{ vendas_perdidas_por_familia['Maxim'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
                 <th>Vendas</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control vendas" 
+                           id="maxim_vendas_{{ period }}" 
+                           name="{{ vendas_por_familia['Maxim'][period].name }}"
+                           value="{{ vendas_por_familia['Maxim'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
         </tbody>
@@ -301,7 +351,7 @@
                     let estoqueFinal = parseFloat(estoquesFinaisElem.value) || 0;
                     let producaoPlanejada = parseFloat(producaoPlanejadaElem.value) || 0;
                     let demandaPrevista = parseFloat(demandaPrevistaElem.value) || 0;
-                    console.log(estoqueFinal)
+                    console.log(estoqueInicial)
 
                     // Calcular o estoque final e atualizar o estoque inicial do próximo período
                     let estoqueInicialFinal = estoqueInicial + producaoPlanejada - demandaPrevista;
@@ -339,44 +389,19 @@
                 }
             });
         }
-    
+
         // Adicionar event listeners para cada família (Colmeia, Piquet, Maxim)
         adicionarListenersParaFamilia('colmeia');
         //adicionarListenersParaFamilia('piquet');
         //adicionarListenersParaFamilia('maxim');
-    
+
         // Inicialmente calcular os estoques quando a página for carregada
         recalcularEstoques('colmeia');
         //recalcularEstoques('piquet');
         //recalcularEstoques('maxim');
 
-        document.querySelector('form').addEventListener('submit', function(event) {
-            
-            recalcularEstoques('colmeia');
-            console.log("ENTROU AQUI #######")
-            //recalcularEstoques('piquet');
-            //recalcularEstoques('maxim');
-        
-            // Atualizar valores do formulário com os calculados
-            periods.forEach(function(period) {
-                let estoqueInicialColmeia = document.getElementById(`colmeia_estoque_inicial_${period}`).value;
-                let estoqueInicialInput = document.querySelector(`input[name="colmeia_estoque_inicial_${period}"]`);
-                if (estoqueInicialInput) {
-                    estoqueInicialInput.value = estoqueInicialColmeia;
-                }
-
-                let producaoPlanejadaColmeia = document.getElementById(`colmeia_producao_planejada_${period}`).value;
-                let producaoPlanejadaInput = document.querySelector(`input[name="colmeia_producao_planejada_${period}"]`);
-                if (producaoPlanejadaInput) {
-                    producaoPlanejadaInput.value = producaoPlanejadaColmeia;
-                }
-            });
-
-        // Agora o formulário será submetido com os valores atualizados
-        });
-
     });
-        
+
 </script>
 
 {% endblock %}

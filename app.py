@@ -112,16 +112,8 @@ def production():
                     demanda_prevista = previsoes_por_familia[familia][period].data
                     estoque_inicial = estoques_iniciais_por_familia[familia][period].data
                     estoque_final = estoques_finais_por_familia[familia][period].data
-                    
-                    print("#######################", estoque_inicial)
-                    # # Para o primeiro período (inicial), recupere o estoque inicial do banco de dados ou use o valor inicial predefinido
-                    # if period == periodo_atual:
-                    #     estoque_inicial = estoques_iniciais_por_familia[familia][period].data
-                    #     estoque_anterior = estoque_inicial  # Use para o próximo período
-                    # else:
-                    #     # Calcular o estoque inicial com base no estoque anterior
-                    #     estoque_inicial = estoque_anterior + producao_planejada - demanda_prevista
-                    #     estoque_anterior = estoque_inicial  # Atualizar para o próximo período
+
+                    print("#######################",period, periodo_atual, estoque_inicial)
 
                     # Atualizar ou criar novo plano de produção
                     existing_plan = PlanoProducao.query.filter_by(
@@ -129,7 +121,7 @@ def production():
                     ).order_by(PlanoProducao.periodo_modificado.desc()).first()
 
                     if existing_plan:
-                        print("SIM", familia,demanda_prevista)
+                        #print("SIM", familia,demanda_prevista)
                         if existing_plan.periodo_modificado == periodo_atual:
                             # Atualizar o plano existente
                             existing_plan.producao_planejada = producao_planejada
@@ -155,7 +147,7 @@ def production():
                             familia=familia,
                             producao_planejada=producao_planejada,
                             demanda_prevista=demanda_prevista,
-                            #estoques_iniciais=estoque_inicial,
+                            estoques_iniciais=estoque_inicial,
                             periodo_modificado=periodo_atual,
                             grupo_id=current_user.id
                         )
