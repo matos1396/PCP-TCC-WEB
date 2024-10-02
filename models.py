@@ -58,6 +58,7 @@ class PlanoCompras(db.Model):
     estoques_iniciais = db.Column(db.Float, nullable=True)  # Estoques Iniciais
     compra_planejada = db.Column(db.Float, nullable=False)  # Compras planejadas
     compra_real = db.Column(db.Float, nullable=True)  # Compras reais (após simulação)
+    compra_emergencial = db.Column(db.Float, nullable=True)  # Compras Emergenciais (após simulação)
     estoques_finais = db.Column(db.Float, nullable=True)  # Estoques Finais (após simulação)
 
 

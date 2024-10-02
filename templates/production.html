@@ -3,6 +3,8 @@
 {% block title %}Plano de Produção - PCP Game{% endblock %}
 {% block content %}
 <h2 class="mb-4">Plano de Produção</h2>
+        <!-- Informações sobre o período atual -->
+<p>Você está atualmente no período {{ current_user.periodo_atual }}.</p>
 <form method="POST">
     {{ form.hidden_tag() }}
 
@@ -22,7 +24,7 @@
                 <th>Demanda Prevista</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < periodo_atual %}
+                        {% if period <= periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control demanda-prevista" 
                                id="colmeia_demanda_prevista_{{ period }}" 
@@ -38,7 +40,12 @@
             <tr>
                 <th>Demanda Real</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control demanda-real" 
+                           id="colmeia_demanda_real_{{ period }}" 
+                           name="{{ demanda_real_por_familia['Colmeia'][period].name }}"
+                           value="{{ demanda_real_por_familia['Colmeia'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -56,7 +63,7 @@
                 <th>Produção Planejada</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < periodo_atual %}
+                        {% if period <= periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control producao-planejada" 
                                id="colmeia_producao_planejada_{{ period }}" 
@@ -72,7 +79,12 @@
             <tr>
                 <th>Produção Real</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control producao-real" 
+                           id="colmeia_producao_real_{{ period }}" 
+                           name="{{ producao_real_por_familia['Colmeia'][period].name }}"
+                           value="{{ producao_real_por_familia['Colmeia'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -127,7 +139,7 @@
                 <th>Demanda Prevista</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < periodo_atual %}
+                        {% if period <= periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control demanda-prevista" 
                                id="piquet_demanda_prevista_{{ period }}" 
@@ -143,7 +155,12 @@
             <tr>
                 <th>Demanda Real</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control demanda-real" 
+                           id="piquet_demanda_real_{{ period }}" 
+                           name="{{ demanda_real_por_familia['Piquet'][period].name }}"
+                           value="{{ demanda_real_por_familia['Piquet'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -161,7 +178,7 @@
                 <th>Produção Planejada</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < periodo_atual %}
+                        {% if period <= periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control producao-planejada" 
                                id="piquet_producao_planejada_{{ period }}" 
@@ -177,7 +194,12 @@
             <tr>
                 <th>Produção Real</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control producao-real" 
+                           id="piquet_producao_real_{{ period }}" 
+                           name="{{ producao_real_por_familia['Piquet'][period].name }}"
+                           value="{{ producao_real_por_familia['Piquet'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -232,7 +254,7 @@
                 <th>Demanda Prevista</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < periodo_atual %}
+                        {% if period <= periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control demanda-prevista" 
                                id="maxim_demanda_prevista_{{ period }}" 
@@ -248,7 +270,12 @@
             <tr>
                 <th>Demanda Real</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control demanda-real" 
+                           id="maxim_demanda_real_{{ period }}" 
+                           name="{{ demanda_real_por_familia['Maxim'][period].name }}"
+                           value="{{ demanda_real_por_familia['Maxim'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>
@@ -266,7 +293,7 @@
                 <th>Produção Planejada</th>
                 {% for period in periods %}
                     <td>
-                        {% if period < periodo_atual %}
+                        {% if period <= periodo_atual %}
                         <!-- Campo somente leitura para períodos passados -->
                         <input type="number" class="form-control producao-planejada" 
                                id="maxim_producao_planejada_{{ period }}" 
@@ -282,7 +309,12 @@
             <tr>
                 <th>Produção Real</th>
                 {% for period in periods %}
-                    <td></td>
+                <td>
+                    <input type="number" class="form-control producao-real" 
+                           id="maxim_producao_real_{{ period }}" 
+                           name="{{ producao_real_por_familia['Maxim'][period].name }}"
+                           value="{{ producao_real_por_familia['Maxim'][period].data }}" readonly>
+                </td>
                 {% endfor %}
             </tr>
             <tr>

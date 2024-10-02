@@ -61,26 +61,36 @@ def production():
     estilo_demanda = current_user.estilo_demanda
 
 
-    # Capos para previsao
+    # Campos para Demanda
     previsoes_por_familia = {
         'Colmeia': {period: getattr(form, f'colmeia_demanda_prevista_{period}') for period in periods},
         'Piquet': {period: getattr(form, f'piquet_demanda_prevista_{period}') for period in periods},
         'Maxim': {period: getattr(form, f'maxim_demanda_prevista_{period}') for period in periods}
     }
+    demanda_real_por_familia = { #- somente ler
+        'Colmeia': {period: getattr(form, f'colmeia_demanda_real_{period}') for period in periods},
+        'Piquet': {period: getattr(form, f'piquet_demanda_real_{period}') for period in periods},
+        'Maxim': {period: getattr(form, f'maxim_demanda_real_{period}') for period in periods}
+    }
 
+    # Campos para produção
     producao_planejada_por_familia = {
         'Colmeia': {period: getattr(form, f'colmeia_{period}') for period in periods},
         'Piquet': {period: getattr(form, f'piquet_{period}') for period in periods},
         'Maxim': {period: getattr(form, f'maxim_{period}') for period in periods}
     }
+    producao_real_por_familia = { # somente ler
+        'Colmeia': {period: getattr(form, f'colmeia_producao_real{period}') for period in periods},
+        'Piquet': {period: getattr(form, f'piquet_producao_real{period}') for period in periods},
+        'Maxim': {period: getattr(form, f'maxim_producao_real{period}') for period in periods}
+    }
 
-    # Campos Estoques Iniciais - somente ler 
+    # Campos Estoques - somente ler
     estoques_iniciais_por_familia = {
         'Colmeia': {period: getattr(form, f'colmeia_estoque_inicial_{period}') for period in periods},
         'Piquet': {period: getattr(form, f'piquet_estoque_inicial_{period}') for period in periods},
         'Maxim': {period: getattr(form, f'maxim_estoque_inicial_{period}') for period in periods}
     }
-
     estoques_finais_por_familia = {
         'Colmeia': {period: getattr(form, f'colmeia_estoque_final_{period}') for period in periods},
         'Piquet': {period: getattr(form, f'piquet_estoque_final_{period}') for period in periods},
@@ -93,7 +103,6 @@ def production():
         'Piquet': {period: getattr(form, f'piquet_vendas_perdidas_{period}') for period in periods},
         'Maxim': {period: getattr(form, f'maxim_vendas_perdidas_{period}') for period in periods}
     }
-
     vendas_por_familia = {
         'Colmeia': {period: getattr(form, f'colmeia_vendas_{period}') for period in periods},
         'Piquet': {period: getattr(form, f'piquet_vendas_{period}') for period in periods},
@@ -166,9 +175,11 @@ def production():
                 ).filter(PlanoProducao.periodo_modificado <= periodo_atual).order_by(PlanoProducao.periodo_modificado.desc()).first()
 
                 if plan:
-                    # Preencher os campos de produção planejada, demanda prevista e estoques iniciais
+                    # Preencher os campos
                     producao_planejada_por_familia[familia][period].data = plan.producao_planejada
+                    producao_real_por_familia[familia][period].data = plan.producao_real
                     previsoes_por_familia[familia][period].data = plan.demanda_prevista
+                    demanda_real_por_familia[familia][period].data = plan.demanda_real
                     estoques_iniciais_por_familia[familia][period].data = plan.estoques_iniciais
                     estoques_finais_por_familia[familia][period].data = plan.estoques_finais
                     vendas_perdidas_por_familia[familia][period].data = plan.vendas_perdidas
@@ -176,15 +187,17 @@ def production():
 
     return render_template(
         'production.html',
-        form=form,
-        periods=periods,
-        periodo_atual=periodo_atual,
-        producao_planejada_por_familia=producao_planejada_por_familia,
-        previsoes_por_familia=previsoes_por_familia,
-        estoques_iniciais_por_familia=estoques_iniciais_por_familia,
-        estoques_finais_por_familia=estoques_finais_por_familia,
+        form = form,
+        periods = periods,
+        periodo_atual = periodo_atual,
+        producao_planejada_por_familia = producao_planejada_por_familia,
+        producao_real_por_familia = producao_real_por_familia,
+        previsoes_por_familia = previsoes_por_familia,
+        estoques_iniciais_por_familia = estoques_iniciais_por_familia,
+        estoques_finais_por_familia = estoques_finais_por_familia,
         vendas_perdidas_por_familia = vendas_perdidas_por_familia,
-        vendas_por_familia=vendas_por_familia
+        vendas_por_familia = vendas_por_familia,
+        demanda_real_por_familia = demanda_real_por_familia
     )
 
 
@@ -196,135 +209,119 @@ def purchases():
     periodo_atual = current_user.periodo_atual  # Período atual do grupo
     periods = list(range(13, 25))  # Períodos de 13 a 24
 
-    # Preparando dicionários de campos dinamicamente para os materiais
-    fio_algodao_fields = {period: getattr(form, f'fio_algodao_{period}') for period in periods}
-    fio_sintetico_fields = {period: getattr(form, f'fio_sintetico_{period}') for period in periods}
-    corantes_fields = {period: getattr(form, f'corantes_{period}') for period in periods}
+    # Campos para os materiais (Fio Algodão, Fio Sintético, Corantes)
+    compras_por_material = {
+        'Fio Algodao': {period: getattr(form, f'fio_algodao_{period}') for period in periods},
+        'Fio Sintetico': {period: getattr(form, f'fio_sintetico_{period}') for period in periods},
+        'Corantes': {period: getattr(form, f'corantes_{period}') for period in periods}
+    }
+    compras_real_por_material = {
+        'Fio Algodao': {period: getattr(form, f'fio_algodao_compra_real_{period}') for period in periods},
+        'Fio Sintetico': {period: getattr(form, f'fio_sintetico_compra_real_{period}') for period in periods},
+        'Corantes': {period: getattr(form, f'corantes_compra_real_{period}') for period in periods}
+    }
+    compras_emergencial_por_material = {
+        'Fio Algodao': {period: getattr(form, f'fio_algodao_compra_emergencial_{period}') for period in periods},
+        'Fio Sintetico': {period: getattr(form, f'fio_sintetico_compra_emergencial_{period}') for period in periods},
+        'Corantes': {period: getattr(form, f'corantes_compra_emergencial_{period}') for period in periods}
+    }
+
+    # Campos Estoques Inicial e Final
+    estoques_iniciais_por_material = {
+        'Fio Algodao': {period: getattr(form, f'fio_algodao_estoque_inicial_{period}', None) for period in periods},
+        'Fio Sintetico': {period: getattr(form, f'fio_sintetico_estoque_inicial_{period}', None) for period in periods},
+        'Corantes': {period: getattr(form, f'corantes_estoque_inicial_{period}', None) for period in periods}
+    }
+    estoques_finais_por_material = {
+        'Fio Algodao': {period: getattr(form, f'fio_algodao_estoque_final_{period}', None) for period in periods},
+        'Fio Sintetico': {period: getattr(form, f'fio_sintetico_estoque_final_{period}', None) for period in periods},
+        'Corantes': {period: getattr(form, f'corantes_estoque_final_{period}', None) for period in periods}
+    }
+
+    # Campo Consumo Previsto e Real
+    consumo_previsto_por_material = {
+        'Fio Algodao': {period: getattr(form, f'fio_algodao_consumo_previsto_{period}', None) for period in periods},
+        'Fio Sintetico': {period: getattr(form, f'fio_sintetico_consumo_previsto_{period}', None) for period in periods},
+        'Corantes': {period: getattr(form, f'corantes_consumo_previsto_{period}', None) for period in periods}
+    }
+    consumo_real_por_material = {
+        'Fio Algodao': {period: getattr(form, f'fio_algodao_consumo_real_{period}', None) for period in periods},
+        'Fio Sintetico': {period: getattr(form, f'fio_sintetico_consumo_real_{period}', None) for period in periods},
+        'Corantes': {period: getattr(form, f'corantes_consumo_real_{period}', None) for period in periods}
+    }
 
     if request.method == 'POST':
-        for period in periods:
-            if period >= periodo_atual:
-                # *** Fio Algodão ***
-                compra_planejada = fio_algodao_fields[period].data
-                algodao_plan = PlanoCompras.query.filter_by(
-                    periodo_numero=period, material='Fio Algodao', grupo_id=current_user.id
-                ).order_by(PlanoCompras.periodo_modificado.desc()).first()
+        for material in ['Fio Algodao', 'Fio Sintetico', 'Corantes']:
+            for period in periods:
+                if period >= periodo_atual:
+                    # Obtenha os valores de compra planejada
+                    compra_planejada = compras_por_material[material][period].data
 
-                if algodao_plan:
-                    if algodao_plan.periodo_modificado == periodo_atual:
-                        algodao_plan.compra_planejada = compra_planejada
+                    # Atualizar ou criar novo plano de compras
+                    existing_plan = PlanoCompras.query.filter_by(
+                        periodo_numero=period, material=material, grupo_id=current_user.id
+                    ).order_by(PlanoCompras.periodo_modificado.desc()).first()
+
+                    if existing_plan:
+                        if existing_plan.periodo_modificado == periodo_atual:
+                            existing_plan.compra_planejada = compra_planejada
+                        else:
+                            new_plan = PlanoCompras(
+                                periodo_numero=period,
+                                material=material,
+                                compra_planejada=compra_planejada,
+                                periodo_modificado=periodo_atual,
+                                grupo_id=current_user.id
+                            )
+                            db.session.add(new_plan)
                     else:
+                        # Criar um novo plano se não houver plano existente
                         new_plan = PlanoCompras(
                             periodo_numero=period,
-                            material='Fio Algodao',
+                            material=material,
                             compra_planejada=compra_planejada,
                             periodo_modificado=periodo_atual,
                             grupo_id=current_user.id
                         )
                         db.session.add(new_plan)
-                else:
-                    new_plan = PlanoCompras(
-                        periodo_numero=period,
-                        material='Fio Algodao',
-                        compra_planejada=compra_planejada,
-                        periodo_modificado=periodo_atual,
-                        grupo_id=current_user.id
-                    )
-                    db.session.add(new_plan)
-
-                # *** Fio Sintético ***
-                compra_planejada = fio_sintetico_fields[period].data
-                sintetico_plan = PlanoCompras.query.filter_by(
-                    periodo_numero=period, material='Fio Sintetico', grupo_id=current_user.id
-                ).order_by(PlanoCompras.periodo_modificado.desc()).first()
-
-                if sintetico_plan:
-                    if sintetico_plan.periodo_modificado == periodo_atual:
-                        sintetico_plan.compra_planejada = compra_planejada
-                    else:
-                        new_plan = PlanoCompras(
-                            periodo_numero=period,
-                            material='Fio Sintetico',
-                            compra_planejada=compra_planejada,
-                            periodo_modificado=periodo_atual,
-                            grupo_id=current_user.id
-                        )
-                        db.session.add(new_plan)
-                else:
-                    new_plan = PlanoCompras(
-                        periodo_numero=period,
-                        material='Fio Sintetico',
-                        compra_planejada=compra_planejada,
-                        periodo_modificado=periodo_atual,
-                        grupo_id=current_user.id
-                    )
-                    db.session.add(new_plan)
-
-                # *** Corantes ***
-                compra_planejada = corantes_fields[period].data
-                corantes_plan = PlanoCompras.query.filter_by(
-                    periodo_numero=period, material='Corantes', grupo_id=current_user.id
-                ).order_by(PlanoCompras.periodo_modificado.desc()).first()
-
-                if corantes_plan:
-                    if corantes_plan.periodo_modificado == periodo_atual:
-                        corantes_plan.compra_planejada = compra_planejada
-                    else:
-                        new_plan = PlanoCompras(
-                            periodo_numero=period,
-                            material='Corantes',
-                            compra_planejada=compra_planejada,
-                            periodo_modificado=periodo_atual,
-                            grupo_id=current_user.id
-                        )
-                        db.session.add(new_plan)
-                else:
-                    new_plan = PlanoCompras(
-                        periodo_numero=period,
-                        material='Corantes',
-                        compra_planejada=compra_planejada,
-                        periodo_modificado=periodo_atual,
-                        grupo_id=current_user.id
-                    )
-                    db.session.add(new_plan)
 
         db.session.commit()
         flash('Plano de compras salvo com sucesso!', 'success')
         return redirect(url_for('dashboard'))
 
     elif request.method == 'GET':
-        for period in periods:
-            # *** Fio Algodão ***
-            algodao_plan = PlanoCompras.query.filter_by(
-                periodo_numero=period, material='Fio Algodao', grupo_id=current_user.id
-            ).filter(PlanoCompras.periodo_modificado <= periodo_atual).order_by(PlanoCompras.periodo_modificado.desc()).first()
-            if algodao_plan:
-                fio_algodao_fields[period].data = algodao_plan.compra_planejada
+        # Preencher o formulário com os dados do banco de dados
+        for material in ['Fio Algodao', 'Fio Sintetico', 'Corantes']:
+            for period in periods:
+                plan = PlanoCompras.query.filter_by(
+                    periodo_numero=period, material=material, grupo_id=current_user.id
+                ).filter(PlanoCompras.periodo_modificado <= periodo_atual).order_by(PlanoCompras.periodo_modificado.desc()).first()
 
-            # *** Fio Sintético ***
-            sintetico_plan = PlanoCompras.query.filter_by(
-                periodo_numero=period, material='Fio Sintetico', grupo_id=current_user.id
-            ).filter(PlanoCompras.periodo_modificado <= periodo_atual).order_by(PlanoCompras.periodo_modificado.desc()).first()
-            if sintetico_plan:
-                fio_sintetico_fields[period].data = sintetico_plan.compra_planejada
+                if plan:
+                    # Preencher os campos de compras planejadas e estoques
+                    compras_por_material[material][period].data = plan.compra_planejada
+                    compras_real_por_material[material][period].data = plan.compra_real
+                    compras_emergencial_por_material[material][period].data = plan.compra_emergencial
+                    consumo_previsto_por_material[material][period].data = plan.consumo_previsto
+                    consumo_real_por_material[material][period].data = plan.consumo_real
+                    estoques_iniciais_por_material[material][period].data = plan.estoques_iniciais
+                    estoques_finais_por_material[material][period].data = plan.estoques_finais
 
-            # *** Corantes ***
-            corantes_plan = PlanoCompras.query.filter_by(
-                periodo_numero=period, material='Corantes', grupo_id=current_user.id
-            ).filter(PlanoCompras.periodo_modificado <= periodo_atual).order_by(PlanoCompras.periodo_modificado.desc()).first()
-            if corantes_plan:
-                corantes_fields[period].data = corantes_plan.compra_planejada
 
     return render_template(
         'purchases.html',
         form=form,
         periods=periods,
         periodo_atual=periodo_atual,
-        fio_algodao_fields=fio_algodao_fields,
-        fio_sintetico_fields=fio_sintetico_fields,
-        corantes_fields=corantes_fields
-
+        compras_por_material=compras_por_material,
+        compras_real_por_material=compras_real_por_material,
+        compras_emergencial_por_material=compras_emergencial_por_material,
+        estoques_iniciais_por_material=estoques_iniciais_por_material,
+        estoques_finais_por_material=estoques_finais_por_material,
+        consumo_previsto_por_material=consumo_previsto_por_material,
+        consumo_real_por_material=consumo_real_por_material
     )
+
 
 
 
