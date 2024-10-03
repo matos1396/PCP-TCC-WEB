@@ -14,6 +14,7 @@ texto.txt
 teste.py
 dados_excel.xlsx
 pyproject.toml
+dados.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
