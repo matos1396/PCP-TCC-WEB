@@ -260,7 +260,25 @@ with app.app_context():
         preco_aquisicao_jet3=20000.00,
         preco_venda_jet3=2000.00,
         preco_aquisicao_rama=120000.00,
-        preco_venda_rama=12000.00
+        preco_venda_rama=12000.00,
+
+        # Preço vendas e Custos relacionado as familias
+        preco_venda_colmeia=5.50,
+        preco_venda_piquet=6.5,
+        preco_venda_maxim=7.5,
+
+        custo_venda_perdida_colmeia=30.00,
+        custo_venda_perdida_piquet=40.00,
+        custo_venda_perdida_maxim=45.00,
+
+        custo_unitario_colmeia=4.50,
+        custo_unitario_piquet=5.00,
+        custo_unitario_maxim=5.50,
+
+        # Custos unitários de materiais
+        custo_unitario_corantes=20.00,
+        custo_unitario_fio_algodao=1.00,
+        custo_unitario_fio_sintetico=1.50
     )
     db.session.add(custos_iniciais)
     db.session.commit()

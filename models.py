@@ -231,3 +231,20 @@ class Custos(db.Model):
     preco_aquisicao_rama = db.Column(db.Float, nullable=False)
     preco_venda_rama = db.Column(db.Float, nullable=False)
 
+    # Preços de venda e custos de venda perdida para as famílias
+    preco_venda_colmeia = db.Column(db.Float, nullable=False)
+    preco_venda_piquet = db.Column(db.Float, nullable=False)
+    preco_venda_maxim = db.Column(db.Float, nullable=False)
+
+    custo_venda_perdida_colmeia = db.Column(db.Float, nullable=False)
+    custo_venda_perdida_piquet = db.Column(db.Float, nullable=False)
+    custo_venda_perdida_maxim = db.Column(db.Float, nullable=False)
+
+    custo_unitario_colmeia = db.Column(db.Float, nullable=False)
+    custo_unitario_piquet = db.Column(db.Float, nullable=False)
+    custo_unitario_maxim = db.Column(db.Float, nullable=False)
+
+    # Custos unitários para materiais
+    custo_unitario_corantes = db.Column(db.Float, nullable=False)
+    custo_unitario_fio_algodao = db.Column(db.Float, nullable=False)
+    custo_unitario_fio_sintetico = db.Column(db.Float, nullable=False)
