@@ -43,15 +43,15 @@ def criar_planos_iniciais_para_grupo(grupo):
     estilo = grupo.estilo_demanda.nome_estilo
 
     # Criar planos de produção iniciais
-    for period in periods:
-        for familia, estoque in estoques_iniciais_producao[estilo].items():
+    #for period in periods:
+    for familia, estoque in estoques_iniciais_producao[estilo].items():
 
-            existing_plan = PlanoProducao.query.filter_by(
-                            periodo_numero=period, familia=familia, grupo_id=grupo.id
-                            ).order_by(PlanoProducao.periodo_numero.desc()).first()
+        existing_plan = PlanoProducao.query.filter_by(
+                        periodo_numero=grupo.periodo_atual+1, familia=familia, grupo_id=grupo.id
+                        ).order_by(PlanoProducao.periodo_numero.desc()).first()
 
-            if existing_plan:
-                existing_plan.estoques_iniciais = estoque
+        if existing_plan:
+            existing_plan.estoques_iniciais = estoque
 
 
     db.session.commit()

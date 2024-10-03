@@ -134,7 +134,7 @@ def production():
                     vendas_perdidas = vendas_perdidas_por_familia[familia][period].data
                     vendas = vendas_por_familia[familia][period].data
 
-                    print("#######################",period, periodo_atual, estoque_inicial)
+                    # print("#######################",period, periodo_atual, estoque_inicial)
 
                     # Atualizar ou criar novo plano de produção
                     existing_plan = PlanoProducao.query.filter_by(
