@@ -1,0 +1,178 @@
+<!-- templates/purga_tinturaria.html -->
+{% extends 'base.html' %}
+{% block title %}Plano de Purga e Tinturaria - PCP Game{% endblock %}
+{% block content %}
+<h2 class="mb-4">Plano de Purga e Tinturaria</h2>
+<p>Você está atualmente no período {{ periodo_atual }}.</p>
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <!-- Tabela Capacidade Necessária -->
+    <h4>Capacidade Necessária</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Capacidade Disponível</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_disponivel_1_{{ period }}" 
+                           value="{{ capacidade_disponivel['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Capacidade Necessária</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_necessaria_{{ period }}" 
+                           value="{{ capacidade_necessaria['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Colméia</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="colmeia_horas_{{ period }}" 
+                           value="{{ colmeia_horas['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Piquet</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="piquet_horas_{{ period }}" 
+                           value="{{ piquet_horas['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Maxim</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="maxim_horas_{{ period }}" 
+                           value="{{ maxim_horas['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Setup</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="setup_{{ period }}" 
+                           value="{{ setup['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Produtividade</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="produtividade_{{ period }}" 
+                           value="{{ produtividade['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Tabela Capacidade Disponível -->
+    <h4>Capacidade Disponível</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Capacidade Disponível</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_disponivel_2_{{ period }}" 
+                           value="{{ capacidade_disponivel['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Capacidade Instalada Jet 1</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_instalada_jet1_{{ period }}" 
+                           value="{{ capacidade_instalada_jet1['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Capacidade Instalada Jet 2</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_instalada_jet2_{{ period }}" 
+                           value="{{ capacidade_instalada_jet2['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Capacidade Instalada Jet 3</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_instalada_jet3_{{ period }}" 
+                           value="{{ capacidade_instalada_jet3['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Número de Turnos</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <!-- Campo somente leitura para períodos passados -->
+                    <input type="number" class="form-control numero-turnos" 
+                           id="numero_turnos_{{ period }}" 
+                           value="{{ capacidade_disponivel['Jet'][period].data }}" readonly>
+                    {% else %}
+                        {{ capacidade_disponivel['Jet'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Capacidade Terceirizada</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_terceirizada_{{ period }}" 
+                           value="{{ capacidade_teceirizada['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Botão para submeter o formulário -->
+    <button type="submit" class="btn btn-primary">Salvar Plano de Jet</button>
+</form>
+{% endblock %}

@@ -2,8 +2,17 @@
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
-from forms import LoginForm, ProductionForm, PurchaseForm
-from models import Grupo, PlanoProducao, PlanoCompras, PrevisaoDemanda, db
+from forms import LoginForm, ProductionForm, PurchaseForm, TecelagemForm, PurgaTinturariaForm, FixacaoAcabamentoForm
+from models import (Grupo,
+                    PlanoProducao,
+                    PlanoCompras,
+                    PrevisaoDemanda,
+                    CapacidadeJets,
+                    CapacidadeRamas,
+                    CapacidadeTeares,
+                    TaxaProducao,
+                    Custos,
+                    db)
 
 
 app = Flask(__name__)
@@ -112,15 +121,18 @@ def production():
 
     if request.method == 'POST':
         for familia in ['Colmeia', 'Piquet', 'Maxim']:
-            estoque_anterior = None  # Estoque inicial para o primeiro período será recuperado do banco de dados
 
             for period in periods:
                 if period >= periodo_atual:
                     # Obtenha os valores de produção planejada e demanda prevista para o período atual
-                    producao_planejada = producao_planejada_por_familia[familia][period].data
                     demanda_prevista = previsoes_por_familia[familia][period].data
+                    demanda_real = demanda_real_por_familia[familia][period].data
+                    producao_planejada = producao_planejada_por_familia[familia][period].data
+                    producao_real = producao_real_por_familia[familia][period].data
                     estoque_inicial = estoques_iniciais_por_familia[familia][period].data
                     estoque_final = estoques_finais_por_familia[familia][period].data
+                    vendas_perdidas = vendas_perdidas_por_familia[familia][period].data
+                    vendas = vendas_por_familia[familia][period].data
 
                     print("#######################",period, periodo_atual, estoque_inicial)
 
@@ -133,20 +145,31 @@ def production():
                         #print("SIM", familia,demanda_prevista)
                         if existing_plan.periodo_modificado == periodo_atual:
                             # Atualizar o plano existente
-                            existing_plan.producao_planejada = producao_planejada
                             existing_plan.demanda_prevista = demanda_prevista
+                            existing_plan.demanda_real = demanda_real
+                            existing_plan.producao_planejada = producao_planejada
+                            existing_plan.producao_real = producao_real
                             existing_plan.estoques_iniciais = estoque_inicial
                             existing_plan.estoques_finais = estoque_final
+                            existing_plan.vendas_perdidas = vendas_perdidas
+                            existing_plan.vendas = vendas
                         else:
                             # Criar um novo plano
                             new_plan = PlanoProducao(
+                                grupo_id=current_user.id,
                                 periodo_numero=period,
-                                familia=familia,
-                                producao_planejada=producao_planejada,
-                                demanda_prevista=demanda_prevista,
-                                estoques_iniciais=estoque_inicial,
                                 periodo_modificado=periodo_atual,
-                                grupo_id=current_user.id
+                                familia=familia,
+
+                                demanda_prevista=demanda_prevista,
+                                demanda_real=demanda_real,
+                                producao_planejada=producao_planejada,
+                                producao_real=producao_real,
+                                estoques_iniciais=estoque_inicial,
+                                estoques_final=estoque_final,
+                                vendas_perdidas=vendas_perdidas,
+                                vendas=vendas
+
                             )
                             db.session.add(new_plan)
                     else:
@@ -322,6 +345,247 @@ def purchases():
         consumo_real_por_material=consumo_real_por_material
     )
 
+
+@app.route('/tecelagem', methods=['GET', 'POST'])
+@login_required
+def tecelagem():
+
+    form = TecelagemForm()
+
+    periods = range(13, 25)
+    periodo_atual = current_user.periodo_atual
+
+    numero_turnos =          {'Teares': {period: getattr(form, f'numero_turnos_{period}') for period in periods}}
+    capacidade_disponivel =  {'Teares': {period: getattr(form, f'capacidade_disponivel_{period}') for period in periods}}
+    capacidade_necessaria =  {'Teares': {period: getattr(form, f'capacidade_necessaria_{period}') for period in periods}}
+    colmeia_horas =          {'Teares': {period: getattr(form, f'colmeia_horas_{period}') for period in periods}}
+    piquet_horas =           {'Teares': {period: getattr(form, f'piquet_horas_{period}') for period in periods}}
+    maxim_horas =            {'Teares': {period: getattr(form, f'maxim_horas_{period}') for period in periods}}
+    setup =                  {'Teares': {period: getattr(form, f'setup_{period}') for period in periods}}
+    produtividade =          {'Teares': {period: getattr(form, f'produtividade_{period}') for period in periods}}
+    capacidade_instalada =   {'Teares': {period: getattr(form, f'capacidade_instalada_{period}') for period in periods}}
+    capacidade_teceirizada = {'Teares': {period: getattr(form, f'capacidade_teceirizada_{period}') for period in periods}}
+
+    if request.method == 'POST':
+        maquina = "Teares"
+        for period in periods:
+            if period >= periodo_atual:
+                # Obtenha os valores de produção planejada e demanda prevista para o período atual
+                numero_turnos = numero_turnos[maquina][period].data
+                capacidade_disponivel = capacidade_disponivel[maquina][period].data
+                capacidade_necessaria = capacidade_necessaria[maquina][period].data
+                colmeia_horas = colmeia_horas[maquina][period].data
+                piquet_horas = piquet_horas[maquina][period].data
+                maxim_horas = maxim_horas[maquina][period].data
+                setup = setup[maquina][period].data
+                produtividade = produtividade[maquina][period].data
+                capacidade_instalada = capacidade_instalada[maquina][period].data
+                capacidade_teceirizada = capacidade_teceirizada[maquina][period].data
+
+        db.session.commit()
+        flash('Plano de Tecelagem salvo com sucesso!', 'success')
+        return redirect(url_for('dashboard'))
+
+
+    elif request.method == 'GET':
+        maquina = "Teares"
+        for period in periods:
+            capacidade_teares = CapacidadeTeares.query.filter_by(
+                periodo_numero=period, grupo_id=current_user.id
+            ).filter(CapacidadeTeares.periodo_modificado <= periodo_atual).order_by(CapacidadeTeares.periodo_modificado.desc()).first()
+
+            if capacidade_teares:
+                numero_turnos = [maquina][period].data = capacidade_teares.numero_turnos
+                capacidade_disponivel = [maquina][period].data = capacidade_teares.capacidade_disponivel
+                capacidade_necessaria = [maquina][period].data = capacidade_teares.capacidade_necessaria
+                colmeia_horas = [maquina][period].data = capacidade_teares.colmeia_horas
+                piquet_horas = [maquina][period].data = capacidade_teares.piquet_horas
+                maxim_horas = [maquina][period].data = capacidade_teares.maxim_horas
+                setup = [maquina][period].data = capacidade_teares.setup
+                produtividade = [maquina][period].data = capacidade_teares.produtividade
+                capacidade_instalada = [maquina][period].data = capacidade_teares.capacidade_instalada
+                capacidade_teceirizada = [maquina][period].data = capacidade_teares.capacidade_teceirizada
+
+
+    return render_template('tecelagem.html',
+                           form=form,
+                           periods=periods,
+                           periodo_atual=periodo_atual,
+                           numero_turnos = numero_turnos,
+                           capacidade_disponivel = capacidade_disponivel,
+                           capacidade_necessaria = capacidade_necessaria,
+                           colmeia_horas = colmeia_horas,
+                           piquet_horas = piquet_horas,
+                           maxim_horas = maxim_horas,
+                           setup = setup,
+                           produtividade = produtividade,
+                           capacidade_instalada = capacidade_instalada,
+                           capacidade_teceirizada = capacidade_teceirizada)
+
+
+# Purga e Tinturaria (Jets)
+@app.route('/purga_tinturaria', methods=['GET', 'POST'])
+@login_required
+def purga_tinturaria():
+
+    form = PurgaTinturariaForm()
+
+    periods = range(13, 25)
+    periodo_atual = current_user.periodo_atual
+
+    numero_turnos =             {'Jet': {period: getattr(form, f'numero_turnos_{period}') for period in periods}}
+    capacidade_disponivel =     {'Jet': {period: getattr(form, f'capacidade_disponivel_{period}') for period in periods}}
+    capacidade_necessaria =     {'Jet': {period: getattr(form, f'capacidade_necessaria_{period}') for period in periods}}
+    colmeia_horas =             {'Jet': {period: getattr(form, f'colmeia_horas_{period}') for period in periods}}
+    piquet_horas =              {'Jet': {period: getattr(form, f'piquet_horas_{period}') for period in periods}}
+    maxim_horas =               {'Jet': {period: getattr(form, f'maxim_horas_{period}') for period in periods}}
+    setup =                     {'Jet': {period: getattr(form, f'setup_{period}') for period in periods}}
+    produtividade =             {'Jet': {period: getattr(form, f'produtividade_{period}') for period in periods}}
+    capacidade_instalada_jet1 = {'Jet': {period: getattr(form, f'capacidade_instalada_jet1_{period}') for period in periods}}
+    capacidade_instalada_jet2 = {'Jet': {period: getattr(form, f'capacidade_instalada_jet2_{period}') for period in periods}}
+    capacidade_instalada_jet3 = {'Jet': {period: getattr(form, f'capacidade_instalada_jet3_{period}') for period in periods}}
+    capacidade_teceirizada =    {'Jet': {period: getattr(form, f'capacidade_teceirizada_{period}') for period in periods}}
+
+    if request.method == 'POST':
+        maquina = "Jet"
+        for period in periods:
+            if period >= periodo_atual:
+                # Obtenha os valores de produção planejada e demanda prevista para o período atual
+                numero_turnos = numero_turnos[maquina][period].data
+                capacidade_disponivel = capacidade_disponivel[maquina][period].data
+                capacidade_necessaria = capacidade_necessaria[maquina][period].data
+                colmeia_horas = colmeia_horas[maquina][period].data
+                piquet_horas = piquet_horas[maquina][period].data
+                maxim_horas = maxim_horas[maquina][period].data
+                setup = setup[maquina][period].data
+                produtividade = produtividade[maquina][period].data
+                capacidade_instalada_jet1 = capacidade_instalada_jet1[maquina][period].data
+                capacidade_instalada_jet2 = capacidade_instalada_jet2[maquina][period].data
+                capacidade_instalada_jet3 = capacidade_instalada_jet3[maquina][period].data
+                capacidade_teceirizada = capacidade_teceirizada[maquina][period].data
+
+        db.session.commit()
+        flash('Plano de Purga/Tinturaria salvo com sucesso!', 'success')
+        return redirect(url_for('dashboard'))
+
+
+    elif request.method == 'GET':
+        maquina = "Jet"
+        for period in periods:
+            capacidade_jets = CapacidadeJets.query.filter_by(
+                periodo_numero=period, grupo_id=current_user.id
+            ).filter(CapacidadeJets.periodo_modificado <= periodo_atual).order_by(CapacidadeJets.periodo_modificado.desc()).first()
+
+            if capacidade_jets:
+                numero_turnos = numero_turnos[maquina][period].data = capacidade_jets.numero_turnos
+                capacidade_disponivel = capacidade_disponivel[maquina][period].data = capacidade_jets.capacidade_disponivel
+                capacidade_necessaria = capacidade_necessaria[maquina][period].data = capacidade_jets.capacidade_necessaria
+                colmeia_horas = colmeia_horas[maquina][period].data = capacidade_jets.colmeia_horas
+                piquet_horas = piquet_horas[maquina][period].data = capacidade_jets.piquet_horas
+                maxim_horas = maxim_horas[maquina][period].data = capacidade_jets.maxim_horas
+                setup = setup[maquina][period].data = capacidade_jets.setup
+                produtividade = produtividade[maquina][period].data = capacidade_jets.produtividade
+                capacidade_instalada_jet1 = [maquina][period].data = capacidade_jets.capacidade_instalada_tipo1
+                capacidade_instalada_jet2 = [maquina][period].data = capacidade_jets.capacidade_instalada_tipo2
+                capacidade_instalada_jet3 = [maquina][period].data = capacidade_jets.capacidade_instalada_tipo3
+                capacidade_teceirizada = capacidade_teceirizada[maquina][period].data = capacidade_jets.capacidade_teceirizada
+
+
+    return render_template('purga_tinturaria.html',
+                           form=form,
+                           periods=periods,
+                           periodo_atual=periodo_atual,
+                           numero_turnos = numero_turnos,
+                           capacidade_disponivel = capacidade_disponivel,
+                           capacidade_necessaria = capacidade_necessaria,
+                           colmeia_horas = colmeia_horas,
+                           piquet_horas = piquet_horas,
+                           maxim_horas = maxim_horas,
+                           setup = setup,
+                           produtividade = produtividade,
+                           capacidade_instalada_jet1 = capacidade_instalada_jet1,
+                           capacidade_instalada_jet2 = capacidade_instalada_jet2,
+                           capacidade_instalada_jet3 = capacidade_instalada_jet3,
+                           capacidade_teceirizada = capacidade_teceirizada)
+
+
+
+# Fixação e Acabamento (Ramas)
+@app.route('/fixacao_acabamento', methods=['GET', 'POST'])
+@login_required
+def fixacao_acabamento():
+
+    form = FixacaoAcabamentoForm()
+
+    periods = range(13, 25)
+    periodo_atual = current_user.periodo_atual
+
+    numero_turnos =          {'Ramas': {period: getattr(form, f'numero_turnos_{period}') for period in periods}}
+    capacidade_disponivel =  {'Ramas': {period: getattr(form, f'capacidade_disponivel_{period}') for period in periods}}
+    capacidade_necessaria =  {'Ramas': {period: getattr(form, f'capacidade_necessaria_{period}') for period in periods}}
+    colmeia_horas =          {'Ramas': {period: getattr(form, f'colmeia_horas_{period}') for period in periods}}
+    piquet_horas =           {'Ramas': {period: getattr(form, f'piquet_horas_{period}') for period in periods}}
+    maxim_horas =            {'Ramas': {period: getattr(form, f'maxim_horas_{period}') for period in periods}}
+    setup =                  {'Ramas': {period: getattr(form, f'setup_{period}') for period in periods}}
+    produtividade =          {'Ramas': {period: getattr(form, f'produtividade_{period}') for period in periods}}
+    capacidade_instalada =   {'Ramas': {period: getattr(form, f'capacidade_instalada_{period}') for period in periods}}
+    capacidade_teceirizada = {'Ramas': {period: getattr(form, f'capacidade_teceirizada_{period}') for period in periods}}
+
+    if request.method == 'POST':
+        maquina = "Ramas"
+        for period in periods:
+            if period >= periodo_atual:
+                # Obtenha os valores de produção planejada e demanda prevista para o período atual
+                numero_turnos = numero_turnos[maquina][period].data
+                capacidade_disponivel = capacidade_disponivel[maquina][period].data
+                capacidade_necessaria = capacidade_necessaria[maquina][period].data
+                colmeia_horas = colmeia_horas[maquina][period].data
+                piquet_horas = piquet_horas[maquina][period].data
+                maxim_horas = maxim_horas[maquina][period].data
+                setup = setup[maquina][period].data
+                produtividade = produtividade[maquina][period].data
+                capacidade_instalada = capacidade_instalada[maquina][period].data
+                capacidade_teceirizada = capacidade_teceirizada[maquina][period].data
+
+        db.session.commit()
+        flash('Plano de Fixação e Acabamento salvo com sucesso!', 'success')
+        return redirect(url_for('dashboard'))
+
+
+    elif request.method == 'GET':
+        maquina = "Ramas"
+        for period in periods:
+            capacidade_ramas = CapacidadeRamas.query.filter_by(
+                periodo_numero=period, grupo_id=current_user.id
+            ).filter(CapacidadeRamas.periodo_modificado <= periodo_atual).order_by(CapacidadeRamas.periodo_modificado.desc()).first()
+
+            if capacidade_ramas:
+                numero_turnos = [maquina][period].data = capacidade_ramas.numero_turnos
+                capacidade_disponivel = [maquina][period].data = capacidade_ramas.capacidade_disponivel
+                capacidade_necessaria = [maquina][period].data = capacidade_ramas.capacidade_necessaria
+                colmeia_horas = [maquina][period].data = capacidade_ramas.colmeia_horas
+                piquet_horas = [maquina][period].data = capacidade_ramas.piquet_horas
+                maxim_horas = [maquina][period].data = capacidade_ramas.maxim_horas
+                setup = [maquina][period].data = capacidade_ramas.setup
+                produtividade = [maquina][period].data = capacidade_ramas.produtividade
+                capacidade_instalada = [maquina][period].data = capacidade_ramas.capacidade_instalada
+                capacidade_teceirizada = [maquina][period].data = capacidade_ramas.capacidade_teceirizada
+
+
+    return render_template('fixacao_acabamento.html',
+                           form=form,
+                           periods=periods,
+                           periodo_atual=periodo_atual,
+                           numero_turnos = numero_turnos,
+                           capacidade_disponivel = capacidade_disponivel,
+                           capacidade_necessaria = capacidade_necessaria,
+                           colmeia_horas = colmeia_horas,
+                           piquet_horas = piquet_horas,
+                           maxim_horas = maxim_horas,
+                           setup = setup,
+                           produtividade = produtividade,
+                           capacidade_instalada = capacidade_instalada,
+                           capacidade_teceirizada = capacidade_teceirizada)
 
 
 

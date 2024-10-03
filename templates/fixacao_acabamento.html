@@ -1,0 +1,158 @@
+<!-- templates/tecelagem.html -->
+{% extends 'base.html' %}
+{% block title %}Plano de Fixação e Acabamento - PCP Game{% endblock %}
+{% block content %}
+<h2 class="mb-4">Plano de Fixação e Acabamento</h2>
+<p>Você está atualmente no período {{ periodo_atual }}.</p>
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    <!-- Tabela Capacidade Necessária -->
+    <h4>Capacidade Necessária</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Capacidade Disponível</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_disponivel_1_{{ period }}" 
+                           value="{{ capacidade_disponivel['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Capacidade Necessária</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_necessaria_{{ period }}" 
+                           value="{{ capacidade_necessaria['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Colméia</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="colmeia_horas_{{ period }}" 
+                           value="{{ colmeia_horas['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Piquet</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="piquet_horas_{{ period }}" 
+                           value="{{ piquet_horas['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Maxim</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="maxim_horas_{{ period }}" 
+                           value="{{ maxim_horas['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Setup</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="setup_{{ period }}" 
+                           value="{{ setup['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Produtividade</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="produtividade_{{ period }}" 
+                           value="{{ produtividade['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Tabela Capacidade Disponível -->
+    <h4>Capacidade Disponível</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Capacidade Disponível</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_disponivel_2_{{ period }}" 
+                           value="{{ capacidade_disponivel['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Capacidade Instalada</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_instalada_{{ period }}" 
+                           value="{{ capacidade_instalada['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Número de Turnos</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <!-- Campo somente leitura para períodos passados -->
+                    <input type="number" class="form-control numero-turnos" 
+                           id="numero_turnos_{{ period }}" 
+                           value="{{ capacidade_disponivel['Ramas'][period].data }}" readonly>
+                    {% else %}
+                        {{ capacidade_disponivel['Ramas'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <th>Capacidade Terceirizada</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="capacidade_terceirizada_{{ period }}" 
+                           value="{{ capacidade_teceirizada['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Botão para submeter o formulário -->
+    <button type="submit" class="btn btn-primary">Salvar Plano de Ramas</button>
+</form>
+{% endblock %}

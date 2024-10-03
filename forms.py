@@ -106,3 +106,79 @@ class PurchaseForm(FlaskForm):
 
     # Botão para Submeter o Formulário
     submit = SubmitField('Salvar Plano de Compras')
+
+
+class TecelagemForm(FlaskForm):
+    periods = range(13, 25)
+
+    # Campos Tabelas Capacidade Necessária e Disponível
+    for period in periods:
+        # Tabela Capacidade Necessária
+        # (Capacidade Disponível comum as duas tabelas)
+        vars()['capacidade_disponivel_' + str(period)] = IntegerField(f'Capacidade Disponível (Período {period})', validators=[Optional()])
+        vars()['capacidade_necessaria_' + str(period)] = IntegerField(f'Capacidade Necessária (Período {period})', validators=[Optional()])
+        vars()['colmeia_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Colmeia (Período {period})', validators=[Optional()])
+        vars()['piquet_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Piquet (Período {period})', validators=[Optional()])
+        vars()['maxim_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Maxim (Período {period})', validators=[Optional()])
+        vars()['setup_' + str(period)] = IntegerField(f'Setup (Período {period})', validators=[Optional()])
+        vars()['produtividade_' + str(period)] = IntegerField(f'Produtividade (Período {period})', validators=[Optional()])
+
+        # Tabela Capacidade Disponível
+        vars()['numero_turnos_' + str(period)] = IntegerField(f'Número de Turnos (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_' + str(period)] = IntegerField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
+        vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
+
+    
+    # Botão para Submeter o Formulário
+    submit = SubmitField('Salvar Plano de Tecelagem')
+
+class PurgaTinturariaForm(FlaskForm):
+    periods = range(13, 25)
+
+    # Campos Tabelas Capacidade Necessária e Disponível
+    for period in periods:
+        # Tabela Capacidade Necessária
+        # (Capacidade Disponível comum as duas tabelas)
+        vars()['capacidade_disponivel_' + str(period)] = IntegerField(f'Capacidade Disponível (Período {period})', validators=[Optional()])
+        vars()['capacidade_necessaria_' + str(period)] = IntegerField(f'Capacidade Necessária (Período {period})', validators=[Optional()])
+        vars()['colmeia_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Colmeia (Período {period})', validators=[Optional()])
+        vars()['piquet_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Piquet (Período {period})', validators=[Optional()])
+        vars()['maxim_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Maxim (Período {period})', validators=[Optional()])
+        vars()['setup_' + str(period)] = IntegerField(f'Setup (Período {period})', validators=[Optional()])
+        vars()['produtividade_' + str(period)] = IntegerField(f'Produtividade (Período {period})', validators=[Optional()])
+
+        # Tabela Capacidade Disponível
+        vars()['numero_turnos_' + str(period)] = IntegerField(f'Número de Turnos (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_jet1_' + str(period)] = IntegerField(f'Capacidade Instalada Jet1 (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_jet2_' + str(period)] = IntegerField(f'Capacidade Instalada Jet2 (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_jet3_' + str(period)] = IntegerField(f'Capacidade Instalada Jet3 (Período {period})', validators=[Optional()])
+        vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
+
+    
+    # Botão para Submeter o Formulário
+    submit = SubmitField('Salvar Plano de Purga e Tinturaria')
+
+
+class FixacaoAcabamentoForm(FlaskForm):
+    periods = range(13, 25)
+
+    # Campos Tabelas Capacidade Necessária e Disponível
+    for period in periods:
+        # Tabela Capacidade Necessária
+        # (Capacidade Disponível comum as duas tabelas)
+        vars()['capacidade_disponivel_' + str(period)] = IntegerField(f'Capacidade Disponível (Período {period})', validators=[Optional()])
+        vars()['capacidade_necessaria_' + str(period)] = IntegerField(f'Capacidade Necessária (Período {period})', validators=[Optional()])
+        vars()['colmeia_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Colmeia (Período {period})', validators=[Optional()])
+        vars()['piquet_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Piquet (Período {period})', validators=[Optional()])
+        vars()['maxim_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Maxim (Período {period})', validators=[Optional()])
+        vars()['setup_' + str(period)] = IntegerField(f'Setup (Período {period})', validators=[Optional()])
+        vars()['produtividade_' + str(period)] = IntegerField(f'Produtividade (Período {period})', validators=[Optional()])
+
+        # Tabela Capacidade Disponível
+        vars()['numero_turnos_' + str(period)] = IntegerField(f'Número de Turnos (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_' + str(period)] = IntegerField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
+        vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
+
+
+    # Botão para Submeter o Formulário
+    submit = SubmitField('Salvar Plano de Fixação e Acabamento')
