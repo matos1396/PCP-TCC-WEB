@@ -1,5 +1,5 @@
 from app import db, app
-from models import Grupo, EstiloDemanda, PrevisaoDemanda, PlanoCompras, PlanoProducao
+from models import Grupo, EstiloDemanda, PrevisaoDemanda, PlanoCompras, PlanoProducao, TaxaProducao
 
 periods = list(range(13, 25))
 
@@ -16,6 +16,27 @@ estoques_iniciais_compras = {
     'Alta': {'Fio Algodao': 1500, 'Fio Sintetico': 1200, 'Corantes': 900}
 }
 
+taxas_producao = [
+    {'familia': 'Colmeia', 'processo': 'Malharia', 'tipo_equipamento': 'Teares', 'taxa': 0.090},
+    {'familia': 'Colmeia', 'processo': 'Purga', 'tipo_equipamento': 'Jets', 'taxa': 1.0},
+    {'familia': 'Colmeia', 'processo': 'Fixação', 'tipo_equipamento': 'Ramas', 'taxa': 0.002},
+    {'familia': 'Colmeia', 'processo': 'Tinturaria', 'tipo_equipamento': 'Jets', 'taxa': 3.000},
+    {'familia': 'Colmeia', 'processo': 'Acabamento', 'tipo_equipamento': 'Ramas', 'taxa': 0.003},
+    
+    {'familia': 'Piquet', 'processo': 'Malharia', 'tipo_equipamento': 'Teares', 'taxa': 0.100},
+    {'familia': 'Piquet', 'processo': 'Purga', 'tipo_equipamento': 'Jets', 'taxa': 1.0},
+    {'familia': 'Piquet', 'processo': 'Fixação', 'tipo_equipamento': 'Ramas', 'taxa': 0.002},
+    {'familia': 'Piquet', 'processo': 'Tinturaria', 'tipo_equipamento': 'Jets', 'taxa': 3.500},
+    {'familia': 'Piquet', 'processo': 'Acabamento', 'tipo_equipamento': 'Ramas', 'taxa': 0.003},
+
+    {'familia': 'Maxim', 'processo': 'Malharia', 'tipo_equipamento': 'Teares', 'taxa': 0.110},
+    {'familia': 'Maxim', 'processo': 'Purga', 'tipo_equipamento': 'Jets', 'taxa': 1.500},
+    {'familia': 'Maxim', 'processo': 'Fixação', 'tipo_equipamento': 'Ramas', 'taxa': 0.003},
+    {'familia': 'Maxim', 'processo': 'Tinturaria', 'tipo_equipamento': 'Jets', 'taxa': 4.000},
+    {'familia': 'Maxim', 'processo': 'Acabamento', 'tipo_equipamento': 'Ramas', 'taxa': 0.004},
+]
+
+
 
 def criar_planos_iniciais_para_grupo(grupo):
     # Obter o estilo de demanda do grupo
@@ -30,25 +51,10 @@ def criar_planos_iniciais_para_grupo(grupo):
                             ).order_by(PlanoProducao.periodo_numero.desc()).first()
 
             if existing_plan:
-                print(familia, estoque)
-            #existing_plan.grupo_id=grupo.id,
-            #existing_plan.periodo_numero=grupo.periodo_atual,  # Período atual
-            #existing_plan.periodo_modificado=grupo.periodo_atual,
-            #existing_plan.familia=familia,
                 existing_plan.estoques_iniciais = estoque
-            #existing_plan.producao_planejada=0  # Inicialmente vazio
-                
-    db.session.commit()
 
-            # plano_producao = PlanoProducao(
-            #     grupo_id=grupo.id,
-            #     periodo_numero=grupo.periodo_atual,  # Período atual
-            #     periodo_modificado=grupo.periodo_atual,
-            #     familia=familia,
-            #     estoques_iniciais=estoque,
-            #     producao_planejada=0  # Inicialmente vazio
-            # )
-            # db.session.add(plano_producao)
+
+    db.session.commit()
 
     # Criar planos de compras iniciais
     for material, estoque in estoques_iniciais_compras[estilo].items():
@@ -62,8 +68,7 @@ def criar_planos_iniciais_para_grupo(grupo):
         )
         db.session.add(plano_compras)
 
-    
-    
+
 
     # Salvar as mudanças no banco de dados
     db.session.commit()
@@ -73,14 +78,26 @@ def criar_planos_iniciais_para_grupo(grupo):
 with app.app_context():
     db.create_all()
 
-    demanda_media = EstiloDemanda(nome_estilo='Média')
+    # Estilos Demandas
+    demanda_media = EstiloDemanda(nome_estilo='Média',
+                                  quantidade_teares = 5,
+                                  quantidade_ramas = 1,
+                                  quantidade_jets_tipo1 = 0,
+                                  quantidade_jets_tipo2 = 3,
+                                  quantidade_jets_tipo3 = 0)
     db.session.add(demanda_media)
     db.session.commit()
 
     # Grupo teste
+    estilo_demanda = EstiloDemanda.query.get(demanda_media.id)
     user = Grupo(grupo_nome='Grupo Teste', 
-                 password='123',
-                 estilo_demanda_id = demanda_media.id)
+                password='123',
+                estilo_demanda_id = demanda_media.id,
+                quantidade_teares=estilo_demanda.quantidade_teares,
+                quantidade_ramas=estilo_demanda.quantidade_ramas,
+                quantidade_jets_tipo1=estilo_demanda.quantidade_jets_tipo1,
+                quantidade_jets_tipo2=estilo_demanda.quantidade_jets_tipo2,
+                quantidade_jets_tipo3=estilo_demanda.quantidade_jets_tipo3)
     db.session.add(user)
     db.session.commit()
 
@@ -207,6 +224,18 @@ with app.app_context():
             grupo_id=user.id,
             producao_planejada=0  # Inicialmente vazio
         ))
+
+
+    for taxa in taxas_producao:
+        nova_taxa = TaxaProducao(
+            familia=taxa['familia'],
+            processo=taxa['processo'],
+            tipo_equipamento=taxa['tipo_equipamento'],
+            taxa=taxa['taxa']
+        )
+        db.session.add(nova_taxa)
+    db.session.commit()
+
 
     criar_planos_iniciais_para_grupo(user)
     db.session.commit()
