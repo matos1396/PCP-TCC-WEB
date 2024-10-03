@@ -85,7 +85,7 @@ class EstiloDemanda(db.Model):
     quantidade_jets_tipo2 = db.Column(db.Integer, nullable=False, default=0)
     quantidade_jets_tipo3 = db.Column(db.Integer, nullable=False, default=0)
 
-    # Relationship with Grupo
+    # Relacionamento com Grupo
     grupos = db.relationship('Grupo', backref='estilo_demanda', lazy=True)
 
 
@@ -186,3 +186,48 @@ class TaxaProducao(db.Model):
     # Caso as taxas dependem do Estilo demanda
     estilo_demanda_id = db.Column(db.Integer, db.ForeignKey('estilo_demanda.id'), nullable=True)
     estilo_demanda = db.relationship('EstiloDemanda', backref=db.backref('taxas_producao', lazy=True))
+
+
+class Custos(db.Model):
+    __tablename__ = 'custos'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    # Custos fixos
+    custo_fixo_tecelagem = db.Column(db.Float, nullable=False)
+    custo_fixo_purga_jet1 = db.Column(db.Float, nullable=False)
+    custo_fixo_purga_jet2 = db.Column(db.Float, nullable=False)
+    custo_fixo_purga_jet3 = db.Column(db.Float, nullable=False)
+    custo_fixo_fixacao_acabamento = db.Column(db.Float, nullable=False)
+
+    # Custos variados
+    tma = db.Column(db.Float, nullable=False)  # Taxa Mínima de Atratividade
+    custo_unitario_compra_emergencia = db.Column(db.Float, nullable=False)
+    taxa_armazenagem = db.Column(db.Float, nullable=False)
+
+    # Custos de terceirização
+    custo_terceirizacao_tecelagem = db.Column(db.Float, nullable=False)
+    custo_terceirizacao_purga_tinturaria = db.Column(db.Float, nullable=False)
+    custo_terceirizacao_fixacao_acabamento = db.Column(db.Float, nullable=False)
+
+    # Taxas de desempenho
+    taxa_desempenho_producao = db.Column(db.Float, nullable=False)
+    taxa_desempenho_fornecimento_fios = db.Column(db.Float, nullable=False)
+    taxa_desempenho_fornecimento_corantes = db.Column(db.Float, nullable=False)
+
+    # Preços de aquisição e venda de equipamentos
+    preco_aquisicao_teares = db.Column(db.Float, nullable=False)
+    preco_venda_teares = db.Column(db.Float, nullable=False)
+
+    preco_aquisicao_jet1 = db.Column(db.Float, nullable=False)
+    preco_venda_jet1 = db.Column(db.Float, nullable=False)
+
+    preco_aquisicao_jet2 = db.Column(db.Float, nullable=False)
+    preco_venda_jet2 = db.Column(db.Float, nullable=False)
+
+    preco_aquisicao_jet3 = db.Column(db.Float, nullable=False)
+    preco_venda_jet3 = db.Column(db.Float, nullable=False)
+
+    preco_aquisicao_rama = db.Column(db.Float, nullable=False)
+    preco_venda_rama = db.Column(db.Float, nullable=False)
+

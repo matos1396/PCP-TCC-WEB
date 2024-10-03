@@ -1,5 +1,5 @@
 from app import db, app
-from models import Grupo, EstiloDemanda, PrevisaoDemanda, PlanoCompras, PlanoProducao, TaxaProducao
+from models import Grupo, EstiloDemanda, PrevisaoDemanda, PlanoCompras, PlanoProducao, TaxaProducao, Custos
 
 periods = list(range(13, 25))
 
@@ -236,6 +236,34 @@ with app.app_context():
         db.session.add(nova_taxa)
     db.session.commit()
 
+    custos_iniciais = Custos(
+        custo_fixo_tecelagem=5.00,
+        custo_fixo_purga_jet1=0.50,
+        custo_fixo_purga_jet2=0.25,
+        custo_fixo_purga_jet3=0.10,
+        custo_fixo_fixacao_acabamento=100.00,
+        tma=0.03,
+        custo_unitario_compra_emergencia=1,
+        taxa_armazenagem=0.05,
+        custo_terceirizacao_tecelagem=20.00,
+        custo_terceirizacao_purga_tinturaria=2.00,
+        custo_terceirizacao_fixacao_acabamento=150.00,
+        taxa_desempenho_producao=0.95,
+        taxa_desempenho_fornecimento_fios=0.90,
+        taxa_desempenho_fornecimento_corantes=0.85,
+        preco_aquisicao_teares=10000.00,
+        preco_venda_teares=1000.00,
+        preco_aquisicao_jet1=90000.00,
+        preco_venda_jet1=9000.00,
+        preco_aquisicao_jet2=50000.00,
+        preco_venda_jet2=5000.00,
+        preco_aquisicao_jet3=20000.00,
+        preco_venda_jet3=2000.00,
+        preco_aquisicao_rama=120000.00,
+        preco_venda_rama=12000.00
+    )
+    db.session.add(custos_iniciais)
+    db.session.commit()
 
     criar_planos_iniciais_para_grupo(user)
     db.session.commit()
