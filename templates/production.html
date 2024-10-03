@@ -383,18 +383,43 @@
                     let estoqueFinal = parseFloat(estoquesFinaisElem.value) || 0;
                     let producaoPlanejada = parseFloat(producaoPlanejadaElem.value) || 0;
                     let demandaPrevista = parseFloat(demandaPrevistaElem.value) || 0;
-                    console.log(estoqueInicial)
+                    let vendasFinais = parseFloat(vendasFinaisElem.value) || 0;
 
                     // Calcular o estoque final e atualizar o estoque inicial do próximo período
                     let estoqueInicialFinal = estoqueInicial + producaoPlanejada - demandaPrevista;
-                    let estoqueFinalFinal = producaoPlanejada - demandaPrevista + estoqueInicial
+                    let estoqueFinalFinal = producaoPlanejada - demandaPrevista + estoqueInicial;
+
+                    // Campos Vendas e Vendas Perdidas
+                    if (producaoPlanejada + estoqueInicial <= demandaPrevista) {
+                        vendasFinaisElem.value = producaoPlanejada + estoqueInicial
+                        vendasPerdidasElem.value = Math.round(demandaPrevista - producaoPlanejada - estoqueInicial)
+                    }
+                    else {
+                        vendasFinaisElem.value = demandaPrevista.toFixed(0)
+                        vendasPerdidasElem.value = 0
+                    }
+
+
+
+
 
                     let nextEstoqueInicialElem = document.getElementById(`${familia}_estoque_inicial_${nextPeriod}`);
                     if (nextEstoqueInicialElem) {
+                        if (estoqueFinalFinal < 0) {
+                            nextEstoqueInicialElem.value = 0
+                        }
+                        else {
                         nextEstoqueInicialElem.value = estoqueInicialFinal.toFixed(0);
+                        }
                     }
                     let nextEstoquesFinaisElem = document.getElementById(`${familia}_estoque_final_${period}`);
                     if (nextEstoquesFinaisElem) {
+                        // if (estoqueFinalFinal < 0) {
+                        //     nextEstoquesFinaisElem.value = 0
+                        // }
+                        // else {
+                        //     nextEstoquesFinaisElem.value = estoqueFinalFinal.toFixed(0);
+                        // }
                         nextEstoquesFinaisElem.value = estoqueFinalFinal.toFixed(0);
                     }
                 }
@@ -424,13 +449,13 @@
 
         // Adicionar event listeners para cada família (Colmeia, Piquet, Maxim)
         adicionarListenersParaFamilia('colmeia');
-        //adicionarListenersParaFamilia('piquet');
-        //adicionarListenersParaFamilia('maxim');
+        adicionarListenersParaFamilia('piquet');
+        adicionarListenersParaFamilia('maxim');
 
         // Inicialmente calcular os estoques quando a página for carregada
         recalcularEstoques('colmeia');
-        //recalcularEstoques('piquet');
-        //recalcularEstoques('maxim');
+        recalcularEstoques('piquet');
+        recalcularEstoques('maxim');
 
     });
 
