@@ -362,65 +362,64 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Declarar periods como uma variável global para evitar conflito
         const periods = JSON.parse('{{ periods|tojson }}');
-        console.log(periods);
+        let periodo_atual = '{{ periodo_atual }}';
+        console.log(periodo_atual);
 
         function recalcularEstoques(familia) {
             for (let i = 0; i <= periods.length; i++) {
                 let period = periods[i];
                 let nextPeriod = periods[i + 1];
 
-                // Obter os valores do estoque inicial, produção planejada e demanda prevista
-                let estoqueInicialElem = document.getElementById(`${familia}_estoque_inicial_${period}`);
-                let producaoPlanejadaElem = document.getElementById(`${familia}_producao_planejada_${period}`);
-                let demandaPrevistaElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
-                let estoquesFinaisElem = document.getElementById(`${familia}_estoque_final_${period}`);
-                let vendasFinaisElem = document.getElementById(`${familia}_vendas_${period}`);
-                let vendasPerdidasElem = document.getElementById(`${familia}_vendas_perdidas_${period}`);
-
-                // Verificar se os elementos existem antes de acessar seus valores
-                if (estoqueInicialElem && producaoPlanejadaElem && demandaPrevistaElem) {
-                    let estoqueInicial = parseFloat(estoqueInicialElem.value) || 0;
-                    let estoqueFinal = parseFloat(estoquesFinaisElem.value) || 0;
-                    let producaoPlanejada = parseFloat(producaoPlanejadaElem.value) || 0;
-                    let demandaPrevista = parseFloat(demandaPrevistaElem.value) || 0;
-                    let vendasFinais = parseFloat(vendasFinaisElem.value) || 0;
-
-                    // Calcular o estoque final e atualizar o estoque inicial do próximo período
-                    let estoqueInicialFinal = estoqueInicial + producaoPlanejada - demandaPrevista;
-                    let estoqueFinalFinal = producaoPlanejada - demandaPrevista + estoqueInicial;
-
-                    // Campos Vendas e Vendas Perdidas
-                    if (producaoPlanejada + estoqueInicial <= demandaPrevista) {
-                        vendasFinaisElem.value = producaoPlanejada + estoqueInicial
-                        vendasPerdidasElem.value = Math.round(demandaPrevista - producaoPlanejada - estoqueInicial)
-                    }
-                    else {
-                        vendasFinaisElem.value = demandaPrevista.toFixed(0)
-                        vendasPerdidasElem.value = 0
-                    }
-
-
-
-
-
-                    let nextEstoqueInicialElem = document.getElementById(`${familia}_estoque_inicial_${nextPeriod}`);
-                    if (nextEstoqueInicialElem) {
-                        if (estoqueFinalFinal < 0) {
-                            nextEstoqueInicialElem.value = 0
+                if (period > periodo_atual){
+                    // Obter os valores do estoque inicial, produção planejada e demanda prevista
+                    let estoqueInicialElem = document.getElementById(`${familia}_estoque_inicial_${period}`);
+                    let producaoPlanejadaElem = document.getElementById(`${familia}_producao_planejada_${period}`);
+                    let demandaPrevistaElem = document.getElementById(`${familia}_demanda_prevista_${period}`);
+                    let estoquesFinaisElem = document.getElementById(`${familia}_estoque_final_${period}`);
+                    let vendasFinaisElem = document.getElementById(`${familia}_vendas_${period}`);
+                    let vendasPerdidasElem = document.getElementById(`${familia}_vendas_perdidas_${period}`);
+    
+                    // Verificar se os elementos existem antes de acessar seus valores
+                    if (estoqueInicialElem && producaoPlanejadaElem && demandaPrevistaElem) {
+                        let estoqueInicial = parseFloat(estoqueInicialElem.value) || 0;
+                        let estoqueFinal = parseFloat(estoquesFinaisElem.value) || 0;
+                        let producaoPlanejada = parseFloat(producaoPlanejadaElem.value) || 0;
+                        let demandaPrevista = parseFloat(demandaPrevistaElem.value) || 0;
+                        let vendasFinais = parseFloat(vendasFinaisElem.value) || 0;
+    
+                        // Campos Vendas e Vendas Perdidas
+                        if (producaoPlanejada + estoqueInicial <= demandaPrevista) {
+                            vendasFinaisElem.value = producaoPlanejada + estoqueInicial
+                            vendasPerdidasElem.value = Math.round(demandaPrevista - producaoPlanejada - estoqueInicial)
                         }
                         else {
-                        nextEstoqueInicialElem.value = estoqueInicialFinal.toFixed(0);
+                            vendasFinaisElem.value = demandaPrevista.toFixed(0)
+                            vendasPerdidasElem.value = 0
                         }
-                    }
-                    let nextEstoquesFinaisElem = document.getElementById(`${familia}_estoque_final_${period}`);
-                    if (nextEstoquesFinaisElem) {
-                        // if (estoqueFinalFinal < 0) {
-                        //     nextEstoquesFinaisElem.value = 0
-                        // }
-                        // else {
-                        //     nextEstoquesFinaisElem.value = estoqueFinalFinal.toFixed(0);
-                        // }
-                        nextEstoquesFinaisElem.value = estoqueFinalFinal.toFixed(0);
+    
+                        // Calcular o estoque final e atualizar o estoque inicial do próximo período
+                        let estoqueInicialFinal = estoqueInicial + producaoPlanejada - demandaPrevista;
+                        let estoqueFinalFinal = producaoPlanejada - demandaPrevista + estoqueInicial;
+    
+    
+                        let nextEstoqueInicialElem = document.getElementById(`${familia}_estoque_inicial_${nextPeriod}`);
+                        if (nextEstoqueInicialElem) {
+                            if (estoqueFinalFinal < 0) {
+                                nextEstoqueInicialElem.value = 0
+                            }
+                            else {
+                                nextEstoqueInicialElem.value = estoqueInicialFinal.toFixed(0);
+                            }
+                        }
+
+                        if (estoquesFinaisElem) {
+                            if (estoqueFinalFinal < 0) {
+                                estoquesFinaisElem.value = 0
+                            }
+                            else {
+                                estoquesFinaisElem.value = estoqueFinalFinal.toFixed(0);
+                            }
+                        }
                     }
                 }
             }
