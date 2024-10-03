@@ -13,6 +13,7 @@ from models import (Grupo,
                     TaxaProducao,
                     Custos,
                     db)
+from simulacao import simulacao
 
 
 app = Flask(__name__)
@@ -121,7 +122,6 @@ def production():
 
     if request.method == 'POST':
         for familia in ['Colmeia', 'Piquet', 'Maxim']:
-
             for period in periods:
                 if period >= periodo_atual:
                     # Obtenha os valores de produção planejada e demanda prevista para o período atual
@@ -142,7 +142,6 @@ def production():
                     ).order_by(PlanoProducao.periodo_modificado.desc()).first()
 
                     if existing_plan:
-                        #print("SIM", familia,demanda_prevista)
                         if existing_plan.periodo_modificado == periodo_atual:
                             # Atualizar o plano existente
                             existing_plan.demanda_prevista = demanda_prevista
@@ -166,24 +165,24 @@ def production():
                                 producao_planejada=producao_planejada,
                                 producao_real=producao_real,
                                 estoques_iniciais=estoque_inicial,
-                                estoques_final=estoque_final,
+                                estoques_finais=estoque_final,
                                 vendas_perdidas=vendas_perdidas,
                                 vendas=vendas
 
                             )
                             db.session.add(new_plan)
-                    else:
-                        # Criar um novo plano se não houver plano existente
-                        new_plan = PlanoProducao(
-                            periodo_numero=period,
-                            familia=familia,
-                            producao_planejada=producao_planejada,
-                            demanda_prevista=demanda_prevista,
-                            estoques_iniciais=estoque_inicial,
-                            periodo_modificado=periodo_atual,
-                            grupo_id=current_user.id
-                        )
-                        db.session.add(new_plan)
+                    # else:
+                    #     # Criar um novo plano se não houver plano existente
+                    #     new_plan = PlanoProducao(
+                    #         periodo_numero=period,
+                    #         familia=familia,
+                    #         producao_planejada=producao_planejada,
+                    #         demanda_prevista=demanda_prevista,
+                    #         estoques_iniciais=estoque_inicial,
+                    #         periodo_modificado=periodo_atual,
+                    #         grupo_id=current_user.id
+                    #     )
+                    #     db.session.add(new_plan)
 
         db.session.commit()
         flash('Plano de produção salvo com sucesso!', 'success')
@@ -597,15 +596,9 @@ def simulate():
     # Pega o grupo completo do usuário autenticado
     grupo = current_user
 
-    # Obter o período atual
-    periodo_atual = grupo.periodo_atual
+    simulacao.executar_simulacao(grupo)
 
     # Cálculos da simulação para o período atual
-
-    ######### TODO: Aplicar lógica do game
-    planos_producao = PlanoProducao.query.filter_by(grupo_id=grupo.id, periodo_numero=periodo_atual).all()
-    planos_compra = PlanoCompras.query.filter_by(grupo_id=grupo.id, periodo_numero=periodo_atual).all()
-    #########
 
     # Avançar para o próximo período
     grupo.periodo_atual += 1  # Incrementa o período atual do grupo
@@ -650,13 +643,13 @@ def reset():
         db.session.query(PlanoProducao).delete()
         db.session.query(PlanoCompras).delete()
 
-        # Reinicia o periodo_atual de todos os grupos para 13
+        # Reinicia o periodo_atual de todos os grupos para 12
         groups = Grupo.query.all()
         for grupo in groups:
-            grupo.periodo_atual = 13
+            grupo.periodo_atual = 12
 
         db.session.commit()
-        flash('Banco de dados resetado e período atual reiniciado para 13.', 'success')
+        flash('Banco de dados resetado e período atual reiniciado para 12.', 'success')
 
     return redirect(url_for('dashboard'))
 
