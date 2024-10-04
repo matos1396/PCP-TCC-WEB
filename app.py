@@ -14,6 +14,7 @@ from models import (Grupo,
                     Custos,
                     db)
 from simulacao import simulacao
+from utils.func_auxiliares import atualizar_plano_compras
 
 
 app = Flask(__name__)
@@ -124,7 +125,7 @@ def production():
         for familia in ['Colmeia', 'Piquet', 'Maxim']:
             for period in periods:
                 if period >= periodo_atual:
-                    # Obtenha os valores de produção planejada e demanda prevista para o período atual
+                    # Obter os valores atuais do forms
                     demanda_prevista = previsoes_por_familia[familia][period].data
                     demanda_real = demanda_real_por_familia[familia][period].data
                     producao_planejada = producao_planejada_por_familia[familia][period].data
@@ -133,8 +134,6 @@ def production():
                     estoque_final = estoques_finais_por_familia[familia][period].data
                     vendas_perdidas = vendas_perdidas_por_familia[familia][period].data
                     vendas = vendas_por_familia[familia][period].data
-
-                    # print("#######################",period, periodo_atual, estoque_inicial)
 
                     # Atualizar ou criar novo plano de produção
                     existing_plan = PlanoProducao.query.filter_by(
@@ -168,21 +167,16 @@ def production():
                                 estoques_finais=estoque_final,
                                 vendas_perdidas=vendas_perdidas,
                                 vendas=vendas
-
                             )
+
                             db.session.add(new_plan)
-                    # else:
-                    #     # Criar um novo plano se não houver plano existente
-                    #     new_plan = PlanoProducao(
-                    #         periodo_numero=period,
-                    #         familia=familia,
-                    #         producao_planejada=producao_planejada,
-                    #         demanda_prevista=demanda_prevista,
-                    #         estoques_iniciais=estoque_inicial,
-                    #         periodo_modificado=periodo_atual,
-                    #         grupo_id=current_user.id
-                    #     )
-                    #     db.session.add(new_plan)
+
+        ####### Atualizar Plano Compras #####
+        atualizar_plano_compras(current_user)
+
+
+
+        ####### Fim atualização
 
         db.session.commit()
         flash('Plano de produção salvo com sucesso!', 'success')
@@ -228,8 +222,8 @@ def production():
 def purchases():
     form = PurchaseForm()
 
-    periodo_atual = current_user.periodo_atual  # Período atual do grupo
-    periods = list(range(13, 25))  # Períodos de 13 a 24
+    periods = list(range(13, 25))
+    periodo_atual = current_user.periodo_atual
 
     # Campos para os materiais (Fio Algodão, Fio Sintético, Corantes)
     compras_por_material = {
@@ -276,8 +270,14 @@ def purchases():
         for material in ['Fio Algodao', 'Fio Sintetico', 'Corantes']:
             for period in periods:
                 if period >= periodo_atual:
-                    # Obtenha os valores de compra planejada
+                    # Obter os valores atuais do forms
+                    consumo_previsto = consumo_previsto_por_material[material][period].data
+                    consumo_real = consumo_real_por_material[material][period].data
+                    estoque_inicial = estoques_iniciais_por_material[material][period].data
+                    estoque_final = estoques_finais_por_material[material][period].data
                     compra_planejada = compras_por_material[material][period].data
+                    compra_real = compras_real_por_material[material][period].data
+                    compra_emergencial = compras_emergencial_por_material[material][period].data
 
                     # Atualizar ou criar novo plano de compras
                     existing_plan = PlanoCompras.query.filter_by(
@@ -286,26 +286,32 @@ def purchases():
 
                     if existing_plan:
                         if existing_plan.periodo_modificado == periodo_atual:
+                            # Atualizar o plano existente
+                            existing_plan.consumo_previsto = consumo_previsto
+                            existing_plan.consumo_real = consumo_real
+                            existing_plan.estoques_iniciais = estoque_inicial
+                            existing_plan.estoques_finais = estoque_final
                             existing_plan.compra_planejada = compra_planejada
+                            existing_plan.compra_real = compra_real
+                            existing_plan.compra_emergencial = compra_emergencial
+
                         else:
                             new_plan = PlanoCompras(
+                                grupo_id=current_user.id,
                                 periodo_numero=period,
-                                material=material,
-                                compra_planejada=compra_planejada,
                                 periodo_modificado=periodo_atual,
-                                grupo_id=current_user.id
+                                material= material,
+
+                                consumo_previsto = consumo_previsto,
+                                consumo_real = consumo_real,
+                                estoques_iniciais = estoque_inicial,
+                                estoques_finais = estoque_final,
+                                compra_planejada = compra_planejada,
+                                compra_real = compra_real,
+                                compra_emergencial = compra_emergencial
                             )
+
                             db.session.add(new_plan)
-                    else:
-                        # Criar um novo plano se não houver plano existente
-                        new_plan = PlanoCompras(
-                            periodo_numero=period,
-                            material=material,
-                            compra_planejada=compra_planejada,
-                            periodo_modificado=periodo_atual,
-                            grupo_id=current_user.id
-                        )
-                        db.session.add(new_plan)
 
         db.session.commit()
         flash('Plano de compras salvo com sucesso!', 'success')
