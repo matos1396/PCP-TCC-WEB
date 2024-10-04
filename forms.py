@@ -67,12 +67,12 @@ class PurchaseForm(FlaskForm):
     # Campos para Fio Algodão
     for period in periods:
         # Campo para Compras Planejada, Real e Emergêncial
-        vars()['fio_algodao_' + str(period)] = IntegerField(f'Fio Algodão (Período {period})', validators=[Optional()])
-        vars()['fio_algodao_compra_real_' + str(period)] = IntegerField(f'Fio Algodão Compra Real (Período {period})', validators=[Optional()])
-        vars()['fio_algodao_compra_emergencial_' + str(period)] = IntegerField(f'Fio Algodão Compra Emergêncial (Período {period})', validators=[Optional()])
+        vars()['fio_algodao_' + str(period)] = DecimalField(f'Fio Algodão (Período {period})', validators=[Optional()])
+        vars()['fio_algodao_compra_real_' + str(period)] = DecimalField(f'Fio Algodão Compra Real (Período {period})', validators=[Optional()])
+        vars()['fio_algodao_compra_emergencial_' + str(period)] = DecimalField(f'Fio Algodão Compra Emergêncial (Período {period})', validators=[Optional()])
         # Campo para Consumo Previsto e Real
-        vars()['fio_algodao_consumo_previsto_' + str(period)] = IntegerField(f'Fio Algodão Consumo Previsto (Período {period})', validators=[Optional()])
-        vars()['fio_algodao_consumo_real_' + str(period)] = IntegerField(f'Fio Algodão Consumo Real (Período {period})', validators=[Optional()])
+        vars()['fio_algodao_consumo_previsto_' + str(period)] = DecimalField(f'Fio Algodão Consumo Previsto (Período {period})', validators=[Optional()])
+        vars()['fio_algodao_consumo_real_' + str(period)] = DecimalField(f'Fio Algodão Consumo Real (Período {period})', validators=[Optional()])
         # Campo para Estoques Iniciais e Final
         vars()['fio_algodao_estoque_inicial_' + str(period)] = DecimalField(f'Fio Algodão Estoque Inicial (Período {period})', validators=[Optional()])
         vars()['fio_algodao_estoque_final_' + str(period)] = DecimalField(f'Fio Algodão Estoque Final (Período {period})', validators=[Optional()])
@@ -81,12 +81,12 @@ class PurchaseForm(FlaskForm):
     # Campos para Fio Sintético
     for period in periods:
         # Campo para Compras Planejada, Real e Emergencial
-        vars()['fio_sintetico_' + str(period)] = IntegerField(f'Fio Sintético (Período {period})', validators=[Optional()])
-        vars()['fio_sintetico_compra_real_' + str(period)] = IntegerField(f'Fio Sintético Compra Real (Período {period})', validators=[Optional()])
-        vars()['fio_sintetico_compra_emergencial_' + str(period)] = IntegerField(f'Fio Sintético Compra Emergencial (Período {period})', validators=[Optional()])
+        vars()['fio_sintetico_' + str(period)] = DecimalField(f'Fio Sintético (Período {period})', validators=[Optional()])
+        vars()['fio_sintetico_compra_real_' + str(period)] = DecimalField(f'Fio Sintético Compra Real (Período {period})', validators=[Optional()])
+        vars()['fio_sintetico_compra_emergencial_' + str(period)] = DecimalField(f'Fio Sintético Compra Emergencial (Período {period})', validators=[Optional()])
         # Campo para Consumo Previsto e Real
-        vars()['fio_sintetico_consumo_previsto_' + str(period)] = IntegerField(f'Fio Sintético Consumo Previsto (Período {period})', validators=[Optional()])
-        vars()['fio_sintetico_consumo_real_' + str(period)] = IntegerField(f'Fio Sintético Consumo Real (Período {period})', validators=[Optional()])
+        vars()['fio_sintetico_consumo_previsto_' + str(period)] = DecimalField(f'Fio Sintético Consumo Previsto (Período {period})', validators=[Optional()])
+        vars()['fio_sintetico_consumo_real_' + str(period)] = DecimalField(f'Fio Sintético Consumo Real (Período {period})', validators=[Optional()])
         # Campo para Estoques Iniciais e Finais
         vars()['fio_sintetico_estoque_inicial_' + str(period)] = DecimalField(f'Fio Sintético Estoque Inicial (Período {period})', validators=[Optional()])
         vars()['fio_sintetico_estoque_final_' + str(period)] = DecimalField(f'Fio Sintético Estoque Final (Período {period})', validators=[Optional()])
@@ -94,12 +94,12 @@ class PurchaseForm(FlaskForm):
     # Campos para Corantes
     for period in periods:
         # Campo para Compras Planejada, Real e Emergencial
-        vars()['corantes_' + str(period)] = IntegerField(f'Corantes (Período {period})', validators=[Optional()])
-        vars()['corantes_compra_real_' + str(period)] = IntegerField(f'Corantes Compra Real (Período {period})', validators=[Optional()])
-        vars()['corantes_compra_emergencial_' + str(period)] = IntegerField(f'Corantes Compra Emergencial (Período {period})', validators=[Optional()])
+        vars()['corantes_' + str(period)] = DecimalField(f'Corantes (Período {period})', validators=[Optional()])
+        vars()['corantes_compra_real_' + str(period)] = DecimalField(f'Corantes Compra Real (Período {period})', validators=[Optional()])
+        vars()['corantes_compra_emergencial_' + str(period)] = DecimalField(f'Corantes Compra Emergencial (Período {period})', validators=[Optional()])
         # Campo para Consumo Previsto e Real
-        vars()['corantes_consumo_previsto_' + str(period)] = IntegerField(f'Corantes Consumo Previsto (Período {period})', validators=[Optional()])
-        vars()['corantes_consumo_real_' + str(period)] = IntegerField(f'Corantes Consumo Real (Período {period})', validators=[Optional()])
+        vars()['corantes_consumo_previsto_' + str(period)] = DecimalField(f'Corantes Consumo Previsto (Período {period})', validators=[Optional()])
+        vars()['corantes_consumo_real_' + str(period)] = DecimalField(f'Corantes Consumo Real (Período {period})', validators=[Optional()])
         # Campo para Estoques Iniciais e Finais
         vars()['corantes_estoque_inicial_' + str(period)] = DecimalField(f'Corantes Estoque Inicial (Período {period})', validators=[Optional()])
         vars()['corantes_estoque_final_' + str(period)] = DecimalField(f'Corantes Estoque Final (Período {period})', validators=[Optional()])

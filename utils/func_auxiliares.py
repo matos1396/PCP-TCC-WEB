@@ -39,6 +39,7 @@ def atualizar_plano_compras(grupo):
 
 
 def calcular_consumo_previsto(grupo, material, periodo, periodo_atual):
+    # Dicionario apenas para consulta manualmente
     dici_estrutura = {"Colmeia": {"Fio Algodao": 1,
                                   "Fio Sintetico": 0,
                                   "Corante": 0.02
@@ -51,13 +52,6 @@ def calcular_consumo_previsto(grupo, material, periodo, periodo_atual):
                                   "Fio Sintetico": 1,
                                   "Corante": 0.02
                                   }}
-
-    # for familia in ["Colmeia", "Piquet", "Maxim"]:
-        # plano_producao = PlanoProducao.query.filter_by(grupo_id = grupo.id,
-        #                                             periodo_numero = periodo,
-        #                                             periodo_modificado = periodo_atual,
-        #                                             familia=familia).order_by(
-        #                                                 PlanoProducao.periodo_numero.asc()).first()
 
     if material == "Fio Algodao":
         consumo_previsto_fio_algodao = 0

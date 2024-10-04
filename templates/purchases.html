@@ -54,18 +54,18 @@
             <tr>
                 <th>Compras Planejadas</th>
                 {% for period in periods %}
-                <td>
-                    {% if period <= periodo_atual %}
-                    <!-- Campo somente leitura para períodos passados -->
-                    <input type="number" class="form-control compra-planejada"
-                           id="fio_algodao_compra_planejada_{{ period }}"
-                           name="{{ compras_por_material['Fio Algodao'][period].name }}"
-                           data-material="Fio Algodao" data-period="{{ period }}"
-                           value="{{ compras_por_material['Fio Algodao'][period].data }}" readonly>
-                    {% else %}
-                        {{ compras_por_material['Fio Algodao'][period](class="form-control compra-planejada", id="fio_algodao_compra_planejada_" ~ period, data_material="Fio Algodão", data_period=period) }}
-                    {% endif %}
-                </td>
+                    <td>
+                        {% if period <= periodo_atual %}
+                        <!-- Campo somente leitura para períodos passados -->
+                        <input type="number" class="form-control compra-planejada"
+                               id="fio_algodao_compra_planejada_{{ period }}"
+                               name="{{ compras_por_material['Fio Algodao'][period].name }}"
+                               data-material="Fio Algodao" data-period="{{ period }}"
+                               value="{{ compras_por_material['Fio Algodao'][period].data }}" readonly>
+                        {% else %}
+                            {{ compras_por_material['Fio Algodao'][period](class="form-control compra-planejada", id="fio_algodao_compra_planejada_" ~ period, data_material="Fio Algodão", data_period=period) }}
+                        {% endif %}
+                    </td>
             {% endfor %}
             </tr>
             <tr>
@@ -152,16 +152,16 @@
             <tr>
                 <th>Compras Planejadas</th>
                 {% for period in periods %}
-                <td>
-                    {% if period <= periodo_atual %}
-                    <input type="number" class="form-control compra-planejada"
-                           id="fio_sintetico_compra_planejada_{{ period }}"
-                           name="{{ compras_por_material['Fio Sintetico'][period].name }}"
-                           value="{{ compras_por_material['Fio Sintetico'][period].data }}" readonly>
-                    {% else %}
-                        {{ compras_por_material['Fio Sintetico'][period](class="form-control compra-planejada", id="fio_sintetico_compra_planejada_" ~ period) }}
-                    {% endif %}
-                </td>
+                    <td>
+                        {% if period <= periodo_atual %}
+                        <input type="number" class="form-control compra-planejada"
+                               id="fio_sintetico_compra_planejada_{{ period }}"
+                               name="{{ compras_por_material['Fio Sintetico'][period].name }}"
+                               value="{{ compras_por_material['Fio Sintetico'][period].data }}" readonly>
+                        {% else %}
+                            {{ compras_por_material['Fio Sintetico'][period](class="form-control compra-planejada", id="fio_sintetico_compra_planejada_" ~ period) }}
+                        {% endif %}
+                    </td>
                 {% endfor %}
             </tr>
             <tr>

@@ -171,6 +171,7 @@ def production():
 
                             db.session.add(new_plan)
 
+        # TODO: Finalizar Implementação
         ####### Atualizar Plano Compras #####
         atualizar_plano_compras(current_user)
 
@@ -326,7 +327,7 @@ def purchases():
                 ).filter(PlanoCompras.periodo_modificado <= periodo_atual).order_by(PlanoCompras.periodo_modificado.desc()).first()
 
                 if plan:
-                    # Preencher os campos de compras planejadas e estoques
+                    # Preencher os campos
                     compras_por_material[material][period].data = plan.compra_planejada
                     compras_real_por_material[material][period].data = plan.compra_real
                     compras_emergencial_por_material[material][period].data = plan.compra_emergencial
