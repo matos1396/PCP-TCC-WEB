@@ -60,7 +60,7 @@ def criar_planos_iniciais_para_grupo(grupo):
     for material, estoque in estoques_iniciais_compras[estilo].items():
         plano_compras = PlanoCompras(
             grupo_id=grupo.id,
-            periodo_numero=grupo.periodo_atual,  # Período atual
+            periodo_numero=grupo.periodo_atual+1,  # Período atual
             periodo_modificado=grupo.periodo_atual,
             material=material,
             estoques_iniciais=estoque,

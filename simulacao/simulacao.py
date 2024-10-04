@@ -1,4 +1,4 @@
-3500# simulacao.py
+# simulacao.py
 from models import Grupo, PlanoProducao, PlanoCompras, Custos, CapacidadeTeares, CapacidadeJets, CapacidadeRamas
 from app import db
 
