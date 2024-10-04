@@ -115,18 +115,18 @@ class TecelagemForm(FlaskForm):
     for period in periods:
         # Tabela Capacidade Necessária
         # (Capacidade Disponível comum as duas tabelas)
-        vars()['capacidade_disponivel_' + str(period)] = IntegerField(f'Capacidade Disponível (Período {period})', validators=[Optional()])
-        vars()['capacidade_necessaria_' + str(period)] = IntegerField(f'Capacidade Necessária (Período {period})', validators=[Optional()])
-        vars()['colmeia_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Colmeia (Período {period})', validators=[Optional()])
-        vars()['piquet_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Piquet (Período {period})', validators=[Optional()])
-        vars()['maxim_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Maxim (Período {period})', validators=[Optional()])
-        vars()['setup_' + str(period)] = IntegerField(f'Setup (Período {period})', validators=[Optional()])
-        vars()['produtividade_' + str(period)] = IntegerField(f'Produtividade (Período {period})', validators=[Optional()])
+        vars()['capacidade_disponivel_' + str(period)] = DecimalField(f'Capacidade Disponível (Período {period})', validators=[Optional()])
+        vars()['capacidade_necessaria_' + str(period)] = DecimalField(f'Capacidade Necessária (Período {period})', validators=[Optional()])
+        vars()['colmeia_horas_' + str(period)] = DecimalField(f'Capacidade Necessária Colmeia (Período {period})', validators=[Optional()])
+        vars()['piquet_horas_' + str(period)] = DecimalField(f'Capacidade Necessária Piquet (Período {period})', validators=[Optional()])
+        vars()['maxim_horas_' + str(period)] = DecimalField(f'Capacidade Necessária Maxim (Período {period})', validators=[Optional()])
+        vars()['setup_' + str(period)] = DecimalField(f'Setup (Período {period})', validators=[Optional()])
+        vars()['produtividade_' + str(period)] = DecimalField(f'Produtividade (Período {period})', validators=[Optional()])
 
         # Tabela Capacidade Disponível
         vars()['numero_turnos_' + str(period)] = IntegerField(f'Número de Turnos (Período {period})', validators=[Optional()])
-        vars()['capacidade_instalada_' + str(period)] = IntegerField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
-        vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_' + str(period)] = DecimalField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
+        vars()['capacidade_teceirizada_' + str(period)] = DecimalField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
 
     
     # Botão para Submeter o Formulário
@@ -139,20 +139,20 @@ class PurgaTinturariaForm(FlaskForm):
     for period in periods:
         # Tabela Capacidade Necessária
         # (Capacidade Disponível comum as duas tabelas)
-        vars()['capacidade_disponivel_' + str(period)] = IntegerField(f'Capacidade Disponível (Período {period})', validators=[Optional()])
-        vars()['capacidade_necessaria_' + str(period)] = IntegerField(f'Capacidade Necessária (Período {period})', validators=[Optional()])
-        vars()['colmeia_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Colmeia (Período {period})', validators=[Optional()])
-        vars()['piquet_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Piquet (Período {period})', validators=[Optional()])
-        vars()['maxim_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Maxim (Período {period})', validators=[Optional()])
-        vars()['setup_' + str(period)] = IntegerField(f'Setup (Período {period})', validators=[Optional()])
-        vars()['produtividade_' + str(period)] = IntegerField(f'Produtividade (Período {period})', validators=[Optional()])
+        vars()['capacidade_disponivel_' + str(period)] = DecimalField(f'Capacidade Disponível (Período {period})', validators=[Optional()])
+        vars()['capacidade_necessaria_' + str(period)] = DecimalField(f'Capacidade Necessária (Período {period})', validators=[Optional()])
+        vars()['colmeia_horas_' + str(period)] = DecimalField(f'Capacidade Necessária Colmeia (Período {period})', validators=[Optional()])
+        vars()['piquet_horas_' + str(period)] = DecimalField(f'Capacidade Necessária Piquet (Período {period})', validators=[Optional()])
+        vars()['maxim_horas_' + str(period)] = DecimalField(f'Capacidade Necessária Maxim (Período {period})', validators=[Optional()])
+        vars()['setup_' + str(period)] = DecimalField(f'Setup (Período {period})', validators=[Optional()])
+        vars()['produtividade_' + str(period)] = DecimalField(f'Produtividade (Período {period})', validators=[Optional()])
 
         # Tabela Capacidade Disponível
         vars()['numero_turnos_' + str(period)] = IntegerField(f'Número de Turnos (Período {period})', validators=[Optional()])
-        vars()['capacidade_instalada_jet1_' + str(period)] = IntegerField(f'Capacidade Instalada Jet1 (Período {period})', validators=[Optional()])
-        vars()['capacidade_instalada_jet2_' + str(period)] = IntegerField(f'Capacidade Instalada Jet2 (Período {period})', validators=[Optional()])
-        vars()['capacidade_instalada_jet3_' + str(period)] = IntegerField(f'Capacidade Instalada Jet3 (Período {period})', validators=[Optional()])
-        vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_jet1_' + str(period)] = DecimalField(f'Capacidade Instalada Jet1 (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_jet2_' + str(period)] = DecimalField(f'Capacidade Instalada Jet2 (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_jet3_' + str(period)] = DecimalField(f'Capacidade Instalada Jet3 (Período {period})', validators=[Optional()])
+        vars()['capacidade_teceirizada_' + str(period)] = DecimalField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
 
     
     # Botão para Submeter o Formulário
@@ -166,18 +166,18 @@ class FixacaoAcabamentoForm(FlaskForm):
     for period in periods:
         # Tabela Capacidade Necessária
         # (Capacidade Disponível comum as duas tabelas)
-        vars()['capacidade_disponivel_' + str(period)] = IntegerField(f'Capacidade Disponível (Período {period})', validators=[Optional()])
-        vars()['capacidade_necessaria_' + str(period)] = IntegerField(f'Capacidade Necessária (Período {period})', validators=[Optional()])
-        vars()['colmeia_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Colmeia (Período {period})', validators=[Optional()])
-        vars()['piquet_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Piquet (Período {period})', validators=[Optional()])
-        vars()['maxim_horas_' + str(period)] = IntegerField(f'Capacidade Necessária Maxim (Período {period})', validators=[Optional()])
-        vars()['setup_' + str(period)] = IntegerField(f'Setup (Período {period})', validators=[Optional()])
-        vars()['produtividade_' + str(period)] = IntegerField(f'Produtividade (Período {period})', validators=[Optional()])
+        vars()['capacidade_disponivel_' + str(period)] = DecimalField(f'Capacidade Disponível (Período {period})', validators=[Optional()])
+        vars()['capacidade_necessaria_' + str(period)] = DecimalField(f'Capacidade Necessária (Período {period})', validators=[Optional()])
+        vars()['colmeia_horas_' + str(period)] = DecimalField(f'Capacidade Necessária Colmeia (Período {period})', validators=[Optional()])
+        vars()['piquet_horas_' + str(period)] = DecimalField(f'Capacidade Necessária Piquet (Período {period})', validators=[Optional()])
+        vars()['maxim_horas_' + str(period)] = DecimalField(f'Capacidade Necessária Maxim (Período {period})', validators=[Optional()])
+        vars()['setup_' + str(period)] = DecimalField(f'Setup (Período {period})', validators=[Optional()])
+        vars()['produtividade_' + str(period)] = DecimalField(f'Produtividade (Período {period})', validators=[Optional()])
 
         # Tabela Capacidade Disponível
         vars()['numero_turnos_' + str(period)] = IntegerField(f'Número de Turnos (Período {period})', validators=[Optional()])
-        vars()['capacidade_instalada_' + str(period)] = IntegerField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
-        vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
+        vars()['capacidade_instalada_' + str(period)] = DecimalField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
+        vars()['capacidade_teceirizada_' + str(period)] = DecimalField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
 
 
     # Botão para Submeter o Formulário

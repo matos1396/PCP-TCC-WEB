@@ -376,7 +376,7 @@ def tecelagem():
         maquina = "Teares"
         for period in periods:
             if period >= periodo_atual:
-                # Obtenha os valores de produção planejada e demanda prevista para o período atual
+
                 numero_turnos = numero_turnos[maquina][period].data
                 capacidade_disponivel = capacidade_disponivel[maquina][period].data
                 capacidade_necessaria = capacidade_necessaria[maquina][period].data
@@ -401,16 +401,16 @@ def tecelagem():
             ).filter(CapacidadeTeares.periodo_modificado <= periodo_atual).order_by(CapacidadeTeares.periodo_modificado.desc()).first()
 
             if capacidade_teares:
-                numero_turnos = [maquina][period].data = capacidade_teares.numero_turnos
-                capacidade_disponivel = [maquina][period].data = capacidade_teares.capacidade_disponivel
-                capacidade_necessaria = [maquina][period].data = capacidade_teares.capacidade_necessaria
-                colmeia_horas = [maquina][period].data = capacidade_teares.colmeia_horas
-                piquet_horas = [maquina][period].data = capacidade_teares.piquet_horas
-                maxim_horas = [maquina][period].data = capacidade_teares.maxim_horas
-                setup = [maquina][period].data = capacidade_teares.setup
-                produtividade = [maquina][period].data = capacidade_teares.produtividade
-                capacidade_instalada = [maquina][period].data = capacidade_teares.capacidade_instalada
-                capacidade_teceirizada = [maquina][period].data = capacidade_teares.capacidade_teceirizada
+                numero_turnos[maquina][period].data = capacidade_teares.numero_turnos
+                capacidade_disponivel[maquina][period].data = capacidade_teares.capacidade_disponivel
+                capacidade_necessaria[maquina][period].data = capacidade_teares.capacidade_necessaria
+                colmeia_horas[maquina][period].data = capacidade_teares.colmeia_horas
+                piquet_horas[maquina][period].data = capacidade_teares.piquet_horas
+                maxim_horas[maquina][period].data = capacidade_teares.maxim_horas
+                setup[maquina][period].data = capacidade_teares.setup
+                produtividade[maquina][period].data = capacidade_teares.produtividade
+                capacidade_instalada[maquina][period].data = capacidade_teares.capacidade_instalada
+                capacidade_teceirizada[maquina][period].data = capacidade_teares.capacidade_teceirizada
 
 
     return render_template('tecelagem.html',
@@ -483,18 +483,18 @@ def purga_tinturaria():
             ).filter(CapacidadeJets.periodo_modificado <= periodo_atual).order_by(CapacidadeJets.periodo_modificado.desc()).first()
 
             if capacidade_jets:
-                numero_turnos = numero_turnos[maquina][period].data = capacidade_jets.numero_turnos
-                capacidade_disponivel = capacidade_disponivel[maquina][period].data = capacidade_jets.capacidade_disponivel
-                capacidade_necessaria = capacidade_necessaria[maquina][period].data = capacidade_jets.capacidade_necessaria
-                colmeia_horas = colmeia_horas[maquina][period].data = capacidade_jets.colmeia_horas
-                piquet_horas = piquet_horas[maquina][period].data = capacidade_jets.piquet_horas
-                maxim_horas = maxim_horas[maquina][period].data = capacidade_jets.maxim_horas
-                setup = setup[maquina][period].data = capacidade_jets.setup
-                produtividade = produtividade[maquina][period].data = capacidade_jets.produtividade
-                capacidade_instalada_jet1 = [maquina][period].data = capacidade_jets.capacidade_instalada_tipo1
-                capacidade_instalada_jet2 = [maquina][period].data = capacidade_jets.capacidade_instalada_tipo2
-                capacidade_instalada_jet3 = [maquina][period].data = capacidade_jets.capacidade_instalada_tipo3
-                capacidade_teceirizada = capacidade_teceirizada[maquina][period].data = capacidade_jets.capacidade_teceirizada
+                numero_turnos[maquina][period].data = capacidade_jets.numero_turnos
+                capacidade_disponivel[maquina][period].data = capacidade_jets.capacidade_disponivel
+                capacidade_necessaria[maquina][period].data = capacidade_jets.capacidade_necessaria
+                colmeia_horas[maquina][period].data = capacidade_jets.colmeia_horas
+                piquet_horas[maquina][period].data = capacidade_jets.piquet_horas
+                maxim_horas[maquina][period].data = capacidade_jets.maxim_horas
+                setup[maquina][period].data = capacidade_jets.setup
+                produtividade[maquina][period].data = capacidade_jets.produtividade
+                capacidade_instalada_jet1[maquina][period].data = capacidade_jets.capacidade_instalada_tipo1
+                capacidade_instalada_jet2[maquina][period].data = capacidade_jets.capacidade_instalada_tipo2
+                capacidade_instalada_jet3[maquina][period].data = capacidade_jets.capacidade_instalada_tipo3
+                capacidade_teceirizada[maquina][period].data = capacidade_jets.capacidade_teceirizada
 
 
     return render_template('purga_tinturaria.html',
@@ -566,16 +566,16 @@ def fixacao_acabamento():
             ).filter(CapacidadeRamas.periodo_modificado <= periodo_atual).order_by(CapacidadeRamas.periodo_modificado.desc()).first()
 
             if capacidade_ramas:
-                numero_turnos = [maquina][period].data = capacidade_ramas.numero_turnos
-                capacidade_disponivel = [maquina][period].data = capacidade_ramas.capacidade_disponivel
-                capacidade_necessaria = [maquina][period].data = capacidade_ramas.capacidade_necessaria
-                colmeia_horas = [maquina][period].data = capacidade_ramas.colmeia_horas
-                piquet_horas = [maquina][period].data = capacidade_ramas.piquet_horas
-                maxim_horas = [maquina][period].data = capacidade_ramas.maxim_horas
-                setup = [maquina][period].data = capacidade_ramas.setup
-                produtividade = [maquina][period].data = capacidade_ramas.produtividade
-                capacidade_instalada = [maquina][period].data = capacidade_ramas.capacidade_instalada
-                capacidade_teceirizada = [maquina][period].data = capacidade_ramas.capacidade_teceirizada
+                numero_turnos[maquina][period].data = capacidade_ramas.numero_turnos
+                capacidade_disponivel[maquina][period].data = capacidade_ramas.capacidade_disponivel
+                capacidade_necessaria[maquina][period].data = capacidade_ramas.capacidade_necessaria
+                colmeia_horas[maquina][period].data = capacidade_ramas.colmeia_horas
+                piquet_horas[maquina][period].data = capacidade_ramas.piquet_horas
+                maxim_horas[maquina][period].data = capacidade_ramas.maxim_horas
+                setup[maquina][period].data = capacidade_ramas.setup
+                produtividade[maquina][period].data = capacidade_ramas.produtividade
+                capacidade_instalada[maquina][period].data = capacidade_ramas.capacidade_instalada
+                capacidade_teceirizada[maquina][period].data = capacidade_ramas.capacidade_teceirizada
 
 
     return render_template('fixacao_acabamento.html',

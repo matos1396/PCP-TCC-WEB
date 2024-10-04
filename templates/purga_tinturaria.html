@@ -151,7 +151,8 @@
                     {% if period <= periodo_atual %}
                     <!-- Campo somente leitura para períodos passados -->
                     <input type="number" class="form-control numero-turnos" 
-                           id="numero_turnos_{{ period }}" 
+                           id="numero_turnos_{{ period }}"
+                           name="{{ capacidade_disponivel['Jet'][period].name }}"
                            value="{{ capacidade_disponivel['Jet'][period].data }}" readonly>
                     {% else %}
                         {{ capacidade_disponivel['Jet'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
@@ -163,9 +164,14 @@
                 <th>Capacidade Terceirizada</th>
                 {% for period in periods %}
                 <td>
+                    {% if period <= periodo_atual %}
                     <input type="number" class="form-control" 
-                           id="capacidade_terceirizada_{{ period }}" 
+                           id="capacidade_terceirizada_{{ period }}"
+                           name="{{ capacidade_teceirizada['Jet'][period].name }}"
                            value="{{ capacidade_teceirizada['Jet'][period].data }}" readonly>
+                    {% else %}
+                        {{ capacidade_teceirizada['Jet'][period](class="form-control capacidade-terceirizada", id="capacidade_terceirizada_" ~ period) }}
+                    {% endif %}
                 </td>
                 {% endfor %}
             </tr>
