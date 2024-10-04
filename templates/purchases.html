@@ -60,10 +60,10 @@
                     <input type="number" class="form-control compra-planejada"
                            id="fio_algodao_compra_planejada_{{ period }}"
                            name="{{ compras_por_material['Fio Algodao'][period].name }}"
-                           data-familia="Colmeia" data-period="{{ period }}"
+                           data-material="Fio Algodao" data-period="{{ period }}"
                            value="{{ compras_por_material['Fio Algodao'][period].data }}" readonly>
                     {% else %}
-                        {{ compras_por_material['Fio Algodao'][period](class="form-control compra-planejada", id="fio_algodao_compra_planejada_" ~ period, data_familia="Fio Algodão", data_period=period) }}
+                        {{ compras_por_material['Fio Algodao'][period](class="form-control compra-planejada", id="fio_algodao_compra_planejada_" ~ period, data_material="Fio Algodão", data_period=period) }}
                     {% endif %}
                 </td>
             {% endfor %}
@@ -299,4 +299,96 @@
     <!-- Botão para submeter o formulário -->
     <button type="submit" class="btn btn-primary">Salvar Plano de Compras</button>
 </form>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Declarar periods como uma variável global para evitar conflito
+        const periods = JSON.parse('{{ periods|tojson }}');
+        let periodo_atual = '{{ periodo_atual }}';
+        console.log(periodo_atual);
+
+        function recalcularEstoques(material) {
+            for (let i = 0; i <= periods.length; i++) {
+                let period = periods[i];
+                let nextPeriod = periods[i + 1];
+
+                if (period > periodo_atual){
+                    // Obter os valores
+                    let estoqueInicialElem = document.getElementById(`${material}_estoque_inicial_${period}`);
+                    let compraPlanejadaElem = document.getElementById(`${material}_compra_planejada_${period}`);
+                    let compraEmergencialElem = document.getElementById(`${material}_compra_emergencial_${period}`);
+                    let consumoPrevistoElem = document.getElementById(`${material}_consumo_previsto_${period}`);
+                    let estoquesFinaisElem = document.getElementById(`${material}_estoque_final_${period}`);
+    
+                    // Verificar se os elementos existem antes de acessar seus valores
+                    if (estoqueInicialElem && compraPlanejadaElem && consumoPrevistoElem) {
+                        let estoqueInicial = parseFloat(estoqueInicialElem.value) || 0;
+                        let estoqueFinal = parseFloat(estoquesFinaisElem.value) || 0;
+                        let compraPlanejada = parseFloat(compraPlanejadaElem.value) || 0;
+                        let compraEmergencial = parseFloat(compraEmergencialElem.value) || 0;
+                        let consumoPrevisto = parseFloat(consumoPrevistoElem.value) || 0;
+
+                        // Compras emergenciais checar Primeiro
+                        if (compraPlanejada + estoqueInicial <= consumoPrevisto){
+                            compraEmergencialElem.value = Math.round(consumoPrevisto - compraPlanejada - estoqueInicial)
+                        }
+                        else {
+                            compraEmergencialElem.value = 0
+                        }
+
+                        // Calcular o estoque final e atualizar o estoque inicial do próximo período
+                        let estoqueInicialFinal = estoqueInicial + compraPlanejada - consumoPrevisto;
+                        let estoqueFinalFinal = compraPlanejada - consumoPrevisto + estoqueInicial;
+
+                        let nextEstoqueInicialElem = document.getElementById(`${material}_estoque_inicial_${nextPeriod}`);
+                        if (nextEstoqueInicialElem) {
+                            if (estoqueFinalFinal < 0) {
+                                nextEstoqueInicialElem.value = 0
+                            }
+                            else {
+                                nextEstoqueInicialElem.value = estoqueInicialFinal.toFixed(0);
+                            }
+                        }
+
+                        if (estoquesFinaisElem) {
+                            if (estoqueFinalFinal < 0) {
+                                estoquesFinaisElem.value = 0
+                            }
+                            else {
+                                estoquesFinaisElem.value = estoqueFinalFinal.toFixed(0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Função para adicionar event listeners
+        function adicionarListenersParamaterial(material) {
+            // Adicionar event listeners para todos os inputs de compras planejadas
+            periods.forEach(function(period) {
+                const compraPlanejadaInput = document.getElementById(`${material}_compra_planejada_${period}`);
+
+                if (compraPlanejadaInput) {
+                    compraPlanejadaInput.addEventListener('input', function() {
+                        recalcularEstoques(material);  // Recalcular estoques quando o valor mudar
+                    });
+                }
+            });
+        }
+
+        // Adicionar event listeners para cada material (Fio Algodao, Piquet, Maxim)
+        adicionarListenersParamaterial('fio_algodao');
+        adicionarListenersParamaterial('fio_sintetico');
+        adicionarListenersParamaterial('corantes');
+
+        // Inicialmente calcular os estoques quando a página for carregada
+        recalcularEstoques('fio_algodao');
+        recalcularEstoques('fio_sintetico');
+        recalcularEstoques('corantes');
+
+    });
+
+</script>
 {% endblock %}
