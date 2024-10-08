@@ -148,9 +148,9 @@
                     <input type="number" class="form-control" 
                            id="capacidade_terceirizada_{{ period }}"
                            name="{{ capacidade_teceirizada['Teares'][period].name }}"
-                           value="{{ capacidade_teceirizada['Teares'][period].data }}" readonly>
+                           value="{{ capacidade_teceirizada['Teares'][period].data|int }}" readonly>
                     {% else %}
-                        {{ capacidade_teceirizada['Teares'][period](class="form-control capacidade-terceirizada", id="capacidade_terceirizada_" ~ period) }}
+                        {{ capacidade_teceirizada['Teares'][period](class="form-control capacidade-terceirizada", id="capacidade_terceirizada_" ~ period, step=11200) }}
                     {% endif %}
                 </td>
                 {% endfor %}
