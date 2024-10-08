@@ -15,6 +15,9 @@ teste.py
 dados_excel.xlsx
 pyproject.toml
 dados.txt
+my_data_model_diagram
+my_data_model_diagram.svg
+criar_db_imagem.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
