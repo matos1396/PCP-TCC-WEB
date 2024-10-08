@@ -391,11 +391,6 @@ class RelatorioFinanceiro(db.Model):
     # Relacionamento com o Grupo (backref permite acessar relatórios financeiros a partir do grupo)
     grupo = db.relationship('Grupo', backref=db.backref('relatorios_financeiros', lazy=True))
 
-    # Opcional: adiciona um método para calcular custos totais e resultado operacional se necessário
-    def calcular_custos_totais(self):
-        self.custos_totais = (self.custos_fixos + self.custos_compra_mp + self.custos_estoques +
-                              self.custos_terceirizacao + self.custos_capital + self.custos_vendas_perdidas)
-        self.resultado_operacional = self.receitas_vendas - self.custos_totais
 
 class CustosFixos(db.Model):
     __tablename__ = 'custos_fixos'
@@ -403,7 +398,13 @@ class CustosFixos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
     periodo = db.Column(db.Integer, nullable=False)
-    valor = db.Column(db.Float, nullable=False, default=0.0)
+    c_fixo_tecelagem = db.Column(db.Float, nullable=False, default=0.0)
+    c_fixo_purga_tinturaria = db.Column(db.Float, nullable=False, default=0.0)
+    c_fixo_fixacao_acabamento = db.Column(db.Float, nullable=False, default=0.0)
+    c_fixo_depreciacao_tecelagem = db.Column(db.Float, nullable=False, default=0.0)
+    c_fixo_depreciacao_purga_tinturaria = db.Column(db.Float, nullable=False, default=0.0)
+    c_fixo_depreciacao_fixacao_acabamento = db.Column(db.Float, nullable=False, default=0.0)
+    c_fixo_total = db.Column(db.Float, nullable=False, default=0.0)
 
     grupo = db.relationship('Grupo', backref=db.backref('custos_fixos', lazy=True))
 
@@ -414,7 +415,13 @@ class CustosCompraMP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
     periodo = db.Column(db.Integer, nullable=False)
-    valor = db.Column(db.Float, nullable=False, default=0.0)
+    c_compras_corantes = db.Column(db.Float, nullable=False, default=0.0)
+    c_compras_fio_algodao = db.Column(db.Float, nullable=False, default=0.0)
+    c_compras_fio_sintetico = db.Column(db.Float, nullable=False, default=0.0)
+    c_emergencia_corante = db.Column(db.Float, nullable=False, default=0.0)
+    c_emergencia_fio_algodao = db.Column(db.Float, nullable=False, default=0.0)
+    c_emergencia_fio_sintetico = db.Column(db.Float, nullable=False, default=0.0)
+    c_compras_total = db.Column(db.Float, nullable=False, default=0.0)
 
     grupo = db.relationship('Grupo', backref=db.backref('custos_compra_mp', lazy=True))
 
@@ -425,7 +432,13 @@ class CustosEstoques(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
     periodo = db.Column(db.Integer, nullable=False)
-    valor = db.Column(db.Float, nullable=False, default=0.0)
+    c_estoque_corantes = db.Column(db.Float, nullable=False, default=0.0)
+    c_estoque_fio_algodao = db.Column(db.Float, nullable=False, default=0.0)
+    c_estoque_fio_sintetico = db.Column(db.Float, nullable=False, default=0.0)
+    c_estoque_colmeia = db.Column(db.Float, nullable=False, default=0.0)
+    c_estoque_piquet = db.Column(db.Float, nullable=False, default=0.0)
+    c_estoque_maxim = db.Column(db.Float, nullable=False, default=0.0)
+    c_estoque_total = db.Column(db.Float, nullable=False, default=0.0)
 
     grupo = db.relationship('Grupo', backref=db.backref('custos_estoques', lazy=True))
 
@@ -436,7 +449,10 @@ class CustosTerceirizacao(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
     periodo = db.Column(db.Integer, nullable=False)
-    valor = db.Column(db.Float, nullable=False, default=0.0)
+    c_terc_tecelagem = db.Column(db.Float, nullable=False, default=0.0)
+    c_terc_purga_tinturaria = db.Column(db.Float, nullable=False, default=0.0)
+    c_terc_fixacao_acabamento = db.Column(db.Float, nullable=False, default=0.0)
+    c_terc_total = db.Column(db.Float, nullable=False, default=0.0)
 
     grupo = db.relationship('Grupo', backref=db.backref('custos_terceirizacao', lazy=True))
 
@@ -447,7 +463,12 @@ class CustosCapital(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
     periodo = db.Column(db.Integer, nullable=False)
-    valor = db.Column(db.Float, nullable=False, default=0.0)
+    custo_capital_teares = db.Column(db.Float, nullable=False, default=0.0)
+    custo_capital_jets = db.Column(db.Float, nullable=False, default=0.0)
+    custo_capital_ramas = db.Column(db.Float, nullable=False, default=0.0)
+    custo_capital_mp = db.Column(db.Float, nullable=False, default=0.0)
+    custo_capital_pa = db.Column(db.Float, nullable=False, default=0.0)
+    custo_capital_total = db.Column(db.Float, nullable=False, default=0.0)
 
     grupo = db.relationship('Grupo', backref=db.backref('custos_capital', lazy=True))
 
@@ -458,7 +479,10 @@ class CustosVendasPerdidas(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
     periodo = db.Column(db.Integer, nullable=False)
-    valor = db.Column(db.Float, nullable=False, default=0.0)
+    c_vp_comeia = db.Column(db.Float, nullable=False, default=0.0)
+    c_vp_piquet = db.Column(db.Float, nullable=False, default=0.0)
+    c_vp_maxim = db.Column(db.Float, nullable=False, default=0.0)
+    c_vp_total = db.Column(db.Float, nullable=False, default=0.0)
 
     grupo = db.relationship('Grupo', backref=db.backref('custos_vendas_perdidas', lazy=True))
 
@@ -469,7 +493,11 @@ class ReceitasVendas(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
     periodo = db.Column(db.Integer, nullable=False)
-    valor = db.Column(db.Float, nullable=False, default=0.0)
+    r_vendas_colmeia = db.Column(db.Float, nullable=False, default=0.0)
+    r_vendas_piquet = db.Column(db.Float, nullable=False, default=0.0)
+    r_vendas_maxim = db.Column(db.Float, nullable=False, default=0.0)
+    r_vendas_equip = db.Column(db.Float, nullable=False, default=0.0)
+    r_vendas_total = db.Column(db.Float, nullable=False, default=0.0)
 
     grupo = db.relationship('Grupo', backref=db.backref('receitas_vendas', lazy=True))
 

@@ -3,7 +3,11 @@ from models import (Grupo, EstiloDemanda,
                     PrevisaoDemanda, PlanoCompras,
                     PlanoProducao, TaxaProducao,
                     Custos, CapacidadeJets,
-                    CapacidadeRamas, CapacidadeTeares)
+                    CapacidadeRamas, CapacidadeTeares,
+                    RelatorioFinanceiro, CustosFixos,
+                    CustosCapital, CustosTerceirizacao,
+                    CustosCompraMP, ReceitasVendas,
+                    CustosEstoques, CustosVendasPerdidas)
 
 periods = list(range(13, 25))
 
@@ -44,20 +48,15 @@ taxas_producao = [
 
 def criar_planos_iniciais_para_grupo(grupo):
     periods = range(13, 25)
-    # Obter o estilo de demanda do grupo
     estilo = grupo.estilo_demanda.nome_estilo
 
     # Criar planos de produção iniciais
-    #for period in periods:
     for familia, estoque in estoques_iniciais_producao[estilo].items():
-
         existing_plan = PlanoProducao.query.filter_by(
-                        periodo_numero=grupo.periodo_atual+1, familia=familia, grupo_id=grupo.id
-                        ).order_by(PlanoProducao.periodo_numero.desc()).first()
-
+            periodo_numero=grupo.periodo_atual + 1, familia=familia, grupo_id=grupo.id
+        ).order_by(PlanoProducao.periodo_numero.desc()).first()
         if existing_plan:
             existing_plan.estoques_iniciais = estoque
-
 
     db.session.commit()
 
@@ -65,66 +64,185 @@ def criar_planos_iniciais_para_grupo(grupo):
     for material, estoque in estoques_iniciais_compras[estilo].items():
         plano_compras = PlanoCompras(
             grupo_id=grupo.id,
-            periodo_numero=grupo.periodo_atual+1,  # Período atual + 1 para estoque inicial
+            periodo_numero=grupo.periodo_atual + 1,
             periodo_modificado=grupo.periodo_atual,
             material=material,
             estoques_iniciais=estoque,
-            compra_planejada=0  # Inicialmente vazio
+            compra_planejada=0
         )
         db.session.add(plano_compras)
 
+    for period in periods:
+        for material in ["Corantes", "Fio Algodao", "Fio Sintetico"]:
+            existing_plan = PlanoCompras.query.filter_by(
+                periodo_numero=period, 
+                periodo_modificado=grupo.periodo_atual,
+                material=material,
+                grupo_id=grupo.id).order_by(PlanoCompras.periodo_numero.desc()).first()
 
-    # Criar tabela capacidades maquinas
+            if existing_plan:
+                existing_plan.compra_planejada = 0
+
+            else:
+                plano_compras = PlanoCompras(
+                grupo_id=grupo.id,
+                periodo_numero=period,
+                periodo_modificado=grupo.periodo_atual,
+                material=material,
+                compra_planejada=0
+            )
+                db.session.add(plano_compras)
+
+    # Criar capacidade para máquinas: Teares, Ramas e Jets
     for period in periods:
         capacidade_teares = CapacidadeTeares(
             grupo_id=grupo.id,
-                periodo_numero=period,
-                periodo_modificado=grupo.periodo_atual,
-
-                quantidade = grupo.estilo_demanda.quantidade_teares,
-                numero_turnos = 2,
-                capacidade_necessaria = 0,
-                capacidade_terceirizada = 0,
-                produtividade = 0.1
-
+            periodo_numero=period,
+            periodo_modificado=grupo.periodo_atual,
+            quantidade=grupo.estilo_demanda.quantidade_teares,
+            numero_turnos=2,
+            capacidade_necessaria=0,
+            capacidade_terceirizada=0,
+            produtividade=0.1
         )
         db.session.add(capacidade_teares)
 
-    for period in periods:
-        capacidade_teares = CapacidadeRamas(
+        capacidade_ramas = CapacidadeRamas(
             grupo_id=grupo.id,
-                periodo_numero=period,
-                periodo_modificado=grupo.periodo_atual,
-
-                quantidade = grupo.estilo_demanda.quantidade_ramas,
-                numero_turnos = 2,
-                capacidade_necessaria = 0,
-                capacidade_terceirizada = 0,
-                produtividade = 0.1
-
+            periodo_numero=period,
+            periodo_modificado=grupo.periodo_atual,
+            quantidade=grupo.estilo_demanda.quantidade_ramas,
+            numero_turnos=2,
+            capacidade_necessaria=0,
+            capacidade_terceirizada=0,
+            produtividade=0.1
         )
-        db.session.add(capacidade_teares)
+        db.session.add(capacidade_ramas)
 
-    for period in periods:
-        capacidade_teares = CapacidadeJets(
+        capacidade_jets = CapacidadeJets(
             grupo_id=grupo.id,
-                periodo_numero=period,
-                periodo_modificado=grupo.periodo_atual,
-
-                quantidade_tipo1 = grupo.estilo_demanda.quantidade_jets_tipo1,
-                quantidade_tipo2 = grupo.estilo_demanda.quantidade_jets_tipo2,
-                quantidade_tipo3 = grupo.estilo_demanda.quantidade_jets_tipo3,
-                capacidade_tipo1 = 480,
-                capacidade_tipo2 = 120,
-                capacidade_tipo3 = 80,
-
-                numero_turnos = 2,
-                capacidade_necessaria = 0,
-                capacidade_terceirizada = 0,
-                produtividade = 0.1
-
+            periodo_numero=period,
+            periodo_modificado=grupo.periodo_atual,
+            quantidade_tipo1=grupo.estilo_demanda.quantidade_jets_tipo1,
+            quantidade_tipo2=grupo.estilo_demanda.quantidade_jets_tipo2,
+            quantidade_tipo3=grupo.estilo_demanda.quantidade_jets_tipo3,
+            capacidade_tipo1=480,
+            capacidade_tipo2=120,
+            capacidade_tipo3=80,
+            numero_turnos=2,
+            capacidade_necessaria=0,
+            capacidade_terceirizada=0,
+            produtividade=0.1
         )
-        db.session.add(capacidade_teares)
+        db.session.add(capacidade_jets)
+
+# Inicializar RelatorioFinanceiro e demais tabelas financeiras para cada período
+    for period in periods:
+        # Relatório financeiro
+        relatorio_financeiro = RelatorioFinanceiro(
+            grupo_id=grupo.id,
+            periodo=period,
+            custos_fixos=0.0,
+            custos_compra_mp=0.0,
+            custos_estoques=0.0,
+            custos_terceirizacao=0.0,
+            custos_capital=0.0,
+            custos_vendas_perdidas=0.0,
+            custos_totais=0.0,
+            receitas_vendas=0.0,
+            resultado_operacional=0.0,
+            ro_acumulado=0.0
+        )
+        db.session.add(relatorio_financeiro)
+
+        # Custos Fixos
+        custos_fixos = CustosFixos(
+            grupo_id=grupo.id,
+            periodo=period,
+            c_fixo_tecelagem=0.0,
+            c_fixo_purga_tinturaria=0.0,
+            c_fixo_fixacao_acabamento=0.0,
+            c_fixo_depreciacao_tecelagem=0.0,
+            c_fixo_depreciacao_purga_tinturaria=0.0,
+            c_fixo_depreciacao_fixacao_acabamento=0.0,
+            c_fixo_total=0.0
+        )
+        db.session.add(custos_fixos)
+
+        # Custos de Compra MP
+        custos_compra_mp = CustosCompraMP(
+            grupo_id=grupo.id,
+            periodo=period,
+            c_compras_corantes=0.0,
+            c_compras_fio_algodao=0.0,
+            c_compras_fio_sintetico=0.0,
+            c_emergencia_corante=0.0,
+            c_emergencia_fio_algodao=0.0,
+            c_emergencia_fio_sintetico=0.0,
+            c_compras_total=0.0
+        )
+        db.session.add(custos_compra_mp)
+
+        # Custos de Estoque
+        custos_estoques = CustosEstoques(
+            grupo_id=grupo.id,
+            periodo=period,
+            c_estoque_corantes=0.0,
+            c_estoque_fio_algodao=0.0,
+            c_estoque_fio_sintetico=0.0,
+            c_estoque_colmeia=0.0,
+            c_estoque_piquet=0.0,
+            c_estoque_maxim=0.0,
+            c_estoque_total=0.0
+        )
+        db.session.add(custos_estoques)
+
+        # Custos de Terceirização
+        custos_terceirizacao = CustosTerceirizacao(
+            grupo_id=grupo.id,
+            periodo=period,
+            c_terc_tecelagem=0.0,
+            c_terc_purga_tinturaria=0.0,
+            c_terc_fixacao_acabamento=0.0,
+            c_terc_total=0.0
+        )
+        db.session.add(custos_terceirizacao)
+
+        # Custos de Capital
+        custos_capital = CustosCapital(
+            grupo_id=grupo.id,
+            periodo=period,
+            custo_capital_teares=0.0,
+            custo_capital_jets=0.0,
+            custo_capital_ramas=0.0,
+            custo_capital_mp=0.0,
+            custo_capital_pa=0.0,
+            custo_capital_total=0.0
+        )
+        db.session.add(custos_capital)
+
+        # Custos de Vendas Perdidas
+        custos_vendas_perdidas = CustosVendasPerdidas(
+            grupo_id=grupo.id,
+            periodo=period,
+            c_vp_comeia=0.0,
+            c_vp_piquet=0.0,
+            c_vp_maxim=0.0,
+            c_vp_total=0.0
+        )
+        db.session.add(custos_vendas_perdidas)
+
+        # Receitas de Vendas
+        receitas_vendas = ReceitasVendas(
+            grupo_id=grupo.id,
+            periodo=period,
+            r_vendas_colmeia=0.0,
+            r_vendas_piquet=0.0,
+            r_vendas_maxim=0.0,
+            r_vendas_equip=0.0,
+            r_vendas_total=0.0
+        )
+        db.session.add(receitas_vendas)
 
     # Salvar as mudanças no banco de dados
     db.session.commit()
