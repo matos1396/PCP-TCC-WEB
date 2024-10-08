@@ -369,6 +369,114 @@ class TaxaProducao(db.Model):
     estilo_demanda = db.relationship('EstiloDemanda', backref=db.backref('taxas_producao', lazy=True))
 
 
+class RelatorioFinanceiro(db.Model):
+    __tablename__ = 'relatorio_financeiro'
+
+    id = db.Column(db.Integer, primary_key=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)  # Associação com o Grupo
+    periodo = db.Column(db.Integer, nullable=False)
+
+    # Colunas de custos e receitas
+    custos_fixos = db.Column(db.Float, nullable=False, default=0.0)
+    custos_compra_mp = db.Column(db.Float, nullable=False, default=0.0)
+    custos_estoques = db.Column(db.Float, nullable=False, default=0.0)
+    custos_terceirizacao = db.Column(db.Float, nullable=False, default=0.0)
+    custos_capital = db.Column(db.Float, nullable=False, default=0.0)
+    custos_vendas_perdidas = db.Column(db.Float, nullable=False, default=0.0)
+    custos_totais = db.Column(db.Float, nullable=False, default=0.0)
+    receitas_vendas = db.Column(db.Float, nullable=False, default=0.0)
+    resultado_operacional = db.Column(db.Float, nullable=False, default=0.0)
+    ro_acumulado = db.Column(db.Float, nullable=False, default=0.0)
+
+    # Relacionamento com o Grupo (backref permite acessar relatórios financeiros a partir do grupo)
+    grupo = db.relationship('Grupo', backref=db.backref('relatorios_financeiros', lazy=True))
+
+    # Opcional: adiciona um método para calcular custos totais e resultado operacional se necessário
+    def calcular_custos_totais(self):
+        self.custos_totais = (self.custos_fixos + self.custos_compra_mp + self.custos_estoques +
+                              self.custos_terceirizacao + self.custos_capital + self.custos_vendas_perdidas)
+        self.resultado_operacional = self.receitas_vendas - self.custos_totais
+
+class CustosFixos(db.Model):
+    __tablename__ = 'custos_fixos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    periodo = db.Column(db.Integer, nullable=False)
+    valor = db.Column(db.Float, nullable=False, default=0.0)
+
+    grupo = db.relationship('Grupo', backref=db.backref('custos_fixos', lazy=True))
+
+
+class CustosCompraMP(db.Model):
+    __tablename__ = 'custos_compra_mp'
+
+    id = db.Column(db.Integer, primary_key=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    periodo = db.Column(db.Integer, nullable=False)
+    valor = db.Column(db.Float, nullable=False, default=0.0)
+
+    grupo = db.relationship('Grupo', backref=db.backref('custos_compra_mp', lazy=True))
+
+
+class CustosEstoques(db.Model):
+    __tablename__ = 'custos_estoques'
+
+    id = db.Column(db.Integer, primary_key=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    periodo = db.Column(db.Integer, nullable=False)
+    valor = db.Column(db.Float, nullable=False, default=0.0)
+
+    grupo = db.relationship('Grupo', backref=db.backref('custos_estoques', lazy=True))
+
+
+class CustosTerceirizacao(db.Model):
+    __tablename__ = 'custos_terceirizacao'
+
+    id = db.Column(db.Integer, primary_key=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    periodo = db.Column(db.Integer, nullable=False)
+    valor = db.Column(db.Float, nullable=False, default=0.0)
+
+    grupo = db.relationship('Grupo', backref=db.backref('custos_terceirizacao', lazy=True))
+
+
+class CustosCapital(db.Model):
+    __tablename__ = 'custos_capital'
+
+    id = db.Column(db.Integer, primary_key=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    periodo = db.Column(db.Integer, nullable=False)
+    valor = db.Column(db.Float, nullable=False, default=0.0)
+
+    grupo = db.relationship('Grupo', backref=db.backref('custos_capital', lazy=True))
+
+
+class CustosVendasPerdidas(db.Model):
+    __tablename__ = 'custos_vendas_perdidas'
+
+    id = db.Column(db.Integer, primary_key=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    periodo = db.Column(db.Integer, nullable=False)
+    valor = db.Column(db.Float, nullable=False, default=0.0)
+
+    grupo = db.relationship('Grupo', backref=db.backref('custos_vendas_perdidas', lazy=True))
+
+
+class ReceitasVendas(db.Model):
+    __tablename__ = 'receitas_vendas'
+
+    id = db.Column(db.Integer, primary_key=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    periodo = db.Column(db.Integer, nullable=False)
+    valor = db.Column(db.Float, nullable=False, default=0.0)
+
+    grupo = db.relationship('Grupo', backref=db.backref('receitas_vendas', lazy=True))
+
+
+
+
+
 class Custos(db.Model):
     __tablename__ = 'custos'
 
