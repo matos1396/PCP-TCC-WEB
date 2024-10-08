@@ -226,16 +226,11 @@ class CapacidadeJets(db.Model):
 
     # Relacionamento com TaxaProducao
     taxas_producao = db.relationship('TaxaProducao', secondary=taxa_jets_associativa, backref='capacidade_jets')
-    
+
     # Atualizar capacidade instalada automaticamente
     @staticmethod
     def _calcular_capacidade_instalada(mapper, connection, target):
-        print(target.quantidade_tipo1)
-        print(target.quantidade_tipo2)
-        print(target.quantidade_tipo3)
-        print(target.numero_turnos)
         if None not in (target.quantidade_tipo1, target.quantidade_tipo2, target.quantidade_tipo3, target.numero_turnos):
-            print("ENTROU")
             target.capacidade_instalada_tipo1 = (7 * 20 * target.numero_turnos * target.quantidade_tipo1 * target.capacidade_tipo1) / 4.5 # Carga Média entre Purga/Tinturaria
             target.capacidade_instalada_tipo2 = (7 * 20 * target.numero_turnos * target.quantidade_tipo2 * target.capacidade_tipo2) / 4.5 # Carga Média entre Purga/Tinturaria
             target.capacidade_instalada_tipo3 = (7 * 20 * target.numero_turnos * target.quantidade_tipo3 * target.capacidade_tipo3) / 4.5 # Carga Média entre Purga/Tinturaria
