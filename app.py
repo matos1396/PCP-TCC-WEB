@@ -189,7 +189,7 @@ def production():
         ####### Fim atualização ######
 
         db.session.commit()
-        flash('Plano de produção salvo com sucesso!', 'success')
+        flash(f'Plano de produção salvo com sucesso! #Debug Time = {execution_time:.4f} segundos', 'success')
         return redirect(url_for('dashboard'))
 
     elif request.method == 'GET':
