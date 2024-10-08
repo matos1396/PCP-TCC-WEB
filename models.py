@@ -127,7 +127,7 @@ class CapacidadeTeares(db.Model):
     capacidade_disponivel = db.Column(db.Float, nullable=True)
     capacidade_necessaria = db.Column(db.Float, nullable=True)
     capacidade_instalada = db.Column(db.Float, nullable=True)
-    capacidade_terceirizada = db.Column(db.Float, nullable=True, default=0)
+    capacidade_terceirizada = db.Column(db.Integer, nullable=True, default=0)
 
     colmeia = db.Column(db.Float, nullable=True)
     piquet = db.Column(db.Float, nullable=True)
@@ -135,6 +135,8 @@ class CapacidadeTeares(db.Model):
     setup = db.Column(db.Float, nullable=True)
     produtividade = db.Column(db.Float, nullable=True, default=0.1)
     numero_turnos = db.Column(db.Integer, nullable=True, default=2)
+
+    validacao = db.Column(db.Boolean, nullable=False)
 
     # Relacionamento com TaxaProducao
     taxas_producao = db.relationship('TaxaProducao', secondary=taxa_teares_associativa, backref='capacidade_teares')
@@ -154,6 +156,7 @@ class CapacidadeTeares(db.Model):
         CapacidadeTeares._calcular_capacidade_disponivel(target)
         CapacidadeTeares._calcular_produtividade(target)
         CapacidadeTeares._calcular_tempo_setup(target)
+        CapacidadeTeares._validacao(target)
 
     @staticmethod
     def _calcular_capacidade_disponivel(target):
@@ -175,6 +178,12 @@ class CapacidadeTeares(db.Model):
             target.setup = target.quantidade * 4 * 0.25
         else:
             target.setup = 0
+
+    @staticmethod
+    def _validacao(target):
+        if target.capacidade_disponivel >= target.capacidade_necessaria:
+            target.validacao = True
+        else: target.validacao = False
 
     @classmethod # Event listener para atualizar valores quando atualizar db
     def __declare_last__(cls):
@@ -200,7 +209,7 @@ class CapacidadeJets(db.Model):
     capacidade_tipo3 = db.Column(db.Float, nullable=True)
     capacidade_disponivel = db.Column(db.Float, nullable=True)
     capacidade_necessaria = db.Column(db.Float, nullable=True)
-    capacidade_terceirizada = db.Column(db.Float, nullable=True)
+    capacidade_terceirizada = db.Column(db.Integer, nullable=True)
     capacidade_instalada = db.Column(db.Float, nullable=True)
     capacidade_instalada_tipo1 = db.Column(db.Float, nullable=True)
     capacidade_instalada_tipo2 = db.Column(db.Float, nullable=True)
@@ -212,6 +221,8 @@ class CapacidadeJets(db.Model):
     setup = db.Column(db.Float, nullable=True)
     produtividade = db.Column(db.Float, nullable=True, default=0.1)
     numero_turnos = db.Column(db.Integer, nullable=True, default=2)
+
+    validacao = db.Column(db.Boolean, nullable=False)
 
     # Relacionamento com TaxaProducao
     taxas_producao = db.relationship('TaxaProducao', secondary=taxa_jets_associativa, backref='capacidade_jets')
@@ -235,6 +246,7 @@ class CapacidadeJets(db.Model):
         CapacidadeJets._calcular_capacidade_disponivel(target)
         CapacidadeJets._calcular_produtividade(target)
         CapacidadeJets._calcular_tempo_setup(target)
+        CapacidadeJets._validacao(target)
 
     @staticmethod
     def _calcular_capacidade_disponivel(target):
@@ -257,6 +269,13 @@ class CapacidadeJets(db.Model):
         else:
             target.setup = 0
 
+    @staticmethod
+    def _validacao(target):
+        if target.capacidade_disponivel >= target.capacidade_necessaria:
+            target.validacao = True
+        else: target.validacao = False
+
+
     @classmethod # Event listener para atualizar valores quando atualizar db
     def __declare_last__(cls):
         event.listen(cls, 'before_update', cls._calcular_capacidade_instalada)
@@ -275,7 +294,7 @@ class CapacidadeRamas(db.Model):
     capacidade_disponivel = db.Column(db.Float, nullable=True)
     capacidade_necessaria = db.Column(db.Float, nullable=True)
     capacidade_instalada = db.Column(db.Float, nullable=True)
-    capacidade_terceirizada = db.Column(db.Float, nullable=True)
+    capacidade_terceirizada = db.Column(db.Integer, nullable=True)
 
     colmeia = db.Column(db.Float, nullable=True)
     piquet = db.Column(db.Float, nullable=True)
@@ -283,6 +302,8 @@ class CapacidadeRamas(db.Model):
     setup = db.Column(db.Float, nullable=True)
     produtividade = db.Column(db.Float, nullable=True, default=0.1)
     numero_turnos = db.Column(db.Integer, nullable=True, default=2)
+
+    validacao = db.Column(db.Boolean, nullable=False)
 
     # Relacionamento com TaxaProducao
     taxas_producao = db.relationship('TaxaProducao', secondary=taxa_ramas_associativa, backref='capacidade_ramas')
@@ -301,6 +322,7 @@ class CapacidadeRamas(db.Model):
         CapacidadeRamas._calcular_capacidade_disponivel(target)
         CapacidadeRamas._calcular_produtividade(target)
         CapacidadeRamas._calcular_tempo_setup(target)
+        CapacidadeRamas._validacao(target)
 
     @staticmethod
     def _calcular_capacidade_disponivel(target):
@@ -322,6 +344,12 @@ class CapacidadeRamas(db.Model):
             target.setup = target.quantidade * 4 * 0.25
         else:
             target.setup = 0
+
+    @staticmethod
+    def _validacao(target):
+        if target.capacidade_disponivel >= target.capacidade_necessaria:
+            target.validacao = True
+        else: target.validacao = False
 
     @classmethod # Event listener para atualizar valores quando atualizar db
     def __declare_last__(cls):

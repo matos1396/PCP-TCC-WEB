@@ -83,6 +83,7 @@ def criar_planos_iniciais_para_grupo(grupo):
 
                 quantidade = grupo.estilo_demanda.quantidade_teares,
                 numero_turnos = 2,
+                capacidade_necessaria = 0,
                 capacidade_terceirizada = 0,
                 produtividade = 0.1
 
@@ -97,6 +98,7 @@ def criar_planos_iniciais_para_grupo(grupo):
 
                 quantidade = grupo.estilo_demanda.quantidade_ramas,
                 numero_turnos = 2,
+                capacidade_necessaria = 0,
                 capacidade_terceirizada = 0,
                 produtividade = 0.1
 
@@ -117,6 +119,7 @@ def criar_planos_iniciais_para_grupo(grupo):
                 capacidade_tipo3 = 80,
 
                 numero_turnos = 2,
+                capacidade_necessaria = 0,
                 capacidade_terceirizada = 0,
                 produtividade = 0.1
 

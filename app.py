@@ -697,8 +697,19 @@ def fixacao_acabamento():
 @app.route('/simulate', methods=['POST', 'GET'])
 @login_required
 def simulate():
+    periods = range(13, 25)
     # Pega o grupo completo do usuário autenticado
     grupo = current_user
+
+    capacidade_teares_nao_validado = CapacidadeTeares.query.filter_by(grupo_id=grupo.id, validacao=False).first()
+    capacidade_jets_nao_validado = CapacidadeJets.query.filter_by(grupo_id=grupo.id, validacao=False).first()
+    capacidade_ramas_nao_validado = CapacidadeRamas.query.filter_by(grupo_id=grupo.id, validacao=False).first()
+
+    if capacidade_teares_nao_validado or capacidade_jets_nao_validado or capacidade_ramas_nao_validado:
+        flash("Existem configurações de capacidade necessária não atendidas. Verifique as tabelas das máquinas antes de continuar a simulação.", "warning")
+        return redirect(url_for('dashboard'))
+
+    # Se tudo OK executa a simulacao
 
     simulacao.executar_simulacao(grupo)
 
