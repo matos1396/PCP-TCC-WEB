@@ -1,5 +1,9 @@
 from app import db, app
-from models import Grupo, EstiloDemanda, PrevisaoDemanda, PlanoCompras, PlanoProducao, TaxaProducao, Custos
+from models import (Grupo, EstiloDemanda,
+                    PrevisaoDemanda, PlanoCompras,
+                    PlanoProducao, TaxaProducao,
+                    Custos, CapacidadeJets,
+                    CapacidadeRamas, CapacidadeTeares)
 
 periods = list(range(13, 25))
 
@@ -39,6 +43,7 @@ taxas_producao = [
 
 
 def criar_planos_iniciais_para_grupo(grupo):
+    periods = range(13, 25)
     # Obter o estilo de demanda do grupo
     estilo = grupo.estilo_demanda.nome_estilo
 
@@ -60,7 +65,7 @@ def criar_planos_iniciais_para_grupo(grupo):
     for material, estoque in estoques_iniciais_compras[estilo].items():
         plano_compras = PlanoCompras(
             grupo_id=grupo.id,
-            periodo_numero=grupo.periodo_atual+1,  # Período atual
+            periodo_numero=grupo.periodo_atual+1,  # Período atual + 1 para estoque inicial
             periodo_modificado=grupo.periodo_atual,
             material=material,
             estoques_iniciais=estoque,
@@ -69,6 +74,54 @@ def criar_planos_iniciais_para_grupo(grupo):
         db.session.add(plano_compras)
 
 
+    # Criar tabela capacidades maquinas
+    for period in periods:
+        capacidade_teares = CapacidadeTeares(
+            grupo_id=grupo.id,
+                periodo_numero=period,
+                periodo_modificado=grupo.periodo_atual,
+
+                quantidade = grupo.estilo_demanda.quantidade_teares,
+                numero_turnos = 2,
+                capacidade_terceirizada = 0,
+                produtividade = 0.1
+
+        )
+        db.session.add(capacidade_teares)
+
+    for period in periods:
+        capacidade_teares = CapacidadeRamas(
+            grupo_id=grupo.id,
+                periodo_numero=period,
+                periodo_modificado=grupo.periodo_atual,
+
+                quantidade = grupo.estilo_demanda.quantidade_ramas,
+                numero_turnos = 2,
+                capacidade_terceirizada = 0,
+                produtividade = 0.1
+
+        )
+        db.session.add(capacidade_teares)
+
+    for period in periods:
+        capacidade_teares = CapacidadeJets(
+            grupo_id=grupo.id,
+                periodo_numero=period,
+                periodo_modificado=grupo.periodo_atual,
+
+                quantidade_tipo1 = grupo.estilo_demanda.quantidade_jets_tipo1,
+                quantidade_tipo2 = grupo.estilo_demanda.quantidade_jets_tipo2,
+                quantidade_tipo3 = grupo.estilo_demanda.quantidade_jets_tipo3,
+                capacidade_tipo1 = 480,
+                capacidade_tipo2 = 120,
+                capacidade_tipo3 = 80,
+
+                numero_turnos = 2,
+                capacidade_terceirizada = 0,
+                produtividade = 0.1
+
+        )
+        db.session.add(capacidade_teares)
 
     # Salvar as mudanças no banco de dados
     db.session.commit()

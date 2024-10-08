@@ -152,10 +152,10 @@
                     <!-- Campo somente leitura para períodos passados -->
                     <input type="number" class="form-control numero-turnos" 
                            id="numero_turnos_{{ period }}"
-                           name="{{ capacidade_disponivel['Jet'][period].name }}"
-                           value="{{ capacidade_disponivel['Jet'][period].data }}" readonly>
+                           name="{{ numero_turnos['Jet'][period].name }}"
+                           value="{{ numero_turnos['Jet'][period].data }}" readonly>
                     {% else %}
-                        {{ capacidade_disponivel['Jet'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
+                        {{ numero_turnos['Jet'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
                     {% endif %}
                 </td>
                 {% endfor %}

@@ -132,10 +132,10 @@
                     <!-- Campo somente leitura para períodos passados -->
                     <input type="number" class="form-control numero-turnos" 
                            id="numero_turnos_{{ period }}"
-                           name="{{ capacidade_disponivel['Teares'][period].name }}"
-                           value="{{ capacidade_disponivel['Teares'][period].data }}" readonly>
+                           name="{{ numero_turnos['Teares'][period].name }}"
+                           value="{{ numero_turnos['Teares'][period].data }}" readonly>
                     {% else %}
-                        {{ capacidade_disponivel['Teares'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
+                        {{ numero_turnos['Teares'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
                     {% endif %}
                 </td>
                 {% endfor %}
