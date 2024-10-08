@@ -1,4 +1,11 @@
-from models import Grupo, PlanoProducao, PlanoCompras, Custos, CapacidadeTeares, CapacidadeJets, CapacidadeRamas, TaxaProducao
+from models import (PlanoCompras,
+                    PlanoProducao, TaxaProducao,
+                    Custos, CapacidadeJets,
+                    CapacidadeRamas, CapacidadeTeares,
+                    RelatorioFinanceiro, CustosFixos,
+                    CustosCapital, CustosTerceirizacao,
+                    CustosCompraMP, ReceitasVendas,
+                    CustosEstoques, CustosVendasPerdidas)
 from app import db
 import time
 
@@ -6,110 +13,125 @@ def atualizar_plano_compras(grupo):
     periods = list(range(13, 25))
     periodo_atual = grupo.periodo_atual
 
+    # Pré-carregar todos os registros de PlanoCompras para o grupo e períodos de interesse
+    planos_compra = PlanoCompras.query.filter_by(grupo_id=grupo.id, periodo_modificado=periodo_atual).filter(
+        PlanoCompras.periodo_numero.in_(periods)
+    ).all()
+
+    # Organizar os registros por período e material para acesso rápido
+    planos_compra_dict = {(pc.periodo_numero, pc.material): pc for pc in planos_compra}
+
+    novos_planos = []  # Lista para armazenar novos registros
+
     for material in ['Fio Algodao', 'Fio Sintetico', 'Corantes']:
         for period in periods:
-            plano_compra = PlanoCompras.query.filter_by(grupo_id = grupo.id,
-                                                periodo_numero = period,
-                                                periodo_modificado = periodo_atual,
-                                                material=material).order_by(
-                                                    PlanoCompras.periodo_numero.asc()).first()
+            # Verificar se existe um plano de compras para o período e material atual
+            plano_compra = planos_compra_dict.get((period, material))
 
+            # Calcular o consumo previsto
             consumo_previsto = calcular_consumo_previsto(grupo, material, period, periodo_atual)
+
             if plano_compra:
+                # Atualizar o registro existente
                 plano_compra.consumo_previsto = consumo_previsto
             else:
-                new_plan = PlanoCompras(
-                                grupo_id=grupo.id,
-                                periodo_numero=period,
-                                periodo_modificado=periodo_atual,
-                                material= material,
+                # Criar novo plano de compras para o período e material
+                novo_plano = PlanoCompras(
+                    grupo_id=grupo.id,
+                    periodo_numero=period,
+                    periodo_modificado=periodo_atual,
+                    material=material,
+                    consumo_previsto=consumo_previsto
+                )
+                novos_planos.append(novo_plano)
 
-                                consumo_previsto = consumo_previsto
-                            )
-
-                db.session.add(new_plan)
+    # Adicionar todos os novos registros de uma vez
+    db.session.add_all(novos_planos)
     db.session.commit()
 
 
 def atualizar_capacidade_maquinas(grupo):
-
-    ### TEST
-    start_time = time.time()
-
     periods = list(range(13, 25))
     periodo_atual = grupo.periodo_atual
+
+    # Pré-carregar registros de PlanoProducao para o grupo e períodos
+    planos_producao = PlanoProducao.query.filter(
+        PlanoProducao.grupo_id == grupo.id,
+        PlanoProducao.periodo_numero.in_(periods)
+    ).order_by(PlanoProducao.periodo_modificado.desc()).all()
+    planos_producao_dict = {(pp.periodo_numero, pp.familia): pp for pp in planos_producao}
+
+    # Pré-carregar registros de CapacidadeTeares, CapacidadeRamas, e CapacidadeJets
+    capacidades_teares = CapacidadeTeares.query.filter(
+        CapacidadeTeares.grupo_id == grupo.id,
+        CapacidadeTeares.periodo_numero.in_(periods),
+        CapacidadeTeares.periodo_modificado == periodo_atual
+    ).all()
+    capacidades_teares_dict = {ct.periodo_numero: ct for ct in capacidades_teares}
+
+    capacidades_ramas = CapacidadeRamas.query.filter(
+        CapacidadeRamas.grupo_id == grupo.id,
+        CapacidadeRamas.periodo_numero.in_(periods),
+        CapacidadeRamas.periodo_modificado == periodo_atual
+    ).all()
+    capacidades_ramas_dict = {cr.periodo_numero: cr for cr in capacidades_ramas}
+
+    capacidades_jets = CapacidadeJets.query.filter(
+        CapacidadeJets.grupo_id == grupo.id,
+        CapacidadeJets.periodo_numero.in_(periods),
+        CapacidadeJets.periodo_modificado == periodo_atual
+    ).all()
+    capacidades_jets_dict = {cj.periodo_numero: cj for cj in capacidades_jets}
+
+    # Pré-carregar taxas de produção
+    taxas_producao = TaxaProducao.query.filter(
+        TaxaProducao.tipo_equipamento.in_(["Teares", "Ramas"]),
+        TaxaProducao.processo.in_(["Malharia", "Fixação", "Acabamento"])
+    ).all()
+    taxas_dict = {(tp.tipo_equipamento, tp.processo, tp.familia): tp.taxa for tp in taxas_producao}
+
     for familia in ['Colmeia', 'Piquet', 'Maxim']:
-            for period in periods:
-                plano_producao = PlanoProducao.query.filter_by(grupo_id=grupo.id,
-                                                              familia=familia,
-                                                              periodo_numero=period).order_by(
-                                                                    PlanoProducao.periodo_modificado.desc()).first()
-                capacidade_teares = CapacidadeTeares.query.filter_by(grupo_id = grupo.id,
-                                                            periodo_numero = period,
-                                                            periodo_modificado = periodo_atual).order_by(
-                                                                CapacidadeTeares.periodo_numero.asc()).first()
-                capacidade_ramas = CapacidadeRamas.query.filter_by(grupo_id = grupo.id,
-                                                            periodo_numero = period,
-                                                            periodo_modificado = periodo_atual).order_by(
-                                                                CapacidadeRamas.periodo_numero.asc()).first()
+        for period in periods:
+            plano_producao = planos_producao_dict.get((period, familia))
+            capacidade_teares = capacidades_teares_dict.get(period)
+            capacidade_ramas = capacidades_ramas_dict.get(period)
+            capacidade_jets = capacidades_jets_dict.get(period)
 
-                capacidade_jets = CapacidadeJets.query.filter_by(grupo_id = grupo.id,
-                                           periodo_numero = period,
-                                           periodo_modificado = periodo_atual).order_by(
-                                               CapacidadeJets.periodo_numero.asc()).first()
+            # Obter as taxas de produção
+            taxa_tear = taxas_dict.get(("Teares", "Malharia", familia), 0)
+            taxa_rama_1 = taxas_dict.get(("Ramas", "Fixação", familia), 0)
+            taxa_rama_2 = taxas_dict.get(("Ramas", "Acabamento", familia), 0)
 
-                ### Taxas Máquinas/Processos ###
-                # TODO: Fazer para Jets e otimizar
-                taxa_tear = TaxaProducao.query.filter_by(tipo_equipamento="Teares", processo = "Malharia", familia=familia).first().taxa
-                taxa_rama_1 = TaxaProducao.query.filter_by(tipo_equipamento="Ramas", processo = "Fixação", familia=familia).first().taxa
-                taxa_rama_2 = TaxaProducao.query.filter_by(tipo_equipamento="Ramas", processo = "Acabamento", familia=familia).first().taxa
+            if plano_producao:
+                producao_planejada = plano_producao.producao_planejada
 
+                # Calcular e atribuir os valores para cada família e máquina
+                t_tear = producao_planejada * taxa_tear
+                t_rama = producao_planejada * (taxa_rama_1 + taxa_rama_2)
+                t_jet = producao_planejada
 
-                if familia == "Colmeia":
-                    t_tear = plano_producao.producao_planejada * taxa_tear
-                    t_rama = plano_producao.producao_planejada * (taxa_rama_1 + taxa_rama_2)
-                    t_jet = plano_producao.producao_planejada
-                    capacidade_teares.colmeia = t_tear
-                    capacidade_ramas.colmeia = t_rama
-                    capacidade_jets.colmeia = t_jet
-                if familia == "Piquet":
-                    t_tear = plano_producao.producao_planejada * taxa_tear
-                    t_rama = plano_producao.producao_planejada * (taxa_rama_1 + taxa_rama_2)
-                    t_jet = plano_producao.producao_planejada
-                    capacidade_teares.piquet = t_tear
-                    capacidade_ramas.piquet =  t_rama
-                    capacidade_jets.piquet = t_jet
-                if familia == "Maxim":
-                    t_tear = plano_producao.producao_planejada * taxa_tear
-                    t_rama = plano_producao.producao_planejada * (taxa_rama_1 + taxa_rama_2)
-                    t_jet = plano_producao.producao_planejada
-                    capacidade_teares.maxim = t_tear
-                    capacidade_ramas.maxim = t_rama
-                    capacidade_jets.maxim = t_jet
+                if capacidade_teares:
+                    setattr(capacidade_teares, familia.lower(), t_tear)
+                if capacidade_ramas:
+                    setattr(capacidade_ramas, familia.lower(), t_rama)
+                if capacidade_jets:
+                    setattr(capacidade_jets, familia.lower(), t_jet)
 
+    # Ajustar Capacidade Necessária fora do loop para reduzir consultas
+    for period in periods:
+        capacidade_teares = capacidades_teares_dict.get(period)
+        capacidade_ramas = capacidades_ramas_dict.get(period)
+        capacidade_jets = capacidades_jets_dict.get(period)
 
-    for period in periods: # Colocar dentro do outro loop de periodos depois
-        capacidade_teares = CapacidadeTeares.query.filter_by(grupo_id = grupo.id,
-                                                            periodo_numero = period,
-                                                            periodo_modificado = periodo_atual).order_by(
-                                                                CapacidadeTeares.periodo_numero.asc()).first()
-
-        capacidade_ramas = CapacidadeRamas.query.filter_by(grupo_id = grupo.id,
-                                                            periodo_numero = period,
-                                                            periodo_modificado = periodo_atual).order_by(
-                                                                CapacidadeRamas.periodo_numero.asc()).first()
-
-        capacidade_jets = CapacidadeJets.query.filter_by(grupo_id = grupo.id,
-                                           periodo_numero = period,
-                                           periodo_modificado = periodo_atual).order_by(
-                                               CapacidadeJets.periodo_numero.asc()).first()
-
-        soma_teares = capacidade_teares.colmeia + capacidade_teares.piquet + capacidade_teares.maxim
-        soma_ramas = capacidade_ramas.colmeia + capacidade_ramas.piquet + capacidade_ramas.maxim
-        soma_jets = capacidade_jets.colmeia + capacidade_jets.piquet + capacidade_jets.maxim
-        capacidade_teares.capacidade_necessaria = soma_teares + capacidade_teares.produtividade + capacidade_teares.setup
-        capacidade_ramas.capacidade_necessaria = soma_ramas + capacidade_ramas.produtividade + capacidade_ramas.setup
-        capacidade_jets.capacidade_necessaria = soma_jets + capacidade_jets.produtividade + capacidade_jets.setup
+        if capacidade_teares:
+            soma_teares = capacidade_teares.colmeia + capacidade_teares.piquet + capacidade_teares.maxim
+            capacidade_teares.capacidade_necessaria = soma_teares + capacidade_teares.produtividade + capacidade_teares.setup
+        if capacidade_ramas:
+            soma_ramas = capacidade_ramas.colmeia + capacidade_ramas.piquet + capacidade_ramas.maxim
+            capacidade_ramas.capacidade_necessaria = soma_ramas + capacidade_ramas.produtividade + capacidade_ramas.setup
+        if capacidade_jets:
+            soma_jets = capacidade_jets.colmeia + capacidade_jets.piquet + capacidade_jets.maxim
+            capacidade_jets.capacidade_necessaria = soma_jets + capacidade_jets.produtividade + capacidade_jets.setup
 
     # Salvar as alterações de uma vez
     db.session.commit()
