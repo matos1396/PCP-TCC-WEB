@@ -16,7 +16,7 @@ from models import (Grupo,
 from simulacao import simulacao
 from utils.func_auxiliares import atualizar_plano_compras, atualizar_capacidade_maquinas, atualizar_financeiro
 
-import time
+import time # Para Testes
 
 app = Flask(__name__)
 app.config.from_object('config.Config')

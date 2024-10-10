@@ -112,8 +112,8 @@ class TecelagemForm(FlaskForm):
     periods = range(13, 25)
 
     def validate_capacidade_teceirizada(form, field):
-        if field.data and field.data % 11200 != 0:
-            raise ValidationError("A Capacidade Terceirizada deve ser um múltiplo de 11200.")
+        if field.data and field.data % 420 != 0:
+            raise ValidationError("A Capacidade Terceirizada deve ser um múltiplo de 420.")
     # Campos Tabelas Capacidade Necessária e Disponível
     for period in periods:
         # Tabela Capacidade Necessária
@@ -131,13 +131,16 @@ class TecelagemForm(FlaskForm):
         vars()['capacidade_instalada_' + str(period)] = DecimalField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
         vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
 
-    
+
     # Botão para Submeter o Formulário
     submit = SubmitField('Salvar Plano de Tecelagem')
 
 class PurgaTinturariaForm(FlaskForm):
     periods = range(13, 25)
 
+    def validate_capacidade_teceirizada(form, field):
+        if field.data and field.data % 11200 != 0:
+            raise ValidationError("A Capacidade Terceirizada deve ser um múltiplo de 11200.")
     # Campos Tabelas Capacidade Necessária e Disponível
     for period in periods:
         # Tabela Capacidade Necessária
@@ -155,9 +158,9 @@ class PurgaTinturariaForm(FlaskForm):
         vars()['capacidade_instalada_jet1_' + str(period)] = DecimalField(f'Capacidade Instalada Jet1 (Período {period})', validators=[Optional()])
         vars()['capacidade_instalada_jet2_' + str(period)] = DecimalField(f'Capacidade Instalada Jet2 (Período {period})', validators=[Optional()])
         vars()['capacidade_instalada_jet3_' + str(period)] = DecimalField(f'Capacidade Instalada Jet3 (Período {period})', validators=[Optional()])
-        vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
+        vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
 
-    
+
     # Botão para Submeter o Formulário
     submit = SubmitField('Salvar Plano de Purga e Tinturaria')
 
@@ -165,6 +168,9 @@ class PurgaTinturariaForm(FlaskForm):
 class FixacaoAcabamentoForm(FlaskForm):
     periods = range(13, 25)
 
+    def validate_capacidade_teceirizada(form, field):
+        if field.data and field.data % 70 != 0:
+            raise ValidationError("A Capacidade Terceirizada deve ser um múltiplo de 70.")
     # Campos Tabelas Capacidade Necessária e Disponível
     for period in periods:
         # Tabela Capacidade Necessária
@@ -180,7 +186,7 @@ class FixacaoAcabamentoForm(FlaskForm):
         # Tabela Capacidade Disponível
         vars()['numero_turnos_' + str(period)] = IntegerField(f'Número de Turnos (Período {period})', validators=[Optional()])
         vars()['capacidade_instalada_' + str(period)] = DecimalField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
-        vars()['capacidade_teceirizada_' + str(period)] = DecimalField(f'Capacidade Terceirizada (Período {period})', validators=[Optional()])
+        vars()['capacidade_teceirizada_' + str(period)] = DecimalField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
 
 
     # Botão para Submeter o Formulário

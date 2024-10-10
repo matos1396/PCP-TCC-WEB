@@ -170,7 +170,7 @@
                            name="{{ capacidade_teceirizada['Jet'][period].name }}"
                            value="{{ capacidade_teceirizada['Jet'][period].data }}" readonly>
                     {% else %}
-                        {{ capacidade_teceirizada['Jet'][period](class="form-control capacidade-terceirizada", id="capacidade_terceirizada_" ~ period) }}
+                        {{ capacidade_teceirizada['Jet'][period](class="form-control capacidade-terceirizada", id="capacidade_terceirizada_" ~ period, step=11200) }}
                     {% endif %}
                 </td>
                 {% endfor %}

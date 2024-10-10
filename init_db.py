@@ -44,7 +44,12 @@ taxas_producao = [
     {'familia': 'Maxim', 'processo': 'Acabamento', 'tipo_equipamento': 'Ramas', 'taxa': 0.004},
 ]
 
-
+custo_materiais_list = [{"item": "Corante", "preco_venda": 0, "c_venda_perdida": 0, "c_unitario": 20.00},
+                       {"item": "Fio Algodao", "preco_venda": 0, "c_venda_perdida": 0, "c_unitario": 1.00},
+                       {"item": "Fio Sintetico", "preco_venda": 0, "c_venda_perdida": 0, "c_unitario": 1.50},
+                       {"item": "Colmeia", "preco_venda": 5.50, "c_venda_perdida": 30.00, "c_unitario": 4.50},
+                       {"item": "Piquet", "preco_venda": 6.50, "c_venda_perdida": 40.00, "c_unitario": 5.00},
+                       {"item": "Maxim", "preco_venda": 7.50, "c_venda_perdida": 45.00, "c_unitario": 5.50}]
 
 def criar_planos_iniciais_para_grupo(grupo):
     periods = range(13, 25)
@@ -417,7 +422,7 @@ with app.app_context():
         custo_fixo_purga_jet3=0.10,
         custo_fixo_fixacao_acabamento=100.00,
         tma=0.03,
-        custo_unitario_compra_emergencia=1,
+        custo_unitario_compra_emergencia=2,
         taxa_armazenagem=0.05,
         custo_terceirizacao_tecelagem=20.00,
         custo_terceirizacao_purga_tinturaria=2.00,
@@ -459,3 +464,5 @@ with app.app_context():
 
     criar_planos_iniciais_para_grupo(user)
     db.session.commit()
+
+
