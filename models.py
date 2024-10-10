@@ -60,13 +60,13 @@ class PlanoProducao(db.Model):
     familia = db.Column(db.String(50), nullable=False)
 
     demanda_prevista = db.Column(db.Float, nullable=True)
-    demanda_real = db.Column(db.Float, nullable=True)
-    estoques_iniciais = db.Column(db.Float, nullable=True)
-    producao_planejada = db.Column(db.Float, nullable=False)
-    producao_real = db.Column(db.Float, nullable=True)
-    estoques_finais = db.Column(db.Float, nullable=True)
-    vendas_perdidas = db.Column(db.Float, nullable=True)
-    vendas = db.Column(db.Float, nullable=True)
+    demanda_real = db.Column(db.Float, nullable=True, default=0)
+    estoques_iniciais = db.Column(db.Float, nullable=True, default=0)
+    producao_planejada = db.Column(db.Float, nullable=False, default=0)
+    producao_real = db.Column(db.Float, nullable=True, default=0)
+    estoques_finais = db.Column(db.Float, nullable=True, default=0)
+    vendas_perdidas = db.Column(db.Float, nullable=True, default=0)
+    vendas = db.Column(db.Float, nullable=True, default=0)
 
 # Modelo de Plano de Compras (PlanoCompras)
 class PlanoCompras(db.Model):
@@ -78,13 +78,13 @@ class PlanoCompras(db.Model):
     periodo_modificado = db.Column(db.Integer, nullable=False)
 
     material = db.Column(db.String(50), nullable=False)
-    consumo_previsto = db.Column(db.Float, nullable=True)
-    consumo_real = db.Column(db.Float, nullable=True)
-    estoques_iniciais = db.Column(db.Float, nullable=True)
+    consumo_previsto = db.Column(db.Float, nullable=True, default=0)
+    consumo_real = db.Column(db.Float, nullable=True, default=0)
+    estoques_iniciais = db.Column(db.Float, nullable=True, default=0)
     compra_planejada = db.Column(db.Float, nullable=False, default=0)
-    compra_real = db.Column(db.Float, nullable=True)
-    compra_emergencial = db.Column(db.Float, nullable=True)
-    estoques_finais = db.Column(db.Float, nullable=True)
+    compra_real = db.Column(db.Float, nullable=True, default=0)
+    compra_emergencial = db.Column(db.Float, nullable=True, default=0)
+    estoques_finais = db.Column(db.Float, nullable=True, default=0)
 
 
 class EstiloDemanda(db.Model):
