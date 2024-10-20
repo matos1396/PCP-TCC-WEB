@@ -178,6 +178,9 @@ def atualizar_financeiro(grupo):
     custos_vendas_perdidas_registros = CustosVendasPerdidas.query.filter_by(grupo_id=grupo.id).filter(
         CustosVendasPerdidas.periodo.in_(period_list)
     ).all()
+    receitas_vendas_registros = ReceitasVendas.query.filter_by(grupo_id=grupo.id).filter(
+        ReceitasVendas.periodo.in_(period_list)
+    ).all()
 
 
     # Organizar os dados em dicionários por período para acesso rápido
@@ -192,6 +195,7 @@ def atualizar_financeiro(grupo):
     custos_terceirizacao_dict = {ct.periodo: ct for ct in custos_terceirizacao_registros}
     custos_capital_dict = {cc.periodo: cc for cc in custos_capital_registros}
     custos_vendas_perdidas_dict = {cvp.periodo: cvp for cvp in custos_vendas_perdidas_registros}
+    receitas_vendas_dict = {rv.periodo: rv for rv in receitas_vendas_registros}
 
     ## CUSTO FIXO
     novos_custos_fixos = []  # Lista para armazenar novos registros
@@ -618,7 +622,7 @@ def atualizar_financeiro(grupo):
 
 
 def calcular_consumo_previsto(grupo, material, periodo, periodo_atual):
-    # #### Dicionario apenas para consulta manualmente
+    # #### Dicionario apenas para consulta manualmente (DEBUG / TESTE)
     dici_estrutura = {"Colmeia": {"Fio Algodao": 1,
                                   "Fio Sintetico": 0,
                                   "Corante": 0.02
@@ -675,7 +679,5 @@ def calcular_consumo_previsto(grupo, material, periodo, periodo_atual):
             if familia == "Maxim":
                 consumo_previsto_corantes += float(plano_producao.producao_planejada) * 0.02
         return consumo_previsto_corantes
-
-
 
 
