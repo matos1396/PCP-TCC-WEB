@@ -564,6 +564,53 @@ def atualizar_financeiro(grupo):
     db.session.commit()
     ## FIM CUSTO VENDAS PERDIDAS
 
+    ## RECEITAS VENDAS
+    novas_receitas_vendas = []
+    for period in period_list:
+        # Inicializa as receitas de vendas para cada família
+        r_vendas_colmeia = r_vendas_piquet = r_vendas_maxim = 0.0
+
+        # Calcular as receitas de vendas para cada família
+        for familia in ['Colmeia', 'Piquet', 'Maxim']:
+            plano_familia = plano_producao_dict.get((period, familia))
+            if plano_familia:
+                vendas = plano_familia.vendas or 0.0
+                preco_venda = getattr(custos, f"preco_venda_{familia.lower()}", 0.0)
+                receita_venda = vendas * preco_venda
+
+                if familia == 'Colmeia':
+                    r_vendas_colmeia = receita_venda
+                elif familia == 'Piquet':
+                    r_vendas_piquet = receita_venda
+                elif familia == 'Maxim':
+                    r_vendas_maxim = receita_venda
+
+        # Cálculo total das receitas de vendas
+        r_vendas_total = r_vendas_colmeia + r_vendas_piquet + r_vendas_maxim
+
+        # Atualizar ou criar registro em ReceitasVendas
+        receitas_vendas = receitas_vendas_dict.get(period)
+        if receitas_vendas:
+            # Atualizar valores existentes
+            receitas_vendas.r_vendas_colmeia = r_vendas_colmeia
+            receitas_vendas.r_vendas_piquet = r_vendas_piquet
+            receitas_vendas.r_vendas_maxim = r_vendas_maxim
+            receitas_vendas.r_vendas_total = r_vendas_total
+        else:
+            # Criar novo registro
+            novas_receitas_vendas.append(ReceitasVendas(
+                grupo_id=grupo.id,
+                periodo=period,
+                r_vendas_colmeia=r_vendas_colmeia,
+                r_vendas_piquet=r_vendas_piquet,
+                r_vendas_maxim=r_vendas_maxim,
+                r_vendas_total=r_vendas_total
+            ))
+
+    # Adicionar novos registros de ReceitasVendas ao banco de dados
+    db.session.add_all(novas_receitas_vendas)
+    db.session.commit()
+    ## FIM RECEITAS VENDAS
 
     db.session.commit()
 
