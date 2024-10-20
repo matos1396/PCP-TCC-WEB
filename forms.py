@@ -196,7 +196,7 @@ class FixacaoAcabamentoForm(FlaskForm):
         # Tabela Capacidade Disponível
         vars()['numero_turnos_' + str(period)] = IntegerField(f'Número de Turnos (Período {period})', validators=[Optional()])
         vars()['capacidade_instalada_' + str(period)] = DecimalField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
-        vars()['capacidade_teceirizada_' + str(period)] = DecimalField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
+        vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
 
         # Tabela Capacidade Futura
         vars()['ampliacoes_' + str(period)] = IntegerField(f'Ampliações (Período {period})', validators=[Optional()])

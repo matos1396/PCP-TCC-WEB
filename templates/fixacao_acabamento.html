@@ -132,10 +132,10 @@
                     <!-- Campo somente leitura para períodos passados -->
                     <input type="number" class="form-control numero-turnos" 
                            id="numero_turnos_{{ period }}"
-                           name="{{ capacidade_disponivel['Ramas'][period].name }}"
-                           value="{{ capacidade_disponivel['Ramas'][period].data }}" readonly>
+                           name="{{ numero_turnos['Ramas'][period].name }}"
+                           value="{{ numero_turnos['Ramas'][period].data }}" readonly>
                     {% else %}
-                        {{ capacidade_disponivel['Ramas'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
+                        {{ numero_turnos['Ramas'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
                     {% endif %}
                 </td>
                 {% endfor %}
@@ -148,7 +148,7 @@
                     <input type="number" class="form-control" 
                            id="capacidade_terceirizada_{{ period }}"
                            name="{{ capacidade_teceirizada['Ramas'][period].name }}"
-                           value="{{ capacidade_teceirizada['Ramas'][period].data }}" readonly>
+                           value="{{ capacidade_teceirizada['Ramas'][period].data|int }}" readonly>
                     {% else %}
                         {{ capacidade_teceirizada['Ramas'][period](class="form-control capacidade-terceirizada", id="capacidade_terceirizada_" ~ period, step=70) }}
                     {% endif %}
