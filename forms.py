@@ -131,6 +131,9 @@ class TecelagemForm(FlaskForm):
         vars()['capacidade_instalada_' + str(period)] = DecimalField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
         vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
 
+        # Tabela Capacidade Futura
+        vars()['ampliacoes_' + str(period)] = IntegerField(f'Ampliações (Período {period})', validators=[Optional()])
+        vars()['reducoes_' + str(period)] = IntegerField(f'Reduções (Período {period})', validators=[Optional()])
 
     # Botão para Submeter o Formulário
     submit = SubmitField('Salvar Plano de Tecelagem')
@@ -160,6 +163,13 @@ class PurgaTinturariaForm(FlaskForm):
         vars()['capacidade_instalada_jet3_' + str(period)] = DecimalField(f'Capacidade Instalada Jet3 (Período {period})', validators=[Optional()])
         vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
 
+        # Tabela Capacidade Futura
+        vars()['ampliacoes_jet1_' + str(period)] = IntegerField(f'Ampliações Jet 1 (Período {period})', validators=[Optional()])
+        vars()['ampliacoes_jet2_' + str(period)] = IntegerField(f'Ampliações Jet 2 (Período {period})', validators=[Optional()])
+        vars()['ampliacoes_jet3_' + str(period)] = IntegerField(f'Ampliações Jet 3 (Período {period})', validators=[Optional()])
+        vars()['reducoes_jet1_' + str(period)] = IntegerField(f'Reduções Jet 1 (Período {period})', validators=[Optional()])
+        vars()['reducoes_jet2_' + str(period)] = IntegerField(f'Reduções Jet 2 (Período {period})', validators=[Optional()])
+        vars()['reducoes_jet3_' + str(period)] = IntegerField(f'Reduções Jet 3 (Período {period})', validators=[Optional()])
 
     # Botão para Submeter o Formulário
     submit = SubmitField('Salvar Plano de Purga e Tinturaria')
@@ -187,6 +197,10 @@ class FixacaoAcabamentoForm(FlaskForm):
         vars()['numero_turnos_' + str(period)] = IntegerField(f'Número de Turnos (Período {period})', validators=[Optional()])
         vars()['capacidade_instalada_' + str(period)] = DecimalField(f'Capacidade Instalada (Período {period})', validators=[Optional()])
         vars()['capacidade_teceirizada_' + str(period)] = DecimalField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
+
+        # Tabela Capacidade Futura
+        vars()['ampliacoes_' + str(period)] = IntegerField(f'Ampliações (Período {period})', validators=[Optional()])
+        vars()['reducoes_' + str(period)] = IntegerField(f'Reduções (Período {period})', validators=[Optional()])
 
 
     # Botão para Submeter o Formulário

@@ -178,6 +178,123 @@
         </tbody>
     </table>
 
+    <!-- Tabela Capacidade Futura -->
+    <h4>Ampliações e Reduções</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Linha para Ampliações Jet1 -->
+            <tr>
+                <th>Ampliações Jet 1</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <!-- Campo somente leitura para períodos passados -->
+                    <input type="number" class="form-control" 
+                           id="ampliacoes_jet1_{{ period }}"
+                           name="{{ ampliacoes_jet1['Jet'][period].name }}"
+                           value="{{ ampliacoes_jet1['Jet'][period].data|int }}" readonly>
+                    {% else %}
+                        {{ ampliacoes_jet1['Jet'][period](class="form-control", id="ampliacoes_jet1_" ~ period, step=1) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+
+            <!-- Linha para Reduções Jet1 -->
+            <tr>
+                <th>Reduções Jet 1</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <input type="number" class="form-control" 
+                           id="reducoes_jet1_{{ period }}"
+                           name="{{ reducoes_jet1['Jet'][period].name }}"
+                           value="{{ reducoes_jet1['Jet'][period].data|int }}" readonly>
+                    {% else %}
+                        {{ reducoes_jet1['Jet'][period](class="form-control", id="reducoes_jet1_" ~ period, step=1) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+
+            <!-- Linha para Ampliações Jet2 -->
+            <tr>
+                <th>Ampliações Jet 2</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <input type="number" class="form-control" 
+                           id="ampliacoes_jet2_{{ period }}"
+                           name="{{ ampliacoes_jet2['Jet'][period].name }}"
+                           value="{{ ampliacoes_jet2['Jet'][period].data|int }}" readonly>
+                    {% else %}
+                        {{ ampliacoes_jet2['Jet'][period](class="form-control", id="ampliacoes_jet2_" ~ period, step=1) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+
+            <!-- Linha para Reduções Jet2 -->
+            <tr>
+                <th>Reduções Jet 2</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <input type="number" class="form-control" 
+                           id="reducoes_jet2_{{ period }}"
+                           name="{{ reducoes_jet2['Jet'][period].name }}"
+                           value="{{ reducoes_jet2['Jet'][period].data|int }}" readonly>
+                    {% else %}
+                        {{ reducoes_jet2['Jet'][period](class="form-control", id="reducoes_jet2_" ~ period, step=1) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+
+            <!-- Linha para Ampliações Jet3 -->
+            <tr>
+                <th>Ampliações Jet 3</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <input type="number" class="form-control" 
+                           id="ampliacoes_jet3_{{ period }}"
+                           name="{{ ampliacoes_jet3['Jet'][period].name }}"
+                           value="{{ ampliacoes_jet3['Jet'][period].data|int }}" readonly>
+                    {% else %}
+                        {{ ampliacoes_jet3['Jet'][period](class="form-control", id="ampliacoes_jet3_" ~ period, step=1) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+
+            <!-- Linha para Reduções Jet3 -->
+            <tr>
+                <th>Reduções Jet 3</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <input type="number" class="form-control" 
+                           id="reducoes_jet3_{{ period }}"
+                           name="{{ reducoes_jet3['Jet'][period].name }}"
+                           value="{{ reducoes_jet3['Jet'][period].data|int }}" readonly>
+                    {% else %}
+                        {{ reducoes_jet3['Jet'][period](class="form-control", id="reducoes_jet3_" ~ period, step=1) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
     <!-- Botão para submeter o formulário -->
     <button type="submit" class="btn btn-primary">Salvar Plano de Jet</button>
 </form>

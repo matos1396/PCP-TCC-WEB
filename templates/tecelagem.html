@@ -158,6 +158,56 @@
         </tbody>
     </table>
 
+    <!-- Tabela Capacidade Futura -->
+    <h4>Ampliações e Reduções</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Período</th>
+                {% for period in periods %}
+                    <th>{{ period }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Linha para Ampliações -->
+            <tr>
+                <th>Ampliações</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <!-- Campo somente leitura para períodos passados -->
+                    <input type="number" class="form-control" 
+                           id="ampliacoes_{{ period }}"
+                           name="{{ ampliacoes['Teares'][period].name }}"
+                           value="{{ ampliacoes['Teares'][period].data|int }}" readonly>
+                    {% else %}
+                        {{ ampliacoes['Teares'][period](class="form-control", id="ampliacoes_" ~ period, step=1) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            <!-- Linha para Reduções -->
+            <tr>
+                <th>Reduções</th>
+                {% for period in periods %}
+                <td>
+                    {% if period <= periodo_atual %}
+                    <!-- Campo somente leitura para períodos passados -->
+                    <input type="number" class="form-control" 
+                           id="reducoes_{{ period }}"
+                           name="{{ reducoes['Teares'][period].name }}"
+                           value="{{ reducoes['Teares'][period].data|int }}" readonly>
+                    {% else %}
+                        {{ reducoes['Teares'][period](class="form-control", id="reducoes_" ~ period, step=1) }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+
+
     <!-- Botão para submeter o formulário -->
     <button type="submit" class="btn btn-primary">Salvar Plano de Teares</button>
 </form>

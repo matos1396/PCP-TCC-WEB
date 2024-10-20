@@ -382,6 +382,8 @@ def tecelagem():
     produtividade_dici =          {'Teares': {period: getattr(form, f'produtividade_{period}') for period in periods}}
     capacidade_instalada_dici =   {'Teares': {period: getattr(form, f'capacidade_instalada_{period}') for period in periods}}
     capacidade_teceirizada_dici = {'Teares': {period: getattr(form, f'capacidade_teceirizada_{period}') for period in periods}}
+    ampliacoes_dici =             {'Teares': {period: getattr(form, f'ampliacoes_{period}', None) for period in periods}}
+    reducoes_dici =               {'Teares': {period: getattr(form, f'reducoes_{period}', None) for period in periods}}
 
     if request.method == 'POST':
         for period in periods:
@@ -398,6 +400,8 @@ def tecelagem():
                 produtividade = produtividade_dici[maquina][period].data
                 capacidade_instalada = capacidade_instalada_dici[maquina][period].data
                 capacidade_teceirizada = capacidade_teceirizada_dici[maquina][period].data
+                ampliacoes = ampliacoes_dici[maquina][period].data
+                reducoes = reducoes_dici[maquina][period].data
 
                 # Atualizar ou criar CapacidadeTeares
                 existing_plan = CapacidadeTeares.query.filter_by(
@@ -409,6 +413,8 @@ def tecelagem():
                         # Atualizar o plano existente
                         existing_plan.numero_turnos = numero_turnos
                         existing_plan.capacidade_terceirizada = capacidade_teceirizada
+                        existing_plan.ampliacoes = ampliacoes
+                        existing_plan.reducoes = reducoes
 
                     else:
                         # Criar um novo plano
@@ -426,7 +432,9 @@ def tecelagem():
                            setup = setup,
                            produtividade = produtividade,
                            capacidade_instalada = capacidade_instalada,
-                           capacidade_teceirizada = capacidade_teceirizada
+                           capacidade_teceirizada = capacidade_teceirizada,
+                           ampliacoes=ampliacoes,
+                           reducoes=reducoes
                         )
 
                         db.session.add(new_plan)
@@ -453,6 +461,8 @@ def tecelagem():
                 produtividade_dici[maquina][period].data = capacidade_teares.produtividade
                 capacidade_instalada_dici[maquina][period].data = capacidade_teares.capacidade_instalada
                 capacidade_teceirizada_dici[maquina][period].data = capacidade_teares.capacidade_terceirizada
+                ampliacoes_dici[maquina][period].data = capacidade_teares.ampliacoes
+                reducoes_dici[maquina][period].data = capacidade_teares.reducoes
 
 
     return render_template('tecelagem.html',
@@ -468,7 +478,9 @@ def tecelagem():
                            setup = setup_dici,
                            produtividade = produtividade_dici,
                            capacidade_instalada = capacidade_instalada_dici,
-                           capacidade_teceirizada = capacidade_teceirizada_dici)
+                           capacidade_teceirizada = capacidade_teceirizada_dici,
+                           ampliacoes=ampliacoes_dici,
+                           reducoes=reducoes_dici)
 
 
 # Purga e Tinturaria (Jets)
@@ -493,6 +505,13 @@ def purga_tinturaria():
     capacidade_instalada_jet2_dici = {maquina: {period: getattr(form, f'capacidade_instalada_jet2_{period}') for period in periods}}
     capacidade_instalada_jet3_dici = {maquina: {period: getattr(form, f'capacidade_instalada_jet3_{period}') for period in periods}}
     capacidade_teceirizada_dici =    {maquina: {period: getattr(form, f'capacidade_teceirizada_{period}') for period in periods}}
+    ampliacoes_jet1_dici =           {maquina: {period: getattr(form, f'ampliacoes_jet1_{period}', None) for period in periods}}
+    ampliacoes_jet2_dici =           {maquina: {period: getattr(form, f'ampliacoes_jet2_{period}', None) for period in periods}}
+    ampliacoes_jet3_dici =           {maquina: {period: getattr(form, f'ampliacoes_jet3_{period}', None) for period in periods}}
+    reducoes_jet1_dici =             {maquina: {period: getattr(form, f'reducoes_jet1_{period}', None) for period in periods}}
+    reducoes_jet2_dici =             {maquina: {period: getattr(form, f'reducoes_jet2_{period}', None) for period in periods}}
+    reducoes_jet3_dici =             {maquina: {period: getattr(form, f'reducoes_jet3_{period}', None) for period in periods}}
+
 
     if request.method == 'POST':
         for period in periods:
@@ -510,6 +529,13 @@ def purga_tinturaria():
                 capacidade_instalada_jet2 = capacidade_instalada_jet2_dici[maquina][period].data
                 capacidade_instalada_jet3 = capacidade_instalada_jet3_dici[maquina][period].data
                 capacidade_teceirizada = capacidade_teceirizada_dici[maquina][period].data
+                ampliacoes_jet1 = ampliacoes_jet1_dici[maquina][period].data
+                ampliacoes_jet2 = ampliacoes_jet2_dici[maquina][period].data
+                ampliacoes_jet3 = ampliacoes_jet3_dici[maquina][period].data
+                reducoes_jet1 = reducoes_jet1_dici[maquina][period].data
+                reducoes_jet2 = reducoes_jet2_dici[maquina][period].data
+                reducoes_jet3 = reducoes_jet3_dici[maquina][period].data
+
 
                 # Atualizar ou criar CapacidadeJets
                 existing_plan = CapacidadeJets.query.filter_by(
@@ -521,6 +547,12 @@ def purga_tinturaria():
                         # Atualizar o plano existente
                         existing_plan.numero_turnos = numero_turnos
                         existing_plan.capacidade_terceirizada = capacidade_teceirizada
+                        existing_plan.ampliacoes_tipo1 = ampliacoes_jet1
+                        existing_plan.ampliacoes_tipo2 = ampliacoes_jet2
+                        existing_plan.ampliacoes_tipo3 = ampliacoes_jet3
+                        existing_plan.reducoes_tipo1 = reducoes_jet1
+                        existing_plan.reducoes_tipo2 = reducoes_jet2
+                        existing_plan.reducoes_tipo3 = reducoes_jet3
 
                     else:
                         # Criar um novo plano
@@ -537,10 +569,16 @@ def purga_tinturaria():
                            maxim_horas = maxim_horas,
                            setup = setup,
                            produtividade = produtividade,
-                           capacidade_instalada_jet1 = capacidade_instalada_jet1,
-                           capacidade_instalada_jet2 = capacidade_instalada_jet2,
-                           capacidade_instalada_jet3 = capacidade_instalada_jet3,
-                           capacidade_teceirizada = capacidade_teceirizada
+                           capacidade_instalada_tipo1 = capacidade_instalada_jet1,
+                           capacidade_instalada_tipo2 = capacidade_instalada_jet2,
+                           capacidade_instalada_tipo3 = capacidade_instalada_jet3,
+                           capacidade_teceirizada = capacidade_teceirizada,
+                           ampliacoes_tipo1 = ampliacoes_jet1,
+                           ampliacoes_tipo2 = ampliacoes_jet2,
+                           ampliacoes_tipo3 = ampliacoes_jet3,
+                           reducoes_tipo1 = reducoes_jet1,
+                           reducoes_tipo2 = reducoes_jet2,
+                           reducoes_tipo3 = reducoes_jet3
                         )
 
                         db.session.add(new_plan)
@@ -568,6 +606,12 @@ def purga_tinturaria():
                 capacidade_instalada_jet2_dici[maquina][period].data = capacidade_jets.capacidade_instalada_tipo2
                 capacidade_instalada_jet3_dici[maquina][period].data = capacidade_jets.capacidade_instalada_tipo3
                 capacidade_teceirizada_dici[maquina][period].data = capacidade_jets.capacidade_terceirizada
+                ampliacoes_jet1_dici[maquina][period].data = capacidade_jets.ampliacoes_tipo1
+                ampliacoes_jet2_dici[maquina][period].data = capacidade_jets.ampliacoes_tipo2
+                ampliacoes_jet3_dici[maquina][period].data = capacidade_jets.ampliacoes_tipo3
+                reducoes_jet1_dici[maquina][period].data = capacidade_jets.reducoes_tipo1
+                reducoes_jet2_dici[maquina][period].data = capacidade_jets.reducoes_tipo2
+                reducoes_jet3_dici[maquina][period].data = capacidade_jets.reducoes_tipo3
 
 
     return render_template('purga_tinturaria.html',
@@ -586,9 +630,13 @@ def purga_tinturaria():
                            capacidade_instalada_jet1 = capacidade_instalada_jet1_dici,
                            capacidade_instalada_jet2 = capacidade_instalada_jet2_dici,
                            capacidade_instalada_jet3 = capacidade_instalada_jet3_dici,
-                           capacidade_teceirizada = capacidade_teceirizada_dici)
-
-
+                           capacidade_teceirizada = capacidade_teceirizada_dici,
+                           ampliacoes_jet1 = ampliacoes_jet1_dici,
+                           ampliacoes_jet2 = ampliacoes_jet2_dici,
+                           ampliacoes_jet3 = ampliacoes_jet3_dici,
+                           reducoes_jet1 = reducoes_jet1_dici,
+                           reducoes_jet2 = reducoes_jet2_dici,
+                           reducoes_jet3 = reducoes_jet3_dici)
 
 # Fixação e Acabamento (Ramas)
 @app.route('/fixacao_acabamento', methods=['GET', 'POST'])
@@ -611,6 +659,9 @@ def fixacao_acabamento():
     produtividade_dici =          {maquina: {period: getattr(form, f'produtividade_{period}') for period in periods}}
     capacidade_instalada_dici =   {maquina: {period: getattr(form, f'capacidade_instalada_{period}') for period in periods}}
     capacidade_teceirizada_dici = {maquina: {period: getattr(form, f'capacidade_teceirizada_{period}') for period in periods}}
+    ampliacoes_dici =             {maquina: {period: getattr(form, f'ampliacoes_{period}', None) for period in periods}}
+    reducoes_dici =               {maquina: {period: getattr(form, f'reducoes_{period}', None) for period in periods}}
+
 
     if request.method == 'POST':
         for period in periods:
@@ -627,6 +678,8 @@ def fixacao_acabamento():
                 produtividade = produtividade_dici[maquina][period].data
                 capacidade_instalada = capacidade_instalada_dici[maquina][period].data
                 capacidade_teceirizada = capacidade_teceirizada_dici[maquina][period].data
+                ampliacoes = ampliacoes_dici[maquina][period].data
+                reducoes = reducoes_dici[maquina][period].data
 
                 # Atualizar ou criar CapacidadeRamas
                 existing_plan = CapacidadeRamas.query.filter_by(
@@ -638,6 +691,8 @@ def fixacao_acabamento():
                         # Atualizar o plano existente
                         existing_plan.numero_turnos = numero_turnos
                         existing_plan.capacidade_terceirizada = capacidade_teceirizada
+                        existing_plan.ampliacoes = ampliacoes
+                        existing_plan.reducoes = reducoes
 
                     else:
                         # Criar um novo plano
@@ -655,7 +710,9 @@ def fixacao_acabamento():
                            setup = setup,
                            produtividade = produtividade,
                            capacidade_instalada = capacidade_instalada,
-                           capacidade_teceirizada = capacidade_teceirizada
+                           capacidade_teceirizada = capacidade_teceirizada,
+                           ampliacoes = ampliacoes,
+                           reducoes = reducoes
                         )
 
                         db.session.add(new_plan)
@@ -682,6 +739,8 @@ def fixacao_acabamento():
                 produtividade_dici[maquina][period].data = capacidade_teares.produtividade
                 capacidade_instalada_dici[maquina][period].data = capacidade_teares.capacidade_instalada
                 capacidade_teceirizada_dici[maquina][period].data = capacidade_teares.capacidade_terceirizada
+                ampliacoes_dici[maquina][period].data = capacidade_teares.ampliacoes
+                reducoes_dici[maquina][period].data = capacidade_teares.reducoes
 
 
     return render_template('fixacao_acabamento.html',
@@ -697,9 +756,9 @@ def fixacao_acabamento():
                            setup = setup_dici,
                            produtividade = produtividade_dici,
                            capacidade_instalada = capacidade_instalada_dici,
-                           capacidade_teceirizada = capacidade_teceirizada_dici)
-
-
+                           capacidade_teceirizada = capacidade_teceirizada_dici,
+                           ampliacoes=ampliacoes_dici,
+                           reducoes=reducoes_dici)
 
 
 
@@ -749,7 +808,7 @@ def rollback_period():
     grupo = current_user
 
     # Apenas volte o período se o período atual for maior que 1 (não pode ser menor que 1)
-    if grupo.periodo_atual > 1:
+    if grupo.periodo_atual > 12:
         grupo.periodo_atual -= 1
         db.session.commit()
         flash(f"O período foi revertido! Agora você está no período {grupo.periodo_atual}.", "success")

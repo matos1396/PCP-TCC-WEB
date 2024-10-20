@@ -120,10 +120,14 @@ class CapacidadeTeares(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    lead_time_id = db.Column(db.Integer, db.ForeignKey('lead_time_maquinas.id'), nullable=True)
     periodo_numero = db.Column(db.Integer, nullable=False)
     periodo_modificado = db.Column(db.Integer, nullable=False)
 
+
     quantidade = db.Column(db.Float, nullable=True)
+    ampliacoes = db.Column(db.Integer, nullable=False, default=0)
+    reducoes = db.Column(db.Integer, nullable=False, default=0)
     capacidade_disponivel = db.Column(db.Float, nullable=True)
     capacidade_necessaria = db.Column(db.Float, nullable=True)
     capacidade_instalada = db.Column(db.Float, nullable=True)
@@ -140,7 +144,8 @@ class CapacidadeTeares(db.Model):
 
     # Relacionamento com TaxaProducao
     taxas_producao = db.relationship('TaxaProducao', secondary=taxa_teares_associativa, backref='capacidade_teares')
-
+    # Relacionamento com LeadTimeMaquinas
+    lead_time = db.relationship('LeadTimeMaquinas', backref='capacidades_teares')
 
     # Atualizar capacidade instalada automaticamente
     @staticmethod
@@ -198,12 +203,19 @@ class CapacidadeJets(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    lead_time_id = db.Column(db.Integer, db.ForeignKey('lead_time_maquinas.id'), nullable=True)
     periodo_numero = db.Column(db.Integer, nullable=False)
     periodo_modificado = db.Column(db.Integer, nullable=False)
 
     quantidade_tipo1 = db.Column(db.Float, nullable=True)
     quantidade_tipo2 = db.Column(db.Float, nullable=True)
     quantidade_tipo3 = db.Column(db.Float, nullable=True)
+    ampliacoes_tipo1 = db.Column(db.Integer, nullable=False, default=0)
+    reducoes_tipo1 = db.Column(db.Integer, nullable=False, default=0)
+    ampliacoes_tipo2 = db.Column(db.Integer, nullable=False, default=0)
+    reducoes_tipo2 = db.Column(db.Integer, nullable=False, default=0)
+    ampliacoes_tipo3 = db.Column(db.Integer, nullable=False, default=0)
+    reducoes_tipo3 = db.Column(db.Integer, nullable=False, default=0)
     capacidade_tipo1 = db.Column(db.Float, nullable=True)
     capacidade_tipo2 = db.Column(db.Float, nullable=True)
     capacidade_tipo3 = db.Column(db.Float, nullable=True)
@@ -226,6 +238,8 @@ class CapacidadeJets(db.Model):
 
     # Relacionamento com TaxaProducao
     taxas_producao = db.relationship('TaxaProducao', secondary=taxa_jets_associativa, backref='capacidade_jets')
+    # Relacionamento com LeadTimeMaquinas
+    lead_time = db.relationship('LeadTimeMaquinas', backref='capacidades_jets')
 
     # Atualizar capacidade instalada automaticamente
     @staticmethod
@@ -282,10 +296,13 @@ class CapacidadeRamas(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    lead_time_id = db.Column(db.Integer, db.ForeignKey('lead_time_maquinas.id'), nullable=True)
     periodo_numero = db.Column(db.Integer, nullable=False)
     periodo_modificado = db.Column(db.Integer, nullable=False)
 
     quantidade = db.Column(db.Float, nullable=True)
+    ampliacoes = db.Column(db.Integer, nullable=False, default=0)
+    reducoes = db.Column(db.Integer, nullable=False, default=0)
     capacidade_disponivel = db.Column(db.Float, nullable=True)
     capacidade_necessaria = db.Column(db.Float, nullable=True)
     capacidade_instalada = db.Column(db.Float, nullable=True)
@@ -302,6 +319,8 @@ class CapacidadeRamas(db.Model):
 
     # Relacionamento com TaxaProducao
     taxas_producao = db.relationship('TaxaProducao', secondary=taxa_ramas_associativa, backref='capacidade_ramas')
+    # Relacionamento com LeadTimeMaquinas
+    lead_time = db.relationship('LeadTimeMaquinas', backref='capacidades_ramas')
 
     # Atualizar capacidade instalada automaticamente
     @staticmethod
@@ -560,3 +579,12 @@ class Custos(db.Model):
     custo_unitario_corantes = db.Column(db.Float, nullable=False)
     custo_unitario_fio_algodao = db.Column(db.Float, nullable=False)
     custo_unitario_fio_sintetico = db.Column(db.Float, nullable=False)
+
+
+class LeadTimeMaquinas(db.Model):
+    __tablename__ = 'lead_time_maquinas'
+
+    id = db.Column(db.Integer, primary_key=True)
+    tipo_maquina = db.Column(db.String(50), nullable=False)  # 'Teares', 'Jets', 'Ramas'
+    lead_time_ampliacao = db.Column(db.Integer, nullable=False)
+    lead_time_reducao = db.Column(db.Integer, nullable=False)

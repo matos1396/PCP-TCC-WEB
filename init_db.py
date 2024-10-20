@@ -7,7 +7,8 @@ from models import (Grupo, EstiloDemanda,
                     RelatorioFinanceiro, CustosFixos,
                     CustosCapital, CustosTerceirizacao,
                     CustosCompraMP, ReceitasVendas,
-                    CustosEstoques, CustosVendasPerdidas)
+                    CustosEstoques, CustosVendasPerdidas,
+                    LeadTimeMaquinas)
 
 periods = list(range(13, 25))
 
@@ -50,6 +51,16 @@ custo_materiais_list = [{"item": "Corante", "preco_venda": 0, "c_venda_perdida":
                        {"item": "Colmeia", "preco_venda": 5.50, "c_venda_perdida": 30.00, "c_unitario": 4.50},
                        {"item": "Piquet", "preco_venda": 6.50, "c_venda_perdida": 40.00, "c_unitario": 5.00},
                        {"item": "Maxim", "preco_venda": 7.50, "c_venda_perdida": 45.00, "c_unitario": 5.50}]
+
+
+def obter_ids_lead_time():
+    lead_time_teares = LeadTimeMaquinas.query.filter_by(tipo_maquina='Teares').first().id
+    lead_time_jets = LeadTimeMaquinas.query.filter_by(tipo_maquina='Jets').first().id
+    lead_time_ramas = LeadTimeMaquinas.query.filter_by(tipo_maquina='Ramas').first().id
+
+    return lead_time_teares, lead_time_jets, lead_time_ramas
+
+
 
 def criar_planos_iniciais_para_grupo(grupo):
     periods = range(13, 25)
@@ -98,10 +109,13 @@ def criar_planos_iniciais_para_grupo(grupo):
             )
                 db.session.add(plano_compras)
 
+
     # Criar capacidade para máquinas: Teares, Ramas e Jets
+    lead_time_teares, lead_time_jets, lead_time_ramas = obter_ids_lead_time()
     for period in periods:
         capacidade_teares = CapacidadeTeares(
             grupo_id=grupo.id,
+            lead_time_id = lead_time_teares,
             periodo_numero=period,
             periodo_modificado=grupo.periodo_atual,
             quantidade=grupo.estilo_demanda.quantidade_teares,
@@ -114,6 +128,7 @@ def criar_planos_iniciais_para_grupo(grupo):
 
         capacidade_ramas = CapacidadeRamas(
             grupo_id=grupo.id,
+            lead_time_id = lead_time_ramas,
             periodo_numero=period,
             periodo_modificado=grupo.periodo_atual,
             quantidade=grupo.estilo_demanda.quantidade_ramas,
@@ -126,6 +141,7 @@ def criar_planos_iniciais_para_grupo(grupo):
 
         capacidade_jets = CapacidadeJets(
             grupo_id=grupo.id,
+            lead_time_id = lead_time_jets,
             periodo_numero=period,
             periodo_modificado=grupo.periodo_atual,
             quantidade_tipo1=grupo.estilo_demanda.quantidade_jets_tipo1,
@@ -460,6 +476,17 @@ with app.app_context():
         custo_unitario_fio_sintetico=1.50
     )
     db.session.add(custos_iniciais)
+    db.session.commit()
+
+    # Lead Time Maquinas
+    lead_time_teares = LeadTimeMaquinas(
+        tipo_maquina='Teares', lead_time_ampliacao=2, lead_time_reducao=2)
+    lead_time_jets = LeadTimeMaquinas(
+        tipo_maquina='Jets', lead_time_ampliacao=3, lead_time_reducao=2)
+    lead_time_ramas = LeadTimeMaquinas(
+        tipo_maquina='Ramas', lead_time_ampliacao=3, lead_time_reducao=3)
+
+    db.session.add_all([lead_time_teares, lead_time_jets, lead_time_ramas])
     db.session.commit()
 
     criar_planos_iniciais_para_grupo(user)
