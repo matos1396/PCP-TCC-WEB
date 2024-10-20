@@ -3,15 +3,10 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from forms import LoginForm, ProductionForm, PurchaseForm, TecelagemForm, PurgaTinturariaForm, FixacaoAcabamentoForm
-from models import (Grupo,
-                    PlanoProducao,
-                    PlanoCompras,
-                    PrevisaoDemanda,
-                    CapacidadeJets,
-                    CapacidadeRamas,
-                    CapacidadeTeares,
-                    TaxaProducao,
-                    Custos,
+from models import (Grupo,PlanoProducao,PlanoCompras,PrevisaoDemanda,
+                    CapacidadeJets,CapacidadeRamas,CapacidadeTeares,TaxaProducao,Custos,
+                    RelatorioFinanceiro,CustosCapital,CustosCompraMP,CustosEstoques,
+                    CustosFixos,CustosTerceirizacao,CustosVendasPerdidas,ReceitasVendas,
                     db)
 from simulacao import simulacao
 from utils.func_auxiliares import atualizar_plano_compras, atualizar_capacidade_maquinas, atualizar_financeiro
@@ -642,7 +637,7 @@ def purga_tinturaria():
 @app.route('/fixacao_acabamento', methods=['GET', 'POST'])
 @login_required
 def fixacao_acabamento():
-    form = TecelagemForm()
+    form = FixacaoAcabamentoForm()
     maquina = "Ramas"
 
     periods = range(13, 25)
@@ -759,6 +754,33 @@ def fixacao_acabamento():
                            capacidade_teceirizada = capacidade_teceirizada_dici,
                            ampliacoes=ampliacoes_dici,
                            reducoes=reducoes_dici)
+
+@app.route('/financeiro', methods=['GET'])
+@login_required
+def financeiro():
+    grupo_id = current_user.id
+    period_list = range(13, 25)
+
+    # Consultar dados de cada tabela e obter todos os registros
+    custos_fixos = CustosFixos.query.filter_by(grupo_id=grupo_id).filter(CustosFixos.periodo.in_(period_list)).all()
+    custos_compra_mp = CustosCompraMP.query.filter_by(grupo_id=grupo_id).filter(CustosCompraMP.periodo.in_(period_list)).all()
+    custos_estoques = CustosEstoques.query.filter_by(grupo_id=grupo_id).filter(CustosEstoques.periodo.in_(period_list)).all()
+    custos_terceirizacao = CustosTerceirizacao.query.filter_by(grupo_id=grupo_id).filter(CustosTerceirizacao.periodo.in_(period_list)).all()
+    custos_capital = CustosCapital.query.filter_by(grupo_id=grupo_id).filter(CustosCapital.periodo.in_(period_list)).all()
+    custos_vendas_perdidas = CustosVendasPerdidas.query.filter_by(grupo_id=grupo_id).filter(CustosVendasPerdidas.periodo.in_(period_list)).all()
+    receitas_vendas = ReceitasVendas.query.filter_by(grupo_id=grupo_id).filter(ReceitasVendas.periodo.in_(period_list)).all()
+
+    tabelas = {
+        'Custos Fixos': custos_fixos,
+        'Custos Compra MP': custos_compra_mp,
+        'Custos Estoques': custos_estoques,
+        'Custos Terceirização': custos_terceirizacao,
+        'Custos Capital': custos_capital,
+        'Custos Vendas Perdidas': custos_vendas_perdidas,
+        'Receitas Vendas': receitas_vendas
+    }
+
+    return render_template('financeiro.html', tabelas=tabelas)
 
 
 

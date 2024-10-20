@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+{% block title %}Financeiro - PCP Game{% endblock %}
+{% block content %}
+<h2 class="mb-4">Relatório Financeiro</h2>
+
+<!-- Abas de navegação -->
+<ul class="nav nav-tabs" id="financeiroTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="custos-fixos-tab" data-bs-toggle="tab" data-bs-target="#custos-fixos" type="button" role="tab" aria-controls="custos-fixos" aria-selected="true">Custos Fixos</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="custos-compra-tab" data-bs-toggle="tab" data-bs-target="#custos-compra_mp" type="button" role="tab" aria-controls="custos-compra_mp" aria-selected="false">Custos de Compra MP</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="custos-estoques-tab" data-bs-toggle="tab" data-bs-target="#custos-estoques" type="button" role="tab" aria-controls="custos-estoques" aria-selected="false">Custos de Estoques</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="custos-terceirizacao-tab" data-bs-toggle="tab" data-bs-target="#custos-terceirizacao" type="button" role="tab" aria-controls="custos-terceirizacao" aria-selected="false">Custos de Terceirização</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="custos-capital-tab" data-bs-toggle="tab" data-bs-target="#custos-capital" type="button" role="tab" aria-controls="custos-capital" aria-selected="false">Custos de Capital</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="custos-vendas-perdidas-tab" data-bs-toggle="tab" data-bs-target="#custos-vendas-perdidas" type="button" role="tab" aria-controls="custos-vendas-perdidas" aria-selected="false">Custos de Vendas Perdidas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="receitas-vendas-tab" data-bs-toggle="tab" data-bs-target="#receitas-vendas" type="button" role="tab" aria-controls="receitas-vendas" aria-selected="false">Receitas de Vendas</button>
+    </li>
+</ul>
+
+<div class="tab-content mt-3">
+    <!-- Custos Fixos -->
+    <div class="tab-pane fade show active" id="custos-fixos" role="tabpanel" aria-labelledby="custos-fixos-tab">
+        <h4>Custos Fixos</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for linha in tabelas['Custos Fixos'] %}
+                        <th>Período {{ linha.periodo }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>C. Fixo Tecelagem</th>
+                    {% for linha in tabelas['Custos Fixos'] %}
+                        <td>{{ linha.c_fixo_tecelagem }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Fixo Purga Tinturaria</th>
+                    {% for linha in tabelas['Custos Fixos'] %}
+                        <td>{{ linha.c_fixo_purga_tinturaria }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Fixo Fixação Acabamento</th>
+                    {% for linha in tabelas['Custos Fixos'] %}
+                        <td>{{ linha.c_fixo_fixacao_acabamento }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Fixo Depreciação Tecelagem</th>
+                    {% for linha in tabelas['Custos Fixos'] %}
+                        <td>{{ linha.c_fixo_depreciacao_tecelagem }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Fixo Depreciação Purga Tinturaria</th>
+                    {% for linha in tabelas['Custos Fixos'] %}
+                        <td>{{ linha.c_fixo_depreciacao_purga_tinturaria }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Fixo Depreciação Fixação Acabamento</th>
+                    {% for linha in tabelas['Custos Fixos'] %}
+                        <td>{{ linha.c_fixo_depreciacao_fixacao_acabamento }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Fixo Total</th>
+                    {% for linha in tabelas['Custos Fixos'] %}
+                        <td>{{ linha.c_fixo_total }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Custos Compra MP -->
+    <div class="tab-pane fade" id="custos-compra_mp" role="tabpanel" aria-labelledby="custos-compra-tab">
+        <h4>Custos Compra MP</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for linha in tabelas['Custos Compra MP'] %}
+                        <th>Período {{ linha.periodo }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>C. Compras Corantes</th>
+                    {% for linha in tabelas['Custos Compra MP'] %}
+                        <td>{{ linha.c_compras_corantes }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Compras Fio Algodão</th>
+                    {% for linha in tabelas['Custos Compra MP'] %}
+                        <td>{{ linha.c_compras_fio_algodao }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Compras Fio Sintético</th>
+                    {% for linha in tabelas['Custos Compra MP'] %}
+                        <td>{{ linha.c_compras_fio_sintetico }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Emergência Corante</th>
+                    {% for linha in tabelas['Custos Compra MP'] %}
+                        <td>{{ linha.c_emergencia_corante }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Emergência Fio Algodão</th>
+                    {% for linha in tabelas['Custos Compra MP'] %}
+                        <td>{{ linha.c_emergencia_fio_algodao }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Emergência Fio Sintético</th>
+                    {% for linha in tabelas['Custos Compra MP'] %}
+                        <td>{{ linha.c_emergencia_fio_sintetico }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Compras Total</th>
+                    {% for linha in tabelas['Custos Compra MP'] %}
+                        <td>{{ linha.c_compras_total }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Custos Estoques -->
+    <div class="tab-pane fade" id="custos-estoques" role="tabpanel" aria-labelledby="custos-estoques-tab">
+        <h4>Custos Estoques</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for linha in tabelas['Custos Estoques'] %}
+                        <th>Período {{ linha.periodo }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>C. Estoque Corantes</th>
+                    {% for linha in tabelas['Custos Estoques'] %}
+                        <td>{{ linha.c_estoque_corantes }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Estoque Fio Algodão</th>
+                    {% for linha in tabelas['Custos Estoques'] %}
+                        <td>{{ linha.c_estoque_fio_algodao }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Estoque Fio Sintético</th>
+                    {% for linha in tabelas['Custos Estoques'] %}
+                        <td>{{ linha.c_estoque_fio_sintetico }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Estoque Colmeia</th>
+                    {% for linha in tabelas['Custos Estoques'] %}
+                        <td>{{ linha.c_estoque_colmeia }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Estoque Piquet</th>
+                    {% for linha in tabelas['Custos Estoques'] %}
+                        <td>{{ linha.c_estoque_piquet }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Estoque Maxim</th>
+                    {% for linha in tabelas['Custos Estoques'] %}
+                        <td>{{ linha.c_estoque_maxim }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Estoque Total</th>
+                    {% for linha in tabelas['Custos Estoques'] %}
+                        <td>{{ linha.c_estoque_total }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Custos Terceirização -->
+    <div class="tab-pane fade" id="custos-terceirizacao" role="tabpanel" aria-labelledby="custos-terceirizacao-tab">
+        <h4>Custos Terceirização</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for linha in tabelas['Custos Terceirização'] %}
+                        <th>Período {{ linha.periodo }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>C. Terceirização Tecelagem</th>
+                    {% for linha in tabelas['Custos Terceirização'] %}
+                        <td>{{ linha.c_terc_tecelagem }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Terceirização Purga Tinturaria</th>
+                    {% for linha in tabelas['Custos Terceirização'] %}
+                        <td>{{ linha.c_terc_purga_tinturaria }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Terceirização Fixação Acabamento</th>
+                    {% for linha in tabelas['Custos Terceirização'] %}
+                        <td>{{ linha.c_terc_fixacao_acabamento }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Terceirização Total</th>
+                    {% for linha in tabelas['Custos Terceirização'] %}
+                        <td>{{ linha.c_terc_total }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Custos Capital -->
+    <div class="tab-pane fade" id="custos-capital" role="tabpanel" aria-labelledby="custos-capital-tab">
+        <h4>Custos Capital</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for linha in tabelas['Custos Capital'] %}
+                        <th>Período {{ linha.periodo }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>C. Capital Teares</th>
+                    {% for linha in tabelas['Custos Capital'] %}
+                        <td>{{ linha.custo_capital_teares }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Capital Jets</th>
+                    {% for linha in tabelas['Custos Capital'] %}
+                        <td>{{ linha.custo_capital_jets }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Capital Ramas</th>
+                    {% for linha in tabelas['Custos Capital'] %}
+                        <td>{{ linha.custo_capital_ramas }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Capital MP</th>
+                    {% for linha in tabelas['Custos Capital'] %}
+                        <td>{{ linha.custo_capital_mp }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Capital PA</th>
+                    {% for linha in tabelas['Custos Capital'] %}
+                        <td>{{ linha.custo_capital_pa }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. Capital Total</th>
+                    {% for linha in tabelas['Custos Capital'] %}
+                        <td>{{ linha.custo_capital_total }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Custos Vendas Perdidas -->
+    <div class="tab-pane fade" id="custos-vendas-perdidas" role="tabpanel" aria-labelledby="custos-vendas-perdidas-tab">
+        <h4>Custos Vendas Perdidas</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                        <th>Período {{ linha.periodo }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>C. VP Colmeia</th>
+                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                        <td>{{ linha.c_vp_comeia }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. VP Piquet</th>
+                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                        <td>{{ linha.c_vp_piquet }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. VP Maxim</th>
+                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                        <td>{{ linha.c_vp_maxim }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>C. VP Total</th>
+                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                        <td>{{ linha.c_vp_total }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Receitas Vendas -->
+    <div class="tab-pane fade" id="receitas-vendas" role="tabpanel" aria-labelledby="receitas-vendas-tab">
+        <h4>Receitas Vendas</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for linha in tabelas['Receitas Vendas'] %}
+                        <th>Período {{ linha.periodo }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>R. Vendas Colmeia</th>
+                    {% for linha in tabelas['Receitas Vendas'] %}
+                        <td>{{ linha.r_vendas_colmeia }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>R. Vendas Piquet</th>
+                    {% for linha in tabelas['Receitas Vendas'] %}
+                        <td>{{ linha.r_vendas_piquet }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>R. Vendas Maxim</th>
+                    {% for linha in tabelas['Receitas Vendas'] %}
+                        <td>{{ linha.r_vendas_maxim }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>R. Vendas Total</th>
+                    {% for linha in tabelas['Receitas Vendas'] %}
+                        <td>{{ linha.r_vendas_total }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

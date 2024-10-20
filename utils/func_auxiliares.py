@@ -181,6 +181,10 @@ def atualizar_financeiro(grupo):
     receitas_vendas_registros = ReceitasVendas.query.filter_by(grupo_id=grupo.id).filter(
         ReceitasVendas.periodo.in_(period_list)
     ).all()
+    relatorio_financeiro_registros = RelatorioFinanceiro.query.filter_by(grupo_id=grupo.id).filter(
+        RelatorioFinanceiro.periodo.in_(period_list)
+    ).all()
+
 
 
     # Organizar os dados em dicionários por período para acesso rápido
@@ -615,6 +619,67 @@ def atualizar_financeiro(grupo):
     db.session.add_all(novas_receitas_vendas)
     db.session.commit()
     ## FIM RECEITAS VENDAS
+
+    ## RELATÓRIO FINANCEIRO
+    novos_relatorios_financeiros = []
+    ro_acumulado = 0  # Variável para armazenar o resultado operacional acumulado
+
+    for period in period_list:
+        # Obter os custos e receitas para o período
+        custos_fixos = custos_fixos_dict.get(period).c_fixo_total if custos_fixos_dict.get(period) else 0.0
+        custos_compra_mp = custos_compra_mp_dict.get(period).c_compras_total if custos_compra_mp_dict.get(period) else 0.0
+        custos_estoques = custos_estoques_dict.get(period).c_estoque_total if custos_estoques_dict.get(period) else 0.0
+        custos_terceirizacao = custos_terceirizacao_dict.get(period).c_terc_total if custos_terceirizacao_dict.get(period) else 0.0
+        custos_capital = custos_capital_dict.get(period).custo_capital_total if custos_capital_dict.get(period) else 0.0
+        custos_vendas_perdidas = custos_vendas_perdidas_dict.get(period).c_vp_total if custos_vendas_perdidas_dict.get(period) else 0.0
+        receitas_vendas = receitas_vendas_dict.get(period).r_vendas_total if receitas_vendas_dict.get(period) else 0.0
+
+        # Calcular custos totais
+        custos_totais = (custos_fixos + custos_compra_mp + custos_estoques +
+                         custos_terceirizacao + custos_capital + custos_vendas_perdidas)
+
+        # Calcular resultado operacional
+        resultado_operacional = receitas_vendas - custos_totais
+
+        # Atualizar o resultado operacional acumulado
+        ro_acumulado += resultado_operacional
+
+        # Atualizar ou criar o registro em RelatorioFinanceiro
+        relatorio_financeiro = next((rf for rf in relatorio_financeiro_registros if rf.periodo == period), None)
+        if relatorio_financeiro:
+            # Atualizar valores existentes
+            relatorio_financeiro.custos_fixos = custos_fixos
+            relatorio_financeiro.custos_compra_mp = custos_compra_mp
+            relatorio_financeiro.custos_estoques = custos_estoques
+            relatorio_financeiro.custos_terceirizacao = custos_terceirizacao
+            relatorio_financeiro.custos_capital = custos_capital
+            relatorio_financeiro.custos_vendas_perdidas = custos_vendas_perdidas
+            relatorio_financeiro.custos_totais = custos_totais
+            relatorio_financeiro.receitas_vendas = receitas_vendas
+            relatorio_financeiro.resultado_operacional = resultado_operacional
+            relatorio_financeiro.ro_acumulado = ro_acumulado
+        else:
+            # Criar novo registro
+            novos_relatorios_financeiros.append(RelatorioFinanceiro(
+                grupo_id=grupo.id,
+                periodo=period,
+                custos_fixos=custos_fixos,
+                custos_compra_mp=custos_compra_mp,
+                custos_estoques=custos_estoques,
+                custos_terceirizacao=custos_terceirizacao,
+                custos_capital=custos_capital,
+                custos_vendas_perdidas=custos_vendas_perdidas,
+                custos_totais=custos_totais,
+                receitas_vendas=receitas_vendas,
+                resultado_operacional=resultado_operacional,
+                ro_acumulado=ro_acumulado
+            ))
+
+    # Adicionar novos registros de RelatorioFinanceiro ao banco de dados
+    db.session.add_all(novos_relatorios_financeiros)
+    db.session.commit()
+    ## FIM RELATÓRIO FINANCEIRO
+
 
     db.session.commit()
 
