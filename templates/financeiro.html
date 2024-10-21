@@ -6,7 +6,10 @@
 <!-- Abas de navegação -->
 <ul class="nav nav-tabs" id="financeiroTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="custos-fixos-tab" data-bs-toggle="tab" data-bs-target="#custos-fixos" type="button" role="tab" aria-controls="custos-fixos" aria-selected="true">Custos Fixos</button>
+        <button class="nav-link active" id="relatorio-tab" data-bs-toggle="tab" data-bs-target="#relatorio-financeiro" type="button" role="tab" aria-controls="relatorio-financeiro" aria-selected="true">Resumo Financeiro</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="custos-fixos-tab" data-bs-toggle="tab" data-bs-target="#custos-fixos" type="button" role="tab" aria-controls="custos-fixos" aria-selected="false">Custos Fixos</button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="custos-compra-tab" data-bs-toggle="tab" data-bs-target="#custos-compra_mp" type="button" role="tab" aria-controls="custos-compra_mp" aria-selected="false">Custos de Compra MP</button>
@@ -27,6 +30,84 @@
         <button class="nav-link" id="receitas-vendas-tab" data-bs-toggle="tab" data-bs-target="#receitas-vendas" type="button" role="tab" aria-controls="receitas-vendas" aria-selected="false">Receitas de Vendas</button>
     </li>
 </ul>
+
+<div class="tab-content mt-3">
+    <!-- Relatório Financeiro -->
+    <div class="tab-pane fade show active" id="relatorio-financeiro" role="tabpanel" aria-labelledby="relatorio-tab">
+        <h4>Resumo Financeiro</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <th>Período {{ linha.periodo }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Custos Fixos</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.custos_fixos }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Custos Compra MP</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.custos_compra_mp }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Custos Estoques</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.custos_estoques }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Custos Terceirização</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.custos_terceirizacao }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Custos Capital</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.custos_capital }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Custos Vendas Perdidas</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.custos_vendas_perdidas }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Custos Totais</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.custos_totais }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Receitas Vendas</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.receitas_vendas }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>Resultado Operacional</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.resultado_operacional }}</td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <th>RO Acumulado</th>
+                    {% for linha in tabelas['Relatorio Financeiro'] %}
+                        <td>{{ linha.ro_acumulado }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
 <div class="tab-content mt-3">
     <!-- Custos Fixos -->

@@ -769,8 +769,10 @@ def financeiro():
     custos_capital = CustosCapital.query.filter_by(grupo_id=grupo_id).filter(CustosCapital.periodo.in_(period_list)).all()
     custos_vendas_perdidas = CustosVendasPerdidas.query.filter_by(grupo_id=grupo_id).filter(CustosVendasPerdidas.periodo.in_(period_list)).all()
     receitas_vendas = ReceitasVendas.query.filter_by(grupo_id=grupo_id).filter(ReceitasVendas.periodo.in_(period_list)).all()
+    relatorio_financeiro = RelatorioFinanceiro.query.filter_by(grupo_id=grupo_id).filter(ReceitasVendas.periodo.in_(period_list)).all()
 
     tabelas = {
+        'Relatorio Financeiro': relatorio_financeiro,
         'Custos Fixos': custos_fixos,
         'Custos Compra MP': custos_compra_mp,
         'Custos Estoques': custos_estoques,
