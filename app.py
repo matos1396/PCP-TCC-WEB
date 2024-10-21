@@ -367,18 +367,19 @@ def tecelagem():
     periodo_atual = current_user.periodo_atual
 
  #                             'Fio Algodao': {period: getattr(form, f'fio_algodao_estoque_final_{period}', None) for period in periods}
-    numero_turnos_dici =          {'Teares': {period: getattr(form, f'numero_turnos_{period}', None) for period in periods}}
-    capacidade_disponivel_dici =  {'Teares': {period: getattr(form, f'capacidade_disponivel_{period}') for period in periods}}
-    capacidade_necessaria_dici =  {'Teares': {period: getattr(form, f'capacidade_necessaria_{period}') for period in periods}}
-    colmeia_horas_dici =          {'Teares': {period: getattr(form, f'colmeia_horas_{period}') for period in periods}}
-    piquet_horas_dici =           {'Teares': {period: getattr(form, f'piquet_horas_{period}') for period in periods}}
-    maxim_horas_dici =            {'Teares': {period: getattr(form, f'maxim_horas_{period}') for period in periods}}
-    setup_dici =                  {'Teares': {period: getattr(form, f'setup_{period}') for period in periods}}
-    produtividade_dici =          {'Teares': {period: getattr(form, f'produtividade_{period}') for period in periods}}
-    capacidade_instalada_dici =   {'Teares': {period: getattr(form, f'capacidade_instalada_{period}') for period in periods}}
-    capacidade_teceirizada_dici = {'Teares': {period: getattr(form, f'capacidade_teceirizada_{period}') for period in periods}}
-    ampliacoes_dici =             {'Teares': {period: getattr(form, f'ampliacoes_{period}', None) for period in periods}}
-    reducoes_dici =               {'Teares': {period: getattr(form, f'reducoes_{period}', None) for period in periods}}
+    numero_turnos_dici =          {maquina: {period: getattr(form, f'numero_turnos_{period}', None) for period in periods}}
+    capacidade_disponivel_dici =  {maquina: {period: getattr(form, f'capacidade_disponivel_{period}') for period in periods}}
+    capacidade_necessaria_dici =  {maquina: {period: getattr(form, f'capacidade_necessaria_{period}') for period in periods}}
+    colmeia_horas_dici =          {maquina: {period: getattr(form, f'colmeia_horas_{period}') for period in periods}}
+    piquet_horas_dici =           {maquina: {period: getattr(form, f'piquet_horas_{period}') for period in periods}}
+    maxim_horas_dici =            {maquina: {period: getattr(form, f'maxim_horas_{period}') for period in periods}}
+    setup_dici =                  {maquina: {period: getattr(form, f'setup_{period}') for period in periods}}
+    produtividade_dici =          {maquina: {period: getattr(form, f'produtividade_{period}') for period in periods}}
+    capacidade_instalada_dici =   {maquina: {period: getattr(form, f'capacidade_instalada_{period}') for period in periods}}
+    capacidade_teceirizada_dici = {maquina: {period: getattr(form, f'capacidade_teceirizada_{period}') for period in periods}}
+    ampliacoes_dici =             {maquina: {period: getattr(form, f'ampliacoes_{period}', None) for period in periods}}
+    reducoes_dici =               {maquina: {period: getattr(form, f'reducoes_{period}', None) for period in periods}}
+    quantidade_dici =             {maquina: {period: getattr(form, f'quantidade_{period}', None) for period in periods}}
 
     if request.method == 'POST':
         for period in periods:
@@ -458,7 +459,7 @@ def tecelagem():
                 capacidade_teceirizada_dici[maquina][period].data = capacidade_teares.capacidade_terceirizada
                 ampliacoes_dici[maquina][period].data = capacidade_teares.ampliacoes
                 reducoes_dici[maquina][period].data = capacidade_teares.reducoes
-
+                quantidade_dici[maquina][period].data = capacidade_teares.quantidade
 
     return render_template('tecelagem.html',
                            form=form,
@@ -475,7 +476,8 @@ def tecelagem():
                            capacidade_instalada = capacidade_instalada_dici,
                            capacidade_teceirizada = capacidade_teceirizada_dici,
                            ampliacoes=ampliacoes_dici,
-                           reducoes=reducoes_dici)
+                           reducoes=reducoes_dici,
+                           quantidade=quantidade_dici)
 
 
 # Purga e Tinturaria (Jets)
@@ -506,7 +508,9 @@ def purga_tinturaria():
     reducoes_jet1_dici =             {maquina: {period: getattr(form, f'reducoes_jet1_{period}', None) for period in periods}}
     reducoes_jet2_dici =             {maquina: {period: getattr(form, f'reducoes_jet2_{period}', None) for period in periods}}
     reducoes_jet3_dici =             {maquina: {period: getattr(form, f'reducoes_jet3_{period}', None) for period in periods}}
-
+    quantidade_jet1_dici =           {maquina: {period: getattr(form, f'quantidade_jet1_{period}', None) for period in periods}}
+    quantidade_jet2_dici =           {maquina: {period: getattr(form, f'quantidade_jet2_{period}', None) for period in periods}}
+    quantidade_jet3_dici =           {maquina: {period: getattr(form, f'quantidade_jet3_{period}', None) for period in periods}}
 
     if request.method == 'POST':
         for period in periods:
@@ -530,7 +534,9 @@ def purga_tinturaria():
                 reducoes_jet1 = reducoes_jet1_dici[maquina][period].data
                 reducoes_jet2 = reducoes_jet2_dici[maquina][period].data
                 reducoes_jet3 = reducoes_jet3_dici[maquina][period].data
-
+                quantidade_jet1 = quantidade_jet1_dici[maquina][period].data
+                quantidade_jet2 = quantidade_jet2_dici[maquina][period].data
+                quantidade_jet3 = quantidade_jet3_dici[maquina][period].data
 
                 # Atualizar ou criar CapacidadeJets
                 existing_plan = CapacidadeJets.query.filter_by(
@@ -607,7 +613,9 @@ def purga_tinturaria():
                 reducoes_jet1_dici[maquina][period].data = capacidade_jets.reducoes_tipo1
                 reducoes_jet2_dici[maquina][period].data = capacidade_jets.reducoes_tipo2
                 reducoes_jet3_dici[maquina][period].data = capacidade_jets.reducoes_tipo3
-
+                quantidade_jet1_dici[maquina][period].data = capacidade_jets.quantidade_tipo1
+                quantidade_jet2_dici[maquina][period].data = capacidade_jets.quantidade_tipo2
+                quantidade_jet3_dici[maquina][period].data = capacidade_jets.quantidade_tipo3
 
     return render_template('purga_tinturaria.html',
                            form=form,
@@ -631,7 +639,10 @@ def purga_tinturaria():
                            ampliacoes_jet3 = ampliacoes_jet3_dici,
                            reducoes_jet1 = reducoes_jet1_dici,
                            reducoes_jet2 = reducoes_jet2_dici,
-                           reducoes_jet3 = reducoes_jet3_dici)
+                           reducoes_jet3 = reducoes_jet3_dici,
+                           quantidade_jet1 = quantidade_jet1_dici,
+                           quantidade_jet2 = quantidade_jet2_dici,
+                           quantidade_jet3 = quantidade_jet3_dici)
 
 # Fixação e Acabamento (Ramas)
 @app.route('/fixacao_acabamento', methods=['GET', 'POST'])
@@ -656,7 +667,7 @@ def fixacao_acabamento():
     capacidade_teceirizada_dici = {maquina: {period: getattr(form, f'capacidade_teceirizada_{period}') for period in periods}}
     ampliacoes_dici =             {maquina: {period: getattr(form, f'ampliacoes_{period}', None) for period in periods}}
     reducoes_dici =               {maquina: {period: getattr(form, f'reducoes_{period}', None) for period in periods}}
-
+    quantidade_dici =             {maquina: {period: getattr(form, f'quantidade_{period}', None) for period in periods}}
 
     if request.method == 'POST':
         for period in periods:
@@ -675,6 +686,7 @@ def fixacao_acabamento():
                 capacidade_teceirizada = capacidade_teceirizada_dici[maquina][period].data
                 ampliacoes = ampliacoes_dici[maquina][period].data
                 reducoes = reducoes_dici[maquina][period].data
+                quantidade = quantidade_dici[maquina][period].data
 
                 # Atualizar ou criar CapacidadeRamas
                 existing_plan = CapacidadeRamas.query.filter_by(
@@ -736,7 +748,7 @@ def fixacao_acabamento():
                 capacidade_teceirizada_dici[maquina][period].data = capacidade_teares.capacidade_terceirizada
                 ampliacoes_dici[maquina][period].data = capacidade_teares.ampliacoes
                 reducoes_dici[maquina][period].data = capacidade_teares.reducoes
-
+                quantidade_dici[maquina][period].data = capacidade_teares.quantidade
 
     return render_template('fixacao_acabamento.html',
                            form=form,
@@ -753,7 +765,8 @@ def fixacao_acabamento():
                            capacidade_instalada = capacidade_instalada_dici,
                            capacidade_teceirizada = capacidade_teceirizada_dici,
                            ampliacoes=ampliacoes_dici,
-                           reducoes=reducoes_dici)
+                           reducoes=reducoes_dici,
+                           quantidade=quantidade_dici)
 
 @app.route('/financeiro', methods=['GET'])
 @login_required

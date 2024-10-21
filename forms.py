@@ -132,6 +132,7 @@ class TecelagemForm(FlaskForm):
         vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
 
         # Tabela Capacidade Futura
+        vars()['quantidade_' + str(period)] = IntegerField(f'Quantidade (Período {period})', validators=[Optional()])
         vars()['ampliacoes_' + str(period)] = IntegerField(f'Ampliações (Período {period})', validators=[Optional()])
         vars()['reducoes_' + str(period)] = IntegerField(f'Reduções (Período {period})', validators=[Optional()])
 
@@ -164,6 +165,9 @@ class PurgaTinturariaForm(FlaskForm):
         vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
 
         # Tabela Capacidade Futura
+        vars()['quantidade_jet1_' + str(period)] = IntegerField(f'Quantidade Jet 1 (Período {period})', validators=[Optional()])
+        vars()['quantidade_jet2_' + str(period)] = IntegerField(f'Quantidade Jet 2 (Período {period})', validators=[Optional()])
+        vars()['quantidade_jet3_' + str(period)] = IntegerField(f'Quantidade Jet 3 (Período {period})', validators=[Optional()])
         vars()['ampliacoes_jet1_' + str(period)] = IntegerField(f'Ampliações Jet 1 (Período {period})', validators=[Optional()])
         vars()['ampliacoes_jet2_' + str(period)] = IntegerField(f'Ampliações Jet 2 (Período {period})', validators=[Optional()])
         vars()['ampliacoes_jet3_' + str(period)] = IntegerField(f'Ampliações Jet 3 (Período {period})', validators=[Optional()])
@@ -199,6 +203,7 @@ class FixacaoAcabamentoForm(FlaskForm):
         vars()['capacidade_teceirizada_' + str(period)] = IntegerField(f'Capacidade Terceirizada (Período {period})', validators=[Optional(), validate_capacidade_teceirizada])
 
         # Tabela Capacidade Futura
+        vars()['quantidade_' + str(period)] = IntegerField(f'Quantidade (Período {period})', validators=[Optional()])
         vars()['ampliacoes_' + str(period)] = IntegerField(f'Ampliações (Período {period})', validators=[Optional()])
         vars()['reducoes_' + str(period)] = IntegerField(f'Reduções (Período {period})', validators=[Optional()])
 

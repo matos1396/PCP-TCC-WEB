@@ -170,6 +170,17 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Linha para Quantidade -->
+            <tr>
+                <th>Quantidade</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="quantidade_{{ period }}" 
+                           value="{{ quantidade['Teares'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
             <!-- Linha para Ampliações -->
             <tr>
                 <th>Ampliações</th>
@@ -211,4 +222,38 @@
     <!-- Botão para submeter o formulário -->
     <button type="submit" class="btn btn-primary">Salvar Plano de Teares</button>
 </form>
+
+<!-- JavaScript para atualizar dinamicamente a capacidade disponível -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Fator de produtividade - ajuste esse valor conforme necessário
+        const fator_produtividade = 100;
+
+        // Selecionar todos os campos de número de turnos
+        const numeroTurnosInputs = document.querySelectorAll('.numero-turnos');
+
+        // Adicionar evento de mudança em cada campo de número de turnos
+        numeroTurnosInputs.forEach(function(input) {
+            input.addEventListener('input', function() {
+                const period = input.id.split('_')[2]; // Obter o período do ID do campo
+                const numeroTurnos = parseInt(input.value) || 0; // Obter o valor do número de turnos
+                const capacidadeDisponivel = numeroTurnos * fator_produtividade; // Calcular a capacidade disponível
+
+                // Atualizar o campo de capacidade disponível correspondente
+                const capacidadeInput1 = document.getElementById(`capacidade_disponivel_1_${period}`);
+                const capacidadeInput2 = document.getElementById(`capacidade_disponivel_2_${period}`);
+
+                if (capacidadeInput1) {
+                    capacidadeInput1.value = capacidadeDisponivel;
+                }
+                if (capacidadeInput2) {
+                    capacidadeInput2.value = capacidadeDisponivel;
+                }
+            });
+        });
+    });
+</script>
+
+
+
 {% endblock %}

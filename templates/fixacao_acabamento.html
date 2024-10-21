@@ -170,6 +170,17 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Linha para Quantidade -->
+            <tr>
+                <th>Quantidade</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="quantidade_{{ period }}" 
+                           value="{{ quantidade['Ramas'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
             <!-- Linha para Ampliações -->
             <tr>
                 <th>Ampliações</th>

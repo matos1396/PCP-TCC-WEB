@@ -190,6 +190,17 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Linha para Quantidade -->
+            <tr>
+                <th>Quantidade Jet 1</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="quantidade_jet1_{{ period }}" 
+                           value="{{ quantidade_jet1['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
             <!-- Linha para Ampliações Jet1 -->
             <tr>
                 <th>Ampliações Jet 1</th>
@@ -224,7 +235,18 @@
                 </td>
                 {% endfor %}
             </tr>
-
+            
+            <!-- Linha para Quantidade -->
+            <tr>
+                <th>Quantidade Jet 2</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="quantidade_jet2_{{ period }}" 
+                           value="{{ quantidade_jet2['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
             <!-- Linha para Ampliações Jet2 -->
             <tr>
                 <th>Ampliações Jet 2</th>
@@ -258,7 +280,17 @@
                 </td>
                 {% endfor %}
             </tr>
-
+            <!-- Linha para Quantidade -->
+            <tr>
+                <th>Quantidade Jet 3</th>
+                {% for period in periods %}
+                <td>
+                    <input type="number" class="form-control" 
+                           id="quantidade_jet3_{{ period }}" 
+                           value="{{ quantidade_jet3['Jet'][period].data }}" readonly>
+                </td>
+                {% endfor %}
+            </tr>
             <!-- Linha para Ampliações Jet3 -->
             <tr>
                 <th>Ampliações Jet 3</th>
