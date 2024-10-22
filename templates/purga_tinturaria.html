@@ -330,4 +330,123 @@
     <!-- Botão para submeter o formulário -->
     <button type="submit" class="btn btn-primary">Salvar Plano de Jet</button>
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const periods = JSON.parse('{{ periods|tojson }}');
+    let periodo_atual = '{{ periodo_atual }}';
+    const capacidadeInicial = {};
+    const capacidadeTerceirizadaInicial = {};
+
+    // Salvar o valor inicial de capacidade disponível e capacidade terceirizada para cada período
+    periods.forEach(function(period) {
+        const capacidadeInput1 = document.getElementById(`capacidade_disponivel_1_${period}`);
+        const capacidadeInput2 = document.getElementById(`capacidade_disponivel_2_${period}`);
+        const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
+        
+        if (capacidadeInput1 && capacidadeInput2 && capacidadeTerceirizadaInput) {
+            capacidadeInicial[period] = {
+                input1: parseInt(capacidadeInput1.value) || 0,
+                input2: parseInt(capacidadeInput2.value) || 0
+            };
+            capacidadeTerceirizadaInicial[period] = parseInt(capacidadeTerceirizadaInput.value) || 0;
+        }
+    });
+
+    // Função para recalcular a capacidade disponível considerando turnos, quantidade de máquinas e capacidade terceirizada para cada tipo de Jet
+    function recalcularCapacidadeDisponivel() {
+        periods.forEach(function(period) {
+            // Selecionar os campos de número de turnos, quantidade de máquinas e capacidade terceirizada
+            const turnosInput = document.getElementById(`numero_turnos_${period}`);
+            const quantidadeJet1Input = document.getElementById(`quantidade_jet1_${period}`);
+            const quantidadeJet2Input = document.getElementById(`quantidade_jet2_${period}`);
+            const quantidadeJet3Input = document.getElementById(`quantidade_jet3_${period}`);
+            const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
+            
+            // Selecionar os campos de capacidade disponível
+            const capacidadeDisponivelInput1 = document.getElementById(`capacidade_disponivel_1_${period}`);
+            const capacidadeDisponivelInput2 = document.getElementById(`capacidade_disponivel_2_${period}`);
+
+            if (turnosInput && quantidadeJet1Input && quantidadeJet2Input && quantidadeJet3Input && capacidadeTerceirizadaInput && capacidadeDisponivelInput1 && capacidadeDisponivelInput2) {
+                // Obter o valor inicial de turnos
+                let turnosIniciais = parseInt(turnosInput.getAttribute('value')) || 0;
+                // Obter o valor atual de turnos
+                let numeroTurnos = parseInt(turnosInput.value) || 0;
+                // Obter a quantidade de máquinas para cada tipo de Jet
+                let quantidadeJet1 = parseInt(quantidadeJet1Input.value) || 0;
+                let quantidadeJet2 = parseInt(quantidadeJet2Input.value) || 0;
+                let quantidadeJet3 = parseInt(quantidadeJet3Input.value) || 0;
+
+                // Calcular a diferença de turnos
+                let diferencaTurnos = numeroTurnos - turnosIniciais;
+
+                // Inicializar variáveis para a nova capacidade
+                let novaCapacidade1 = capacidadeInicial[period].input1;
+                let novaCapacidade2 = capacidadeInicial[period].input2;
+
+                // Somar capacidade apenas se a quantidade de máquinas for maior que 0
+                if (quantidadeJet1 > 0) {
+                    novaCapacidade1 += diferencaTurnos * (140/4.5 * quantidadeJet1*480);
+                    novaCapacidade2 += diferencaTurnos * (140/4.5 * quantidadeJet1*480);
+                }
+
+                if (quantidadeJet2 > 0) {
+                    novaCapacidade1 += diferencaTurnos * (140/4.5 * quantidadeJet2*120);
+                    novaCapacidade2 += diferencaTurnos * (140/4.5 * quantidadeJet2*120);
+                }
+
+                if (quantidadeJet3 > 0) {
+                    novaCapacidade1 += diferencaTurnos * (140/4.5 * quantidadeJet3*30);
+                    novaCapacidade2 += diferencaTurnos * (140/4.5 * quantidadeJet3*30);
+                }
+
+                // Obter o valor inicial de capacidade terceirizada
+                let capacidadeTerceirizadaInicialValor = capacidadeTerceirizadaInicial[period];
+                // Obter o valor atual de capacidade terceirizada
+                let capacidadeTerceirizadaAtual = parseInt(capacidadeTerceirizadaInput.value) || 0;
+                // Calcular a diferença de capacidade terceirizada
+                let diferencaCapacidadeTerceirizada = capacidadeTerceirizadaAtual - capacidadeTerceirizadaInicialValor;
+
+                // Atualizar os campos de capacidade disponível considerando a capacidade terceirizada
+                capacidadeDisponivelInput1.value = novaCapacidade1 + diferencaCapacidadeTerceirizada;
+                capacidadeDisponivelInput2.value = novaCapacidade2 + diferencaCapacidadeTerceirizada;
+            }
+        });
+    }
+
+    // Adicionar event listeners para os inputs de número de turnos, quantidade de máquinas e capacidade terceirizada
+    periods.forEach(function(period) {
+        const turnosInput = document.getElementById(`numero_turnos_${period}`);
+        const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
+        const quantidadeJet1Input = document.getElementById(`quantidade_jet1_${period}`);
+        const quantidadeJet2Input = document.getElementById(`quantidade_jet2_${period}`);
+        const quantidadeJet3Input = document.getElementById(`quantidade_jet3_${period}`);
+
+        if (turnosInput) {
+            turnosInput.addEventListener('input', recalcularCapacidadeDisponivel);
+        }
+
+        if (capacidadeTerceirizadaInput) {
+            capacidadeTerceirizadaInput.addEventListener('input', recalcularCapacidadeDisponivel);
+        }
+
+        if (quantidadeJet1Input) {
+            quantidadeJet1Input.addEventListener('input', recalcularCapacidadeDisponivel);
+        }
+
+        if (quantidadeJet2Input) {
+            quantidadeJet2Input.addEventListener('input', recalcularCapacidadeDisponivel);
+        }
+
+        if (quantidadeJet3Input) {
+            quantidadeJet3Input.addEventListener('input', recalcularCapacidadeDisponivel);
+        }
+    });
+
+    // Inicialmente calcular a capacidade disponível ao carregar a página
+    recalcularCapacidadeDisponivel();
+});
+
+</script>
+
 {% endblock %}

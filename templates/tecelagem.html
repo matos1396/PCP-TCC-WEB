@@ -223,37 +223,99 @@
     <button type="submit" class="btn btn-primary">Salvar Plano de Teares</button>
 </form>
 
-<!-- JavaScript para atualizar dinamicamente a capacidade disponível -->
+<!-- JavaScript para atualizar a Capacidade Disponível -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Fator de produtividade - ajuste esse valor conforme necessário
-        const fator_produtividade = 100;
+    document.addEventListener('DOMContentLoaded', function() {
+        const periods = JSON.parse('{{ periods|tojson }}');
+        let periodo_atual = '{{ periodo_atual }}';
+        const capacidadeInicial = {};
+        const capacidadeTerceirizadaInicial = {};
 
-        // Selecionar todos os campos de número de turnos
-        const numeroTurnosInputs = document.querySelectorAll('.numero-turnos');
+        // Salvar o valor inicial de capacidade disponível e capacidade terceirizada para cada período
+        periods.forEach(function(period) {
+            const capacidadeInput1 = document.getElementById(`capacidade_disponivel_1_${period}`);
+            const capacidadeInput2 = document.getElementById(`capacidade_disponivel_2_${period}`);
+            const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
 
-        // Adicionar evento de mudança em cada campo de número de turnos
-        numeroTurnosInputs.forEach(function(input) {
-            input.addEventListener('input', function() {
-                const period = input.id.split('_')[2]; // Obter o período do ID do campo
-                const numeroTurnos = parseInt(input.value) || 0; // Obter o valor do número de turnos
-                const capacidadeDisponivel = numeroTurnos * fator_produtividade; // Calcular a capacidade disponível
+            if (capacidadeInput1 && capacidadeInput2 && capacidadeTerceirizadaInput) {
+                capacidadeInicial[period] = {
+                    input1: parseInt(capacidadeInput1.value) || 0,
+                    input2: parseInt(capacidadeInput2.value) || 0
+                };
+                capacidadeTerceirizadaInicial[period] = parseInt(capacidadeTerceirizadaInput.value) || 0;
+            }
+        });
 
-                // Atualizar o campo de capacidade disponível correspondente
-                const capacidadeInput1 = document.getElementById(`capacidade_disponivel_1_${period}`);
-                const capacidadeInput2 = document.getElementById(`capacidade_disponivel_2_${period}`);
+        // Função para recalcular a capacidade disponível considerando turnos, quantidade de máquinas e capacidade terceirizada
+        function recalcularCapacidadeDisponivel() {
+            periods.forEach(function(period) {
+                // Selecionar os campos de número de turnos, quantidade de máquinas e capacidade terceirizada
+                const turnosInput = document.getElementById(`numero_turnos_${period}`);
+                const quantidadeInput = document.getElementById(`quantidade_${period}`);
+                const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
 
-                if (capacidadeInput1) {
-                    capacidadeInput1.value = capacidadeDisponivel;
-                }
-                if (capacidadeInput2) {
-                    capacidadeInput2.value = capacidadeDisponivel;
+                // Selecionar os campos de capacidade disponível
+                const capacidadeDisponivelInput1 = document.getElementById(`capacidade_disponivel_1_${period}`);
+                const capacidadeDisponivelInput2 = document.getElementById(`capacidade_disponivel_2_${period}`);
+
+                if (turnosInput && quantidadeInput && capacidadeTerceirizadaInput && capacidadeDisponivelInput1 && capacidadeDisponivelInput2) {
+                    // Obter o valor inicial de turnos
+                    let turnosIniciais = parseInt(turnosInput.getAttribute('value')) || 0;
+                    // Obter o valor atual de turnos
+                    let numeroTurnos = parseInt(turnosInput.value) || 0;
+                    // Obter a quantidade de máquinas
+                    let quantidade = parseInt(quantidadeInput.value) || 0;
+
+                    // Calcular a diferença de turnos
+                    let diferencaTurnos = numeroTurnos - turnosIniciais;
+
+                    // Inicializar variáveis para a nova capacidade
+                    let novaCapacidade1 = capacidadeInicial[period].input1;
+                    let novaCapacidade2 = capacidadeInicial[period].input2;
+
+                    // Somar capacidade apenas se a quantidade de máquinas for maior que 0
+                    if (quantidade > 0) {
+                        novaCapacidade1 += diferencaTurnos * (140 * quantidade);
+                        novaCapacidade2 += diferencaTurnos * (140 * quantidade);
+                    }
+
+                    // Obter o valor inicial de capacidade terceirizada
+                    let capacidadeTerceirizadaInicialValor = capacidadeTerceirizadaInicial[period];
+                    // Obter o valor atual de capacidade terceirizada
+                    let capacidadeTerceirizadaAtual = parseInt(capacidadeTerceirizadaInput.value) || 0;
+                    // Calcular a diferença de capacidade terceirizada
+                    let diferencaCapacidadeTerceirizada = capacidadeTerceirizadaAtual - capacidadeTerceirizadaInicialValor;
+
+                    // Atualizar os campos de capacidade disponível considerando a capacidade terceirizada
+                    capacidadeDisponivelInput1.value = novaCapacidade1 + diferencaCapacidadeTerceirizada;
+                    capacidadeDisponivelInput2.value = novaCapacidade2 + diferencaCapacidadeTerceirizada;
                 }
             });
+        }
+
+        // Adicionar event listeners para os inputs de número de turnos, quantidade de máquinas e capacidade terceirizada
+        periods.forEach(function(period) {
+            const turnosInput = document.getElementById(`numero_turnos_${period}`);
+            const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
+            const quantidadeInput = document.getElementById(`quantidade_${period}`);
+
+            if (turnosInput) {
+                turnosInput.addEventListener('input', recalcularCapacidadeDisponivel);
+            }
+
+            if (capacidadeTerceirizadaInput) {
+                capacidadeTerceirizadaInput.addEventListener('input', recalcularCapacidadeDisponivel);
+            }
+
+            if (quantidadeInput) {
+                quantidadeInput.addEventListener('input', recalcularCapacidadeDisponivel);
+            }
         });
+
+        // Inicialmente calcular a capacidade disponível ao carregar a página
+        recalcularCapacidadeDisponivel();
     });
 </script>
-
 
 
 {% endblock %}

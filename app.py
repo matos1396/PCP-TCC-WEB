@@ -363,7 +363,7 @@ def tecelagem():
     form = TecelagemForm()
     maquina = "Teares"
 
-    periods = range(13, 25)
+    periods = list(range(13, 25))
     periodo_atual = current_user.periodo_atual
 
  #                             'Fio Algodao': {period: getattr(form, f'fio_algodao_estoque_final_{period}', None) for period in periods}
@@ -487,7 +487,7 @@ def purga_tinturaria():
 
     form = PurgaTinturariaForm()
     maquina = "Jet"
-    periods = range(13, 25)
+    periods = list(range(13, 25))
     periodo_atual = current_user.periodo_atual
 
     numero_turnos_dici =             {maquina: {period: getattr(form, f'numero_turnos_{period}') for period in periods}}
@@ -651,7 +651,7 @@ def fixacao_acabamento():
     form = FixacaoAcabamentoForm()
     maquina = "Ramas"
 
-    periods = range(13, 25)
+    periods = list(range(13, 25))
     periodo_atual = current_user.periodo_atual
 
  #                             'Fio Algodao': {period: getattr(form, f'fio_algodao_estoque_final_{period}', None) for period in periods}
