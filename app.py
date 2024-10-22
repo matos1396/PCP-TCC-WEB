@@ -318,8 +318,25 @@ def purchases():
 
                             db.session.add(new_plan)
 
+
+        # TODO: Finalizar Implementação
+        ####### Atualizar as outras TABELAS#####
+        ### TEST
+        start_time = time.time()
+
+        atualizar_plano_compras(current_user)
+        atualizar_capacidade_maquinas(current_user)
+        atualizar_financeiro(current_user)
+
+        end_time = time.time()  # Tempo final
+        execution_time = end_time - start_time  # Calcular o tempo de execução
+        print(f"Tempo de execução: {execution_time:.4f} segundos")  # Exibir o tempo de execução
+
+
+        ####### Fim atualização ######
+
         db.session.commit()
-        flash('Plano de compras salvo com sucesso!', 'success')
+        flash(f'Plano de compras salvo com sucesso! #Debug Time = {execution_time:.4f} segundos', 'success')
         return redirect(url_for('dashboard'))
 
     elif request.method == 'GET':
@@ -435,8 +452,25 @@ def tecelagem():
 
                         db.session.add(new_plan)
 
+        # TODO: Finalizar Implementação
+        ####### Atualizar as outras TABELAS#####
+        ### TEST
+        start_time = time.time()
+
+        # atualizar_plano_compras(current_user)
+        atualizar_capacidade_maquinas(current_user)
+        atualizar_financeiro(current_user)
+
+        end_time = time.time()  # Tempo final
+        execution_time = end_time - start_time  # Calcular o tempo de execução
+        print(f"Tempo de execução: {execution_time:.4f} segundos")  # Exibir o tempo de execução
+
+
+        ####### Fim atualização ######
+
+
         db.session.commit()
-        flash('Plano de Tecelagem salvo com sucesso!', 'success')
+        flash(f'Plano de Tecelagem salvo com sucesso! #Debug Time = {execution_time:.4f} segundos', 'success')
         return redirect(url_for('dashboard'))
 
 
@@ -583,8 +617,25 @@ def purga_tinturaria():
                         )
 
                         db.session.add(new_plan)
+
+        # TODO: Finalizar Implementação
+        ####### Atualizar as outras TABELAS#####
+        ### TEST
+        start_time = time.time()
+
+        # atualizar_plano_compras(current_user)
+        atualizar_capacidade_maquinas(current_user)
+        atualizar_financeiro(current_user)
+
+        end_time = time.time()  # Tempo final
+        execution_time = end_time - start_time  # Calcular o tempo de execução
+        print(f"Tempo de execução: {execution_time:.4f} segundos")  # Exibir o tempo de execução
+
+
+        ####### Fim atualização ######
+
         db.session.commit()
-        flash('Plano de Purga/Tinturaria salvo com sucesso!', 'success')
+        flash(f'Plano de Purga/Tinturaria salvo com sucesso! #Debug Time = {execution_time:.4f} segundos', 'success')
         return redirect(url_for('dashboard'))
 
 
@@ -724,8 +775,25 @@ def fixacao_acabamento():
 
                         db.session.add(new_plan)
 
+        # TODO: Finalizar Implementação
+        ####### Atualizar as outras TABELAS#####
+        ### TEST
+        start_time = time.time()
+
+        # atualizar_plano_compras(current_user)
+        atualizar_capacidade_maquinas(current_user)
+        atualizar_financeiro(current_user)
+
+        end_time = time.time()  # Tempo final
+        execution_time = end_time - start_time  # Calcular o tempo de execução
+        print(f"Tempo de execução: {execution_time:.4f} segundos")  # Exibir o tempo de execução
+
+
+        ####### Fim atualização ######
+
+
         db.session.commit()
-        flash('Plano de Fixação e Acabamento salvo com sucesso!', 'success')
+        flash(f'Plano de Fixação e Acabamento salvo com sucesso! #Debug Time = {execution_time:.4f} segundos', 'success')
         return redirect(url_for('dashboard'))
 
 
