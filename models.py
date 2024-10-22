@@ -48,6 +48,18 @@ class Grupo(db.Model, UserMixin):
     capacidades_jets = db.relationship('CapacidadeJets', backref='grupo', lazy=True)
     capacidades_ramas = db.relationship('CapacidadeRamas', backref='grupo', lazy=True)
 
+class ControlePlanos(db.Model):
+    __tablename__ = 'controle_planos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)
+    periodo = db.Column(db.Integer, nullable=False)
+
+    plano_producao_salvo = db.Column(db.Boolean, nullable=False, default=False)
+    plano_compras_salvo = db.Column(db.Boolean, nullable=False, default=False)
+
+    grupo = db.relationship('Grupo', backref=db.backref('controle_planos', lazy=True))
+
 
 # Modelo de Plano de Produção (PlanoProducao)
 class PlanoProducao(db.Model):

@@ -8,7 +8,7 @@ from models import (Grupo, EstiloDemanda,
                     CustosCapital, CustosTerceirizacao,
                     CustosCompraMP, ReceitasVendas,
                     CustosEstoques, CustosVendasPerdidas,
-                    LeadTimeMaquinas)
+                    LeadTimeMaquinas, ControlePlanos)
 
 periods = list(range(13, 25))
 
@@ -268,6 +268,21 @@ def criar_planos_iniciais_para_grupo(grupo):
     # Salvar as mudanças no banco de dados
     db.session.commit()
 
+    for periodo in range(13, 25):  # Períodos de 13 a 24
+            # Verificar se já existe um registro para esse grupo e período
+            controle_existente = ControlePlanos.query.filter_by(grupo_id=grupo.id, periodo=periodo).first()
+
+            if not controle_existente:
+                # Criar um novo registro de controle de planos
+                novo_controle = ControlePlanos(
+                    grupo_id=grupo.id,
+                    periodo=periodo,
+                    plano_producao_salvo=False,
+                    plano_compras_salvo=False
+                )
+                db.session.add(novo_controle)
+
+    db.session.commit()
 
 
 with app.app_context():
