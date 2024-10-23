@@ -5,8 +5,9 @@ from models import (PlanoCompras,
                     RelatorioFinanceiro, CustosFixos,
                     CustosCapital, CustosTerceirizacao,
                     CustosCompraMP, ReceitasVendas,
-                    CustosEstoques, CustosVendasPerdidas)
-from app import db
+                    CustosEstoques, CustosVendasPerdidas,
+                    db)
+
 import time
 
 def atualizar_plano_compras(grupo):

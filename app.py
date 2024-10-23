@@ -1,23 +1,30 @@
 # app.py
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from forms import LoginForm, ProductionForm, PurchaseForm, TecelagemForm, PurgaTinturariaForm, FixacaoAcabamentoForm
 from models import (Grupo,PlanoProducao,PlanoCompras,PrevisaoDemanda,
                     CapacidadeJets,CapacidadeRamas,CapacidadeTeares,TaxaProducao,Custos,
                     RelatorioFinanceiro,CustosCapital,CustosCompraMP,CustosEstoques,
                     CustosFixos,CustosTerceirizacao,CustosVendasPerdidas,ReceitasVendas,
+                    ControlePlanos,
                     db)
 from simulacao import simulacao
 from utils.func_auxiliares import atualizar_plano_compras, atualizar_capacidade_maquinas, atualizar_financeiro
+from datetime import timedelta
+from flask import session
 
 import time # Para Testes
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
+app.config['SESSION_SQLALCHEMY'] = db  # Define explicitamente o uso da instância existente
 
 
 db.init_app(app)
+Session(app)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -25,6 +32,11 @@ login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
     return Grupo.query.get(int(user_id))
+
+@app.before_request
+def before_request():
+    # Tornar a sessão permanente (renovar a duração da sessão a cada requisição)
+    session.permanent = True
 
 
 # Importar rotas
@@ -39,7 +51,7 @@ def login():
     if form.validate_on_submit():
         user = Grupo.query.filter_by(grupo_nome=form.grupo_nome.data).first()
         if user and user.password == form.password.data:
-            login_user(user)
+            login_user(user, remember=False)  # 'remember=True' ativa o remember-me
             return redirect(url_for('dashboard'))
         else:
             flash('Nome do grupo ou senha incorretos.')
@@ -878,9 +890,13 @@ def simulate():
     capacidade_jets_nao_validado = CapacidadeJets.query.filter_by(grupo_id=grupo.id, validacao=False).first()
     capacidade_ramas_nao_validado = CapacidadeRamas.query.filter_by(grupo_id=grupo.id, validacao=False).first()
 
+    #check_producao = ControlePlanos.filter_by(grupo_id=grupo.id, plano_producao_salvo=False)
+
     if capacidade_teares_nao_validado or capacidade_jets_nao_validado or capacidade_ramas_nao_validado:
         flash("Existem configurações de capacidade necessária não atendidas. Verifique as tabelas das máquinas antes de continuar a simulação.", "warning")
         return redirect(url_for('dashboard'))
+
+
 
     # Se tudo OK executa a simulacao
 

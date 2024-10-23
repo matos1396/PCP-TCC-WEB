@@ -1,6 +1,6 @@
 # simulacao.py
 from models import Grupo, PlanoProducao, PlanoCompras, Custos, CapacidadeTeares, CapacidadeJets, CapacidadeRamas
-from app import db
+from models import db
 
 # Função principal da simulação
 def executar_simulacao(grupo):
