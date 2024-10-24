@@ -6,6 +6,7 @@ from models import (PlanoCompras,
                     CustosCapital, CustosTerceirizacao,
                     CustosCompraMP, ReceitasVendas,
                     CustosEstoques, CustosVendasPerdidas,
+                    ControlePlanos,
                     db)
 
 import time
@@ -747,3 +748,27 @@ def calcular_consumo_previsto(grupo, material, periodo, periodo_atual):
         return consumo_previsto_corantes
 
 
+def set_flag_controle(grupo, tipo):
+    # Obtém o período atual do grupo
+    periodo_simular = grupo.periodo_atual + 1
+
+    # Verifica se já existe um registro para o grupo e período
+    controle = ControlePlanos.query.filter_by(grupo_id=grupo.id, periodo=periodo_simular).first()
+
+    if not controle:
+        # Se não existir, cria um novo registro
+        controle = ControlePlanos(
+            grupo_id=grupo.id,
+            periodo=periodo_simular,
+            plano_producao_salvo=(tipo == "producao"),
+            plano_compras_salvo=(tipo == "compras")
+        )
+        db.session.add(controle)
+    else:
+        if tipo == "producao":
+            controle.plano_producao_salvo = True
+        elif tipo == "compras":
+            controle.plano_compras_salvo = True
+
+    # Commit para salvar as mudanças no banco de dados
+    db.session.commit()

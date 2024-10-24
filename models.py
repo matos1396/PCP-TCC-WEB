@@ -4,7 +4,6 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import event, inspect
 
-
 db = SQLAlchemy()
 
 # Tabelas associativas para relacionar TaxaProducao com as tabelas de capacidade por equipamento

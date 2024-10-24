@@ -188,6 +188,9 @@ def production():
         atualizar_capacidade_maquinas(current_user)
         atualizar_financeiro(current_user)
 
+        # Flag de controle
+        set_flag_controle(current_user, "producao")
+
         end_time = time.time()  # Tempo final
         execution_time = end_time - start_time  # Calcular o tempo de execução
         print(f"Tempo de execução: {execution_time:.4f} segundos")  # Exibir o tempo de execução

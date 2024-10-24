@@ -31,7 +31,7 @@ taxas_producao = [
     {'familia': 'Colmeia', 'processo': 'Fixação', 'tipo_equipamento': 'Ramas', 'taxa': 0.002},
     {'familia': 'Colmeia', 'processo': 'Tinturaria', 'tipo_equipamento': 'Jets', 'taxa': 3.000},
     {'familia': 'Colmeia', 'processo': 'Acabamento', 'tipo_equipamento': 'Ramas', 'taxa': 0.003},
-    
+
     {'familia': 'Piquet', 'processo': 'Malharia', 'tipo_equipamento': 'Teares', 'taxa': 0.100},
     {'familia': 'Piquet', 'processo': 'Purga', 'tipo_equipamento': 'Jets', 'taxa': 1.0},
     {'familia': 'Piquet', 'processo': 'Fixação', 'tipo_equipamento': 'Ramas', 'taxa': 0.002},
