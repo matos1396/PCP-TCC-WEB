@@ -11,9 +11,14 @@ from models import (Grupo,PlanoProducao,PlanoCompras,PrevisaoDemanda,
                     ControlePlanos,
                     db)
 from simulacao import simulacao
-from utils.func_auxiliares import atualizar_plano_compras, atualizar_capacidade_maquinas, atualizar_financeiro
+from utils.func_auxiliares import (atualizar_plano_compras, atualizar_capacidade_maquinas,
+                                   atualizar_financeiro, set_flag_controle)
 from datetime import timedelta
 from flask import session
+
+import plotly.express as px
+import plotly.graph_objs as go
+
 
 import time # Para Testes
 
@@ -68,7 +73,186 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    grupo_id = current_user.id
+
+    # Filtrar dados de produção e demanda apenas para os períodos de 13 a 25
+    planos_producao = PlanoProducao.query.filter_by(grupo_id=grupo_id).filter(
+        PlanoProducao.periodo_numero.between(13, 25)
+    ).all()
+
+    producao_real_por_familia = {'Colmeia': [], 'Piquet': [], 'Maxim': []}
+    producao_planejada_por_familia = {'Colmeia': [], 'Piquet': [], 'Maxim': []}
+    demanda_prevista_por_familia = {'Colmeia': [], 'Piquet': [], 'Maxim': []}
+    demanda_real_por_familia = {'Colmeia': [], 'Piquet': [], 'Maxim': []}
+    periodos_producao = sorted({plano.periodo_numero for plano in planos_producao})
+
+    # Coletar dados para os gráficos de produção e demanda
+    for plano in planos_producao:
+        familia = plano.familia
+        if familia in producao_real_por_familia:
+            producao_real_por_familia[familia].append(plano.producao_real)
+            producao_planejada_por_familia[familia].append(plano.producao_planejada)
+            demanda_prevista_por_familia[familia].append(plano.demanda_prevista)
+            demanda_real_por_familia[familia].append(plano.demanda_real)
+
+    # Gráficos de Produção e Demanda
+    fig_producao_real = {
+        "data": [
+            {
+                "x": periodos_producao,
+                "y": producao_real_por_familia[familia],
+                "mode": "lines+markers",
+                "name": f"Produção Real {familia}"
+            }
+            for familia in producao_real_por_familia
+        ],
+        "layout": {
+            "title": "Produção Real por Família",
+            "xaxis": {"title": "Períodos"},
+            "yaxis": {"title": "Produção (unidades)"}
+        }
+    }
+
+    fig_producao_planejada = {
+        "data": [
+            {
+                "x": periodos_producao,
+                "y": producao_planejada_por_familia[familia],
+                "mode": "lines+markers",
+                "name": f"Produção Planejada {familia}"
+            }
+            for familia in producao_planejada_por_familia
+        ],
+        "layout": {
+            "title": "Produção Planejada por Família",
+            "xaxis": {"title": "Períodos"},
+            "yaxis": {"title": "Produção (unidades)"}
+        }
+    }
+
+    fig_demanda_prevista = {
+        "data": [
+            {
+                "x": periodos_producao,
+                "y": demanda_prevista_por_familia[familia],
+                "mode": "lines+markers",
+                "name": f"Demanda Prevista {familia}"
+            }
+            for familia in demanda_prevista_por_familia
+        ],
+        "layout": {
+            "title": "Demanda Prevista por Família",
+            "xaxis": {"title": "Períodos"},
+            "yaxis": {"title": "Demanda (unidades)"}
+        }
+    }
+
+    fig_demanda_real = {
+        "data": [
+            {
+                "x": periodos_producao,
+                "y": demanda_real_por_familia[familia],
+                "mode": "lines+markers",
+                "name": f"Demanda Real {familia}"
+            }
+            for familia in demanda_real_por_familia
+        ],
+        "layout": {
+            "title": "Demanda Real por Família",
+            "xaxis": {"title": "Períodos"},
+            "yaxis": {"title": "Demanda (unidades)"}
+        }
+    }
+
+    # Filtrar dados de compras apenas para os períodos de 13 a 25
+    planos_compras = PlanoCompras.query.filter_by(grupo_id=grupo_id).filter(
+        PlanoCompras.periodo_numero.between(13, 25)
+    ).all()
+
+    compras_reais_por_material = {'Fio Algodao': [], 'Fio Sintetico': [], 'Corantes': []}
+    compras_planejadas_por_material = {'Fio Algodao': [], 'Fio Sintetico': [], 'Corantes': []}
+    periodos_compras = sorted({plano.periodo_numero for plano in planos_compras})
+
+    # Coletar dados para os gráficos de compras
+    for plano in planos_compras:
+        material = plano.material
+        if material in compras_reais_por_material:
+            compras_reais_por_material[material].append(plano.compra_real)
+            compras_planejadas_por_material[material].append(plano.compra_planejada)
+
+    fig_compras_reais = {
+        "data": [
+            {
+                "x": periodos_compras,
+                "y": compras_reais_por_material[material],
+                "mode": "lines+markers",
+                "name": f"Compras Reais {material}"
+            }
+            for material in compras_reais_por_material
+        ],
+        "layout": {
+            "title": "Compras Reais por Material",
+            "xaxis": {"title": "Períodos"},
+            "yaxis": {"title": "Compras (unidades)"}
+        }
+    }
+
+    fig_compras_planejadas = {
+        "data": [
+            {
+                "x": periodos_compras,
+                "y": compras_planejadas_por_material[material],
+                "mode": "lines+markers",
+                "name": f"Compras Planejadas {material}"
+            }
+            for material in compras_planejadas_por_material
+        ],
+        "layout": {
+            "title": "Compras Planejadas por Material",
+            "xaxis": {"title": "Períodos"},
+            "yaxis": {"title": "Compras (unidades)"}
+        }
+    }
+
+    # Dados de capacidade dos Teares (Permanece igual)
+    capacidades_teares = CapacidadeTeares.query.filter_by(grupo_id=grupo_id).filter(
+        CapacidadeTeares.periodo_numero.between(13, 25)
+    ).all()
+
+    capacidade_disponivel_teares = [cap.capacidade_disponivel for cap in capacidades_teares]
+    periodos_teares = [cap.periodo_numero for cap in capacidades_teares]
+
+    fig_teares = {
+        "data": [
+            {
+                "x": periodos_teares,
+                "y": capacidade_disponivel_teares,
+                "type": "bar",
+                "name": "Capacidade Disponível"
+            }
+        ],
+        "layout": {
+            "title": "Capacidade Disponível dos Teares",
+            "xaxis": {"title": "Períodos"},
+            "yaxis": {"title": "Capacidade"}
+        }
+    }
+
+    return render_template(
+        'dashboard.html',
+        fig_producao_real=fig_producao_real,
+        fig_producao_planejada=fig_producao_planejada,
+        fig_demanda_prevista=fig_demanda_prevista,
+        fig_demanda_real=fig_demanda_real,
+        fig_compras_reais=fig_compras_reais,
+        fig_compras_planejadas=fig_compras_planejadas,
+        fig_teares=fig_teares
+    )
+
+
+
+
+
 
 @app.route('/production', methods=['GET', 'POST'])
 @login_required
