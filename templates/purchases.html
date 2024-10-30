@@ -331,7 +331,7 @@
 
                         // Compras emergenciais checar Primeiro
                         if (compraPlanejada + estoqueInicial <= consumoPrevisto){
-                            compraEmergencialElem.value = Math.round(consumoPrevisto - compraPlanejada - estoqueInicial)
+                            compraEmergencialElem.value = (consumoPrevisto - compraPlanejada - estoqueInicial).toFixed(0)
                         }
                         else {
                             compraEmergencialElem.value = 0

@@ -1,4 +1,5 @@
 # app.py
+import math
 from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_session import Session
@@ -218,9 +219,19 @@ def dashboard():
     capacidades_teares = CapacidadeTeares.query.filter_by(grupo_id=grupo_id).filter(
         CapacidadeTeares.periodo_numero.between(13, 25)
     ).all()
+    capacidades_ramas = CapacidadeRamas.query.filter_by(grupo_id=grupo_id).filter(
+        CapacidadeRamas.periodo_numero.between(13, 25)
+    ).all()
+    capacidades_jets = CapacidadeJets.query.filter_by(grupo_id=grupo_id).filter(
+        CapacidadeJets.periodo_numero.between(13, 25)
+    ).all()
 
     capacidade_disponivel_teares = [cap.capacidade_disponivel for cap in capacidades_teares]
+    capacidade_disponivel_ramas = [cap.capacidade_disponivel for cap in capacidades_ramas]
+    capacidade_disponivel_jets = [cap.capacidade_disponivel for cap in capacidades_teares]
     periodos_teares = [cap.periodo_numero for cap in capacidades_teares]
+    periodos_ramas = [cap.periodo_numero for cap in capacidades_ramas]
+    periodos_jets = [cap.periodo_numero for cap in capacidades_jets]
 
     fig_teares = {
         "data": [
@@ -238,6 +249,23 @@ def dashboard():
         }
     }
 
+    fig_ramas = {
+        "data": [
+            {
+                "x": periodos_ramas,
+                "y": capacidade_disponivel_ramas,
+                "type": "bar",
+                "name": "Capacidade Disponível"
+            }
+        ],
+        "layout": {
+            "title": "Capacidade Disponível das Ramas",
+            "xaxis": {"title": "Períodos"},
+            "yaxis": {"title": "Capacidade"}
+        }
+    }
+
+
     return render_template(
         'dashboard.html',
         fig_producao_real=fig_producao_real,
@@ -246,7 +274,9 @@ def dashboard():
         fig_demanda_real=fig_demanda_real,
         fig_compras_reais=fig_compras_reais,
         fig_compras_planejadas=fig_compras_planejadas,
-        fig_teares=fig_teares
+        fig_teares=fig_teares,
+        fig_ramas=fig_ramas,
+        fig_jets=fig_ramas
     )
 
 
@@ -396,14 +426,14 @@ def production():
 
                 if plan:
                     # Preencher os campos
-                    producao_planejada_por_familia[familia][period].data = plan.producao_planejada
-                    producao_real_por_familia[familia][period].data = plan.producao_real
-                    previsoes_por_familia[familia][period].data = plan.demanda_prevista
-                    demanda_real_por_familia[familia][period].data = plan.demanda_real
-                    estoques_iniciais_por_familia[familia][period].data = plan.estoques_iniciais
-                    estoques_finais_por_familia[familia][period].data = plan.estoques_finais
-                    vendas_perdidas_por_familia[familia][period].data = plan.vendas_perdidas
-                    vendas_por_familia[familia][period].data = plan.vendas
+                    producao_planejada_por_familia[familia][period].data = math.ceil(plan.producao_planejada)
+                    producao_real_por_familia[familia][period].data = math.ceil(plan.producao_real)
+                    previsoes_por_familia[familia][period].data = math.ceil(plan.demanda_prevista)
+                    demanda_real_por_familia[familia][period].data = math.ceil(plan.demanda_real)
+                    estoques_iniciais_por_familia[familia][period].data = math.ceil(plan.estoques_iniciais)
+                    estoques_finais_por_familia[familia][period].data = math.ceil(plan.estoques_finais)
+                    vendas_perdidas_por_familia[familia][period].data = math.ceil(plan.vendas_perdidas)
+                    vendas_por_familia[familia][period].data = math.ceil(plan.vendas)
 
     return render_template(
         'production.html',
@@ -548,13 +578,13 @@ def purchases():
 
                 if plan:
                     # Preencher os campos
-                    compras_por_material[material][period].data = plan.compra_planejada
-                    compras_real_por_material[material][period].data = plan.compra_real
-                    compras_emergencial_por_material[material][period].data = plan.compra_emergencial
-                    consumo_previsto_por_material[material][period].data = plan.consumo_previsto
-                    consumo_real_por_material[material][period].data = plan.consumo_real
-                    estoques_iniciais_por_material[material][period].data = plan.estoques_iniciais
-                    estoques_finais_por_material[material][period].data = plan.estoques_finais
+                    compras_por_material[material][period].data = math.ceil(plan.compra_planejada)
+                    compras_real_por_material[material][period].data = math.ceil(plan.compra_real)
+                    compras_emergencial_por_material[material][period].data = math.ceil(plan.compra_emergencial)
+                    consumo_previsto_por_material[material][period].data = math.ceil(plan.consumo_previsto)
+                    consumo_real_por_material[material][period].data = math.ceil(plan.consumo_real)
+                    estoques_iniciais_por_material[material][period].data = math.ceil(plan.estoques_iniciais)
+                    estoques_finais_por_material[material][period].data = math.ceil(plan.estoques_finais)
 
 
     return render_template(
@@ -680,19 +710,19 @@ def tecelagem():
             ).filter(CapacidadeTeares.periodo_modificado <= periodo_atual).order_by(CapacidadeTeares.periodo_modificado.desc()).first()
 
             if capacidade_teares:
-                numero_turnos_dici[maquina][period].data = capacidade_teares.numero_turnos
-                capacidade_disponivel_dici[maquina][period].data = capacidade_teares.capacidade_disponivel
-                capacidade_necessaria_dici[maquina][period].data = capacidade_teares.capacidade_necessaria
-                colmeia_horas_dici[maquina][period].data = capacidade_teares.colmeia
-                piquet_horas_dici[maquina][period].data = capacidade_teares.piquet
-                maxim_horas_dici[maquina][period].data = capacidade_teares.maxim
-                setup_dici[maquina][period].data = capacidade_teares.setup
-                produtividade_dici[maquina][period].data = capacidade_teares.produtividade
-                capacidade_instalada_dici[maquina][period].data = capacidade_teares.capacidade_instalada
-                capacidade_teceirizada_dici[maquina][period].data = capacidade_teares.capacidade_terceirizada
-                ampliacoes_dici[maquina][period].data = capacidade_teares.ampliacoes
-                reducoes_dici[maquina][period].data = capacidade_teares.reducoes
-                quantidade_dici[maquina][period].data = capacidade_teares.quantidade
+                numero_turnos_dici[maquina][period].data = math.ceil(capacidade_teares.numero_turnos)
+                capacidade_disponivel_dici[maquina][period].data = math.ceil(capacidade_teares.capacidade_disponivel)
+                capacidade_necessaria_dici[maquina][period].data = math.ceil(capacidade_teares.capacidade_necessaria)
+                colmeia_horas_dici[maquina][period].data = math.ceil(capacidade_teares.colmeia)
+                piquet_horas_dici[maquina][period].data = math.ceil(capacidade_teares.piquet)
+                maxim_horas_dici[maquina][period].data = math.ceil(capacidade_teares.maxim)
+                setup_dici[maquina][period].data = math.ceil(capacidade_teares.setup)
+                produtividade_dici[maquina][period].data = math.ceil(capacidade_teares.produtividade)
+                capacidade_instalada_dici[maquina][period].data = math.ceil(capacidade_teares.capacidade_instalada)
+                capacidade_teceirizada_dici[maquina][period].data = math.ceil(capacidade_teares.capacidade_terceirizada)
+                ampliacoes_dici[maquina][period].data = math.ceil(capacidade_teares.ampliacoes)
+                reducoes_dici[maquina][period].data = math.ceil(capacidade_teares.reducoes)
+                quantidade_dici[maquina][period].data = math.ceil(capacidade_teares.quantidade)
 
     return render_template('tecelagem.html',
                            form=form,
@@ -845,27 +875,27 @@ def purga_tinturaria():
             ).filter(CapacidadeJets.periodo_modificado <= periodo_atual).order_by(CapacidadeJets.periodo_modificado.desc()).first()
 
             if capacidade_jets:
-                numero_turnos_dici[maquina][period].data = capacidade_jets.numero_turnos
-                capacidade_disponivel_dici[maquina][period].data = capacidade_jets.capacidade_disponivel
-                capacidade_necessaria_dici[maquina][period].data = capacidade_jets.capacidade_necessaria
-                colmeia_horas_dici[maquina][period].data = capacidade_jets.colmeia
-                piquet_horas_dici[maquina][period].data = capacidade_jets.piquet
-                maxim_horas_dici[maquina][period].data = capacidade_jets.maxim
-                setup_dici[maquina][period].data = capacidade_jets.setup
-                produtividade_dici[maquina][period].data = capacidade_jets.produtividade
-                capacidade_instalada_jet1_dici[maquina][period].data = capacidade_jets.capacidade_instalada_tipo1
-                capacidade_instalada_jet2_dici[maquina][period].data = capacidade_jets.capacidade_instalada_tipo2
-                capacidade_instalada_jet3_dici[maquina][period].data = capacidade_jets.capacidade_instalada_tipo3
-                capacidade_teceirizada_dici[maquina][period].data = capacidade_jets.capacidade_terceirizada
-                ampliacoes_jet1_dici[maquina][period].data = capacidade_jets.ampliacoes_tipo1
-                ampliacoes_jet2_dici[maquina][period].data = capacidade_jets.ampliacoes_tipo2
-                ampliacoes_jet3_dici[maquina][period].data = capacidade_jets.ampliacoes_tipo3
-                reducoes_jet1_dici[maquina][period].data = capacidade_jets.reducoes_tipo1
-                reducoes_jet2_dici[maquina][period].data = capacidade_jets.reducoes_tipo2
-                reducoes_jet3_dici[maquina][period].data = capacidade_jets.reducoes_tipo3
-                quantidade_jet1_dici[maquina][period].data = capacidade_jets.quantidade_tipo1
-                quantidade_jet2_dici[maquina][period].data = capacidade_jets.quantidade_tipo2
-                quantidade_jet3_dici[maquina][period].data = capacidade_jets.quantidade_tipo3
+                numero_turnos_dici[maquina][period].data = math.ceil(capacidade_jets.numero_turnos)
+                capacidade_disponivel_dici[maquina][period].data = math.ceil(capacidade_jets.capacidade_disponivel)
+                capacidade_necessaria_dici[maquina][period].data = math.ceil(capacidade_jets.capacidade_necessaria)
+                colmeia_horas_dici[maquina][period].data = math.ceil(capacidade_jets.colmeia)
+                piquet_horas_dici[maquina][period].data = math.ceil(capacidade_jets.piquet)
+                maxim_horas_dici[maquina][period].data = math.ceil(capacidade_jets.maxim)
+                setup_dici[maquina][period].data = math.ceil(capacidade_jets.setup)
+                produtividade_dici[maquina][period].data = math.ceil(capacidade_jets.produtividade)
+                capacidade_instalada_jet1_dici[maquina][period].data = math.ceil(capacidade_jets.capacidade_instalada_tipo1)
+                capacidade_instalada_jet2_dici[maquina][period].data = math.ceil(capacidade_jets.capacidade_instalada_tipo2)
+                capacidade_instalada_jet3_dici[maquina][period].data = math.ceil(capacidade_jets.capacidade_instalada_tipo3)
+                capacidade_teceirizada_dici[maquina][period].data = math.ceil(capacidade_jets.capacidade_terceirizada)
+                ampliacoes_jet1_dici[maquina][period].data = math.ceil(capacidade_jets.ampliacoes_tipo1)
+                ampliacoes_jet2_dici[maquina][period].data = math.ceil(capacidade_jets.ampliacoes_tipo2)
+                ampliacoes_jet3_dici[maquina][period].data = math.ceil(capacidade_jets.ampliacoes_tipo3)
+                reducoes_jet1_dici[maquina][period].data = math.ceil(capacidade_jets.reducoes_tipo1)
+                reducoes_jet2_dici[maquina][period].data = math.ceil(capacidade_jets.reducoes_tipo2)
+                reducoes_jet3_dici[maquina][period].data = math.ceil(capacidade_jets.reducoes_tipo3)
+                quantidade_jet1_dici[maquina][period].data = math.ceil(capacidade_jets.quantidade_tipo1)
+                quantidade_jet2_dici[maquina][period].data = math.ceil(capacidade_jets.quantidade_tipo2)
+                quantidade_jet3_dici[maquina][period].data = math.ceil(capacidade_jets.quantidade_tipo3)
 
     return render_template('purga_tinturaria.html',
                            form=form,
@@ -1003,19 +1033,19 @@ def fixacao_acabamento():
             ).filter(CapacidadeRamas.periodo_modificado <= periodo_atual).order_by(CapacidadeRamas.periodo_modificado.desc()).first()
 
             if capacidade_teares:
-                numero_turnos_dici[maquina][period].data = capacidade_teares.numero_turnos
-                capacidade_disponivel_dici[maquina][period].data = capacidade_teares.capacidade_disponivel
-                capacidade_necessaria_dici[maquina][period].data = capacidade_teares.capacidade_necessaria
-                colmeia_horas_dici[maquina][period].data = capacidade_teares.colmeia
-                piquet_horas_dici[maquina][period].data = capacidade_teares.piquet
-                maxim_horas_dici[maquina][period].data = capacidade_teares.maxim
-                setup_dici[maquina][period].data = capacidade_teares.setup
-                produtividade_dici[maquina][period].data = capacidade_teares.produtividade
-                capacidade_instalada_dici[maquina][period].data = capacidade_teares.capacidade_instalada
-                capacidade_teceirizada_dici[maquina][period].data = capacidade_teares.capacidade_terceirizada
-                ampliacoes_dici[maquina][period].data = capacidade_teares.ampliacoes
-                reducoes_dici[maquina][period].data = capacidade_teares.reducoes
-                quantidade_dici[maquina][period].data = capacidade_teares.quantidade
+                numero_turnos_dici[maquina][period].data = math.ceil(capacidade_teares.numero_turnos)
+                capacidade_disponivel_dici[maquina][period].data = math.ceil(capacidade_teares.capacidade_disponivel)
+                capacidade_necessaria_dici[maquina][period].data = math.ceil(capacidade_teares.capacidade_necessaria)
+                colmeia_horas_dici[maquina][period].data = math.ceil(capacidade_teares.colmeia)
+                piquet_horas_dici[maquina][period].data = math.ceil(capacidade_teares.piquet)
+                maxim_horas_dici[maquina][period].data = math.ceil(capacidade_teares.maxim)
+                setup_dici[maquina][period].data = math.ceil(capacidade_teares.setup)
+                produtividade_dici[maquina][period].data = math.ceil(capacidade_teares.produtividade)
+                capacidade_instalada_dici[maquina][period].data = math.ceil(capacidade_teares.capacidade_instalada)
+                capacidade_teceirizada_dici[maquina][period].data = math.ceil(capacidade_teares.capacidade_terceirizada)
+                ampliacoes_dici[maquina][period].data = math.ceil(capacidade_teares.ampliacoes)
+                reducoes_dici[maquina][period].data = math.ceil(capacidade_teares.reducoes)
+                quantidade_dici[maquina][period].data = math.ceil(capacidade_teares.quantidade)
 
     return render_template('fixacao_acabamento.html',
                            form=form,

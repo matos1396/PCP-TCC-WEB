@@ -13,7 +13,7 @@
             <a class="nav-link" id="compras-tab" data-toggle="tab" href="#compras" role="tab" aria-controls="compras" aria-selected="false">Compras</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="teares-tab" data-toggle="tab" href="#teares" role="tab" aria-controls="teares" aria-selected="false">Teares</a>
+            <a class="nav-link" id="capacidade-tab" data-toggle="tab" href="#capacidades" role="tab" aria-controls="capacidades" aria-selected="false">Capacidades</a>
         </li>
     </ul>
 
@@ -62,15 +62,27 @@
                         <option value="planejadas">Compras Planejadas</option>
                     </select>
                 </div>
-                <div class="col-md-9">
-                    <div id="compras-graph"></div>
-                </div>
+                <div id="compras-graph" style="flex-grow: 1;"></div>
             </div>
         </div>
+
         <!-- Aba de Teares -->
-        <div class="tab-pane fade" id="teares" role="tabpanel" aria-labelledby="teares-tab">
-            <div id="teares-graph"></div>
+        <div class="tab-pane fade" id="capacidades" role="tabpanel" aria-labelledby="capacidades-tab">
+            <div class="row"></div>
+                <div class="col-md-3">
+                    <label for="filtroCapacidades">Tipo Máquina:</label>
+                    <select class="form-control" id="filtroCapacidades">
+                        <option value="teares">Teares</option>
+                        <option value="ramas">Ramas</option>
+                        <option value="jets">Jets</option>
+                    </select>
+                </div>
+                <div id="capacidades-graph" style="flex-grow: 1;"></div>
+            </div>
         </div>
+
+        <!-- Abas  -->
+
     </div>
 </div>
 
@@ -86,16 +98,17 @@
         var figComprasReais = JSON.parse('{{ fig_compras_reais|tojson }}');
         var figComprasPlanejadas = JSON.parse('{{ fig_compras_planejadas|tojson }}');
         var figTeares = JSON.parse('{{ fig_teares|tojson }}');
+        var figRamas = JSON.parse('{{ fig_ramas|tojson }}');
+        var figJets = JSON.parse('{{ fig_jets|tojson }}');
 
         // Inicializar gráficos padrão
         Plotly.newPlot('producao-graph', figProducaoReal.data, figProducaoReal.layout);
         Plotly.newPlot('demanda-graph', figDemandaPrevista.data, figDemandaPrevista.layout);
         Plotly.newPlot('compras-graph', figComprasReais.data, figComprasReais.layout);
-        Plotly.newPlot('teares-graph', figTeares.data, figTeares.layout);
+        Plotly.newPlot('capacidades-graph', figTeares.data, figTeares.layout);
 
-        // Filtro para Produção
-        var filtroProducao = document.getElementById('filtroProducao');
-        filtroProducao.addEventListener('change', function() {
+        // Filtros e comportamento das abas
+        document.getElementById('filtroProducao').addEventListener('change', function() {
             var tipoProducao = this.value;
             if (tipoProducao === 'real') {
                 Plotly.newPlot('producao-graph', figProducaoReal.data, figProducaoReal.layout);
@@ -104,9 +117,7 @@
             }
         });
 
-        // Filtro para Demanda
-        var filtroDemanda = document.getElementById('filtroDemanda');
-        filtroDemanda.addEventListener('change', function() {
+        document.getElementById('filtroDemanda').addEventListener('change', function() {
             var tipoDemanda = this.value;
             if (tipoDemanda === 'prevista') {
                 Plotly.newPlot('demanda-graph', figDemandaPrevista.data, figDemandaPrevista.layout);
@@ -115,14 +126,37 @@
             }
         });
 
-        // Filtro para Compras
-        var filtroCompras = document.getElementById('filtroCompras');
-        filtroCompras.addEventListener('change', function() {
+        document.getElementById('filtroCompras').addEventListener('change', function() {
             var tipoCompras = this.value;
             if (tipoCompras === 'reais') {
                 Plotly.newPlot('compras-graph', figComprasReais.data, figComprasReais.layout);
             } else {
                 Plotly.newPlot('compras-graph', figComprasPlanejadas.data, figComprasPlanejadas.layout);
+            }
+        });
+
+        document.getElementById('filtroCapacidades').addEventListener('change', function() {
+            var tipoMaquina = this.value;
+            if (tipoMaquina === 'teares') {
+                Plotly.newPlot('capacidades-graph', figTeares.data, figTeares.layout);
+            } else if (tipoMaquina === 'ramas') {
+                Plotly.newPlot('capacidades-graph', figRamas.data, figRamas.layout);
+            } else {
+                Plotly.newPlot('capacidades-graph', figJets.data, figJets.layout);
+            }
+        });
+
+        // Abas e reset de gráficos ao ser ativada
+        var dashboardTabs = document.getElementById('dashboardTabs');
+        dashboardTabs.addEventListener('click', function(e) {
+            var activeTab = e.target.getAttribute('href');
+            if (activeTab === '#producao') {
+                Plotly.newPlot('producao-graph', figProducaoReal.data, figProducaoReal.layout);
+                Plotly.newPlot('demanda-graph', figDemandaPrevista.data, figDemandaPrevista.layout);
+            } else if (activeTab === '#compras') {
+                Plotly.newPlot('compras-graph', figComprasReais.data, figComprasReais.layout);
+            } else if (activeTab === '#capacidades') {
+                Plotly.newPlot('capacidades-graph', figTeares.data, figTeares.layout);
             }
         });
     });

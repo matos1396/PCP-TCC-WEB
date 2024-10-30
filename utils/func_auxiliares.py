@@ -716,7 +716,7 @@ def calcular_consumo_previsto(grupo, material, periodo, periodo_atual):
                 consumo_previsto_fio_algodao += float(plano_producao.producao_planejada)
             if familia == "Piquet":
                 consumo_previsto_fio_algodao += float(plano_producao.producao_planejada) * 0.5
-        return consumo_previsto_fio_algodao
+        return math.ceil(consumo_previsto_fio_algodao)
 
     if material == "Fio Sintetico":
         consumo_previsto_fio_sintetico = 0
@@ -730,7 +730,7 @@ def calcular_consumo_previsto(grupo, material, periodo, periodo_atual):
                 consumo_previsto_fio_sintetico += float(plano_producao.producao_planejada)
             if familia == "Piquet":
                 consumo_previsto_fio_sintetico += float(plano_producao.producao_planejada) * 0.5
-        return consumo_previsto_fio_sintetico
+        return math.ceil(consumo_previsto_fio_sintetico)
 
     if material == "Corantes":
         consumo_previsto_corantes = 0
@@ -746,7 +746,7 @@ def calcular_consumo_previsto(grupo, material, periodo, periodo_atual):
                 consumo_previsto_corantes += float(plano_producao.producao_planejada) * 0.02
             if familia == "Maxim":
                 consumo_previsto_corantes += float(plano_producao.producao_planejada) * 0.02
-        return consumo_previsto_corantes
+        return math.ceil(consumo_previsto_corantes)
 
 
 def set_flag_controle(grupo, tipo):
