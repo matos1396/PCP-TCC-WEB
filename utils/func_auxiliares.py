@@ -1,3 +1,4 @@
+import math
 from models import (PlanoCompras,
                     PlanoProducao, TaxaProducao,
                     Custos, CapacidadeJets,
@@ -35,7 +36,7 @@ def atualizar_plano_compras(grupo):
 
             if plano_compra:
                 # Atualizar o registro existente
-                plano_compra.consumo_previsto = consumo_previsto
+                plano_compra.consumo_previsto = math.ceil(consumo_previsto)
             else:
                 # Criar novo plano de compras para o período e material
                 novo_plano = PlanoCompras(
@@ -108,9 +109,9 @@ def atualizar_capacidade_maquinas(grupo):
                 producao_planejada = plano_producao.producao_planejada
 
                 # Calcular e atribuir os valores para cada família e máquina
-                t_tear = producao_planejada * taxa_tear
-                t_rama = producao_planejada * (taxa_rama_1 + taxa_rama_2)
-                t_jet = producao_planejada
+                t_tear = math.ceil(producao_planejada * taxa_tear)
+                t_rama = math.ceil(producao_planejada * (taxa_rama_1 + taxa_rama_2))
+                t_jet = math.ceil(producao_planejada)
 
                 if capacidade_teares:
                     setattr(capacidade_teares, familia.lower(), t_tear)
@@ -126,13 +127,13 @@ def atualizar_capacidade_maquinas(grupo):
 
         if capacidade_teares:
             soma_teares = capacidade_teares.colmeia + capacidade_teares.piquet + capacidade_teares.maxim
-            capacidade_teares.capacidade_necessaria = soma_teares + capacidade_teares.produtividade + capacidade_teares.setup
+            capacidade_teares.capacidade_necessaria = math.ceil(soma_teares + capacidade_teares.produtividade + capacidade_teares.setup)
         if capacidade_ramas:
             soma_ramas = capacidade_ramas.colmeia + capacidade_ramas.piquet + capacidade_ramas.maxim
-            capacidade_ramas.capacidade_necessaria = soma_ramas + capacidade_ramas.produtividade + capacidade_ramas.setup
+            capacidade_ramas.capacidade_necessaria = math.ceil(soma_ramas + capacidade_ramas.produtividade + capacidade_ramas.setup)
         if capacidade_jets:
             soma_jets = capacidade_jets.colmeia + capacidade_jets.piquet + capacidade_jets.maxim
-            capacidade_jets.capacidade_necessaria = soma_jets + capacidade_jets.produtividade + capacidade_jets.setup
+            capacidade_jets.capacidade_necessaria = math.ceil(soma_jets + capacidade_jets.produtividade + capacidade_jets.setup)
 
     db.session.commit()
 

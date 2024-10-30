@@ -1,4 +1,5 @@
 # models.py
+import math
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -177,21 +178,21 @@ class CapacidadeTeares(db.Model):
     @staticmethod
     def _calcular_capacidade_disponivel(target):
         if target.capacidade_instalada and target.capacidade_terceirizada is not None:
-            target.capacidade_disponivel = target.capacidade_instalada + float(target.capacidade_terceirizada)
+            target.capacidade_disponivel = math.ceil(target.capacidade_instalada + float(target.capacidade_terceirizada))
         else:
             target.capacidade_disponivel = 0
 
     @staticmethod
     def _calcular_produtividade(target):
         if target.colmeia and target.piquet and target.maxim is not None:
-            target.produtividade = (target.colmeia + target.piquet + target.maxim) * 0.1 # 10% Perda Produtividade
+            target.produtividade = math.ceil((target.colmeia + target.piquet + target.maxim) * 0.1) # 10% Perda Produtividade
         else:
             target.produtividade = 0
 
     @staticmethod
     def _calcular_tempo_setup(target):
         if target.quantidade and target.numero_turnos is not None:
-            target.setup = target.quantidade * 4 * 0.25
+            target.setup = math.ceil(target.quantidade * 4 * 0.25)
         else:
             target.setup = 0
 
@@ -259,7 +260,7 @@ class CapacidadeJets(db.Model):
             target.capacidade_instalada_tipo1 = (7 * 20 * target.numero_turnos * target.quantidade_tipo1 * target.capacidade_tipo1) / 4.5 # Carga Média entre Purga/Tinturaria
             target.capacidade_instalada_tipo2 = (7 * 20 * target.numero_turnos * target.quantidade_tipo2 * target.capacidade_tipo2) / 4.5 # Carga Média entre Purga/Tinturaria
             target.capacidade_instalada_tipo3 = (7 * 20 * target.numero_turnos * target.quantidade_tipo3 * target.capacidade_tipo3) / 4.5 # Carga Média entre Purga/Tinturaria
-            target.capacidade_instalada = target.capacidade_instalada_tipo1 + target.capacidade_instalada_tipo2 + target.capacidade_instalada_tipo3
+            target.capacidade_instalada = math.ceil(target.capacidade_instalada_tipo1 + target.capacidade_instalada_tipo2 + target.capacidade_instalada_tipo3)
         else: 
             target.capacidade_instalada = 0
 
@@ -271,21 +272,21 @@ class CapacidadeJets(db.Model):
     @staticmethod
     def _calcular_capacidade_disponivel(target):
         if None not in (target.capacidade_instalada, target.capacidade_terceirizada):
-            target.capacidade_disponivel = target.capacidade_instalada + float(target.capacidade_terceirizada)
+            target.capacidade_disponivel = math.ceil(target.capacidade_instalada + float(target.capacidade_terceirizada))
         else:
             target.capacidade_disponivel = 0
 
     @staticmethod
     def _calcular_produtividade(target):
         if None not in (target.colmeia, target.piquet, target.maxim):
-            target.produtividade = (target.colmeia + target.piquet + target.maxim) * 0.15 # 10% Perda Produtividade
+            target.produtividade = math.ceil((target.colmeia + target.piquet + target.maxim) * 0.15) # 10% Perda Produtividade
         else:
             target.produtividade = 0
 
     @staticmethod
     def _calcular_tempo_setup(target):
         if None not in (target.colmeia, target.piquet, target.maxim):
-            target.setup = (target.colmeia + target.piquet + target.maxim) * 0.20 # 3 familias
+            target.setup = math.ceil((target.colmeia + target.piquet + target.maxim) * 0.20) # 3 familias
         else:
             target.setup = 0
 
@@ -352,21 +353,21 @@ class CapacidadeRamas(db.Model):
     @staticmethod
     def _calcular_capacidade_disponivel(target):
         if target.capacidade_instalada and target.capacidade_terceirizada is not None:
-            target.capacidade_disponivel = target.capacidade_instalada + float(target.capacidade_terceirizada)
+            target.capacidade_disponivel = math.ceil(target.capacidade_instalada + float(target.capacidade_terceirizada))
         else:
             target.capacidade_disponivel = 0
 
     @staticmethod
     def _calcular_produtividade(target):
         if target.colmeia and target.piquet and target.maxim is not None:
-            target.produtividade = (target.colmeia + target.piquet + target.maxim) * 0.15 # 10% Perda Produtividade
+            target.produtividade = math.ceil((target.colmeia + target.piquet + target.maxim) * 0.15) # 10% Perda Produtividade
         else:
             target.produtividade = 0
 
     @staticmethod
     def _calcular_tempo_setup(target):
         if target.quantidade and target.numero_turnos is not None:
-            target.setup = target.quantidade * 4 * 0.25
+            target.setup = math.ceil(target.quantidade * 4 * 0.25)
         else:
             target.setup = 0
 
