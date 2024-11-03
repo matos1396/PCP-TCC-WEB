@@ -13,8 +13,8 @@ from models import (PlanoCompras,
 import time
 
 def atualizar_plano_compras(grupo):
-    periods = list(range(13, 25))
     periodo_atual = grupo.periodo_atual
+    periods = list(range(periodo_atual+1, 25))
 
     # Pré-carregar todos os registros de PlanoCompras para o grupo e períodos de interesse
     planos_compra = PlanoCompras.query.filter_by(grupo_id=grupo.id, periodo_modificado=periodo_atual).filter(
@@ -54,14 +54,15 @@ def atualizar_plano_compras(grupo):
 
 
 def atualizar_capacidade_maquinas(grupo):
-    periods = list(range(13, 25))
     periodo_atual = grupo.periodo_atual
+    periods = list(range(13, 25))
 
     # Pré-carregar registros de PlanoProducao para o grupo e períodos
     planos_producao = PlanoProducao.query.filter(
         PlanoProducao.grupo_id == grupo.id,
-        PlanoProducao.periodo_numero.in_(periods)
-    ).order_by(PlanoProducao.periodo_modificado.desc()).all()
+        PlanoProducao.periodo_numero.in_(periods),
+        PlanoProducao.periodo_modificado == periodo_atual
+    ).all()
     planos_producao_dict = {(pp.periodo_numero, pp.familia): pp for pp in planos_producao}
 
     # Pré-carregar registros de CapacidadeTeares, CapacidadeRamas, e CapacidadeJets
@@ -114,11 +115,28 @@ def atualizar_capacidade_maquinas(grupo):
                 t_jet = math.ceil(producao_planejada)
 
                 if capacidade_teares:
-                    setattr(capacidade_teares, familia.lower(), t_tear)
+                    if familia == 'Colmeia':
+                        capacidade_teares.colmeia = t_tear
+                    elif familia == 'Piquet':
+                        capacidade_teares.piquet = t_tear
+                    elif familia == 'Maxim':
+                        capacidade_teares.maxim = t_tear
+
                 if capacidade_ramas:
-                    setattr(capacidade_ramas, familia.lower(), t_rama)
+                    if familia == 'Colmeia':
+                        capacidade_ramas.colmeia = t_rama
+                    elif familia == 'Piquet':
+                        capacidade_ramas.piquet = t_rama
+                    elif familia == 'Maxim':
+                        capacidade_ramas.maxim = t_rama
+
                 if capacidade_jets:
-                    setattr(capacidade_jets, familia.lower(), t_jet)
+                    if familia == 'Colmeia':
+                        capacidade_jets.colmeia = t_jet
+                    elif familia == 'Piquet':
+                        capacidade_jets.piquet = t_jet
+                    elif familia == 'Maxim':
+                        capacidade_jets.maxim = t_jet
 
     for period in periods:
         capacidade_teares = capacidades_teares_dict.get(period)
@@ -127,15 +145,20 @@ def atualizar_capacidade_maquinas(grupo):
 
         if capacidade_teares:
             soma_teares = capacidade_teares.colmeia + capacidade_teares.piquet + capacidade_teares.maxim
-            capacidade_teares.capacidade_necessaria = math.ceil(soma_teares + capacidade_teares.produtividade + capacidade_teares.setup)
+            capacidade_teares.capacidade_necessaria = math.ceil(
+                soma_teares + capacidade_teares.produtividade + capacidade_teares.setup)
+            print("SOMA TEARES", soma_teares)
         if capacidade_ramas:
             soma_ramas = capacidade_ramas.colmeia + capacidade_ramas.piquet + capacidade_ramas.maxim
-            capacidade_ramas.capacidade_necessaria = math.ceil(soma_ramas + capacidade_ramas.produtividade + capacidade_ramas.setup)
+            capacidade_ramas.capacidade_necessaria = math.ceil(
+                soma_ramas + capacidade_ramas.produtividade + capacidade_ramas.setup)
         if capacidade_jets:
             soma_jets = capacidade_jets.colmeia + capacidade_jets.piquet + capacidade_jets.maxim
-            capacidade_jets.capacidade_necessaria = math.ceil(soma_jets + capacidade_jets.produtividade + capacidade_jets.setup)
+            capacidade_jets.capacidade_necessaria = math.ceil(
+                soma_jets + capacidade_jets.produtividade + capacidade_jets.setup)
 
     db.session.commit()
+
 
 
 
@@ -713,6 +736,10 @@ def calcular_consumo_previsto(grupo, material, periodo, periodo_atual):
                                                         familia=familia).order_by(
                                                             PlanoProducao.periodo_numero.asc()).first()
             if familia == "Colmeia":
+                print("Periodo: ", periodo)
+                print("Periodo Modificado: ", periodo_atual)
+                #print("Periodo Modificado: ", periodo_atual)
+                print("AQUI####", plano_producao.producao_planejada)
                 consumo_previsto_fio_algodao += float(plano_producao.producao_planejada)
             if familia == "Piquet":
                 consumo_previsto_fio_algodao += float(plano_producao.producao_planejada) * 0.5

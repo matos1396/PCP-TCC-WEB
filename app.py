@@ -288,9 +288,9 @@ def dashboard():
 def production():
     form = ProductionForm()
 
-    periods = list(range(13, 25))
     periodo_atual = current_user.periodo_atual
     estilo_demanda = current_user.estilo_demanda
+    periods = list(range(13, 25))
 
 
     # Campos para Demanda
@@ -341,7 +341,6 @@ def production():
         'Maxim': {period: getattr(form, f'maxim_vendas_{period}') for period in periods}
     }
 
-
     if request.method == 'POST':
         for familia in ['Colmeia', 'Piquet', 'Maxim']:
             for period in periods:
@@ -360,6 +359,7 @@ def production():
                     existing_plan = PlanoProducao.query.filter_by(
                         periodo_numero=period, familia=familia, grupo_id=current_user.id
                     ).order_by(PlanoProducao.periodo_modificado.desc()).first()
+
 
                     if existing_plan:
                         if existing_plan.periodo_modificado == periodo_atual:
@@ -1122,11 +1122,14 @@ def simulate():
 
     simulacao.executar_simulacao(grupo)
 
+    atualizar_plano_compras(grupo)
+    atualizar_capacidade_maquinas(grupo)
+    atualizar_financeiro(grupo)
     # Cálculos da simulação para o período atual
 
     # Avançar para o próximo período
-    grupo.periodo_atual += 1  # Incrementa o período atual do grupo
-    db.session.commit()
+    # grupo.periodo_atual += 1  # Incrementa o período atual do grupo
+    # db.session.commit()
 
     flash(f"Simulação completada! Agora você está no período {grupo.periodo_atual}.", "success")
     return redirect(url_for('dashboard'))
