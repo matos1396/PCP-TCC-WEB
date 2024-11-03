@@ -14,7 +14,6 @@ from models import (Grupo,PlanoProducao,PlanoCompras,PrevisaoDemanda,
 from simulacao import simulacao
 from utils.func_auxiliares import (atualizar_plano_compras, atualizar_capacidade_maquinas,
                                    atualizar_financeiro, set_flag_controle)
-from datetime import timedelta
 from flask import session
 
 import plotly.express as px
@@ -842,7 +841,10 @@ def purga_tinturaria():
                            ampliacoes_tipo3 = ampliacoes_jet3,
                            reducoes_tipo1 = reducoes_jet1,
                            reducoes_tipo2 = reducoes_jet2,
-                           reducoes_tipo3 = reducoes_jet3
+                           reducoes_tipo3 = reducoes_jet3,
+                           quantidade_jet1 = quantidade_jet1,
+                           quantidade_jet2 = quantidade_jet2,
+                           quantidade_jet3 = quantidade_jet3
                         )
 
                         db.session.add(new_plan)
@@ -999,7 +1001,8 @@ def fixacao_acabamento():
                            capacidade_instalada = capacidade_instalada,
                            capacidade_teceirizada = capacidade_teceirizada,
                            ampliacoes = ampliacoes,
-                           reducoes = reducoes
+                           reducoes = reducoes,
+                           quantidade = quantidade
                         )
 
                         db.session.add(new_plan)
