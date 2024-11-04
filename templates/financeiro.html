@@ -48,61 +48,61 @@
                 <tr>
                     <th>Custos Fixos</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_fixos }}</td>
+                        <td>{{ linha.custos_fixos|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>Custos Compra MP</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_compra_mp }}</td>
+                        <td>{{ linha.custos_compra_mp|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>Custos Estoques</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_estoques }}</td>
+                        <td>{{ linha.custos_estoques|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>Custos Terceirização</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_terceirizacao }}</td>
+                        <td>{{ linha.custos_terceirizacao|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>Custos Capital</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_capital }}</td>
+                        <td>{{ linha.custos_capital|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>Custos Vendas Perdidas</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_vendas_perdidas }}</td>
+                        <td>{{ linha.custos_vendas_perdidas|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>Custos Totais</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_totais }}</td>
+                        <td>{{ linha.custos_totais|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>Receitas Vendas</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.receitas_vendas }}</td>
+                        <td>{{ linha.receitas_vendas|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>Resultado Operacional</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.resultado_operacional }}</td>
+                        <td>{{ linha.resultado_operacional|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>RO Acumulado</th>
                     {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.ro_acumulado }}</td>
+                        <td>{{ linha.ro_acumulado|round(2) }}</td>
                     {% endfor %}
                 </tr>
             </tbody>
@@ -126,43 +126,43 @@
                 <tr>
                     <th>C. Fixo Tecelagem</th>
                     {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_tecelagem }}</td>
+                        <td>{{ linha.c_fixo_tecelagem|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Fixo Purga Tinturaria</th>
                     {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_purga_tinturaria }}</td>
+                        <td>{{ linha.c_fixo_purga_tinturaria|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Fixo Fixação Acabamento</th>
                     {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_fixacao_acabamento }}</td>
+                        <td>{{ linha.c_fixo_fixacao_acabamento|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Fixo Depreciação Tecelagem</th>
                     {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_depreciacao_tecelagem }}</td>
+                        <td>{{ linha.c_fixo_depreciacao_tecelagem|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Fixo Depreciação Purga Tinturaria</th>
                     {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_depreciacao_purga_tinturaria }}</td>
+                        <td>{{ linha.c_fixo_depreciacao_purga_tinturaria|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Fixo Depreciação Fixação Acabamento</th>
                     {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_depreciacao_fixacao_acabamento }}</td>
+                        <td>{{ linha.c_fixo_depreciacao_fixacao_acabamento|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Fixo Total</th>
                     {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_total }}</td>
+                        <td>{{ linha.c_fixo_total|round(2) }}</td>
                     {% endfor %}
                 </tr>
             </tbody>
@@ -185,43 +185,43 @@
                 <tr>
                     <th>C. Compras Corantes</th>
                     {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_compras_corantes }}</td>
+                        <td>{{ linha.c_compras_corantes|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Compras Fio Algodão</th>
                     {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_compras_fio_algodao }}</td>
+                        <td>{{ linha.c_compras_fio_algodao|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Compras Fio Sintético</th>
                     {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_compras_fio_sintetico }}</td>
+                        <td>{{ linha.c_compras_fio_sintetico|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Emergência Corante</th>
                     {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_emergencia_corante }}</td>
+                        <td>{{ linha.c_emergencia_corante|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Emergência Fio Algodão</th>
                     {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_emergencia_fio_algodao }}</td>
+                        <td>{{ linha.c_emergencia_fio_algodao|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Emergência Fio Sintético</th>
                     {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_emergencia_fio_sintetico }}</td>
+                        <td>{{ linha.c_emergencia_fio_sintetico|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Compras Total</th>
                     {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_compras_total }}</td>
+                        <td>{{ linha.c_compras_total|round(2) }}</td>
                     {% endfor %}
                 </tr>
             </tbody>
@@ -244,43 +244,43 @@
                 <tr>
                     <th>C. Estoque Corantes</th>
                     {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_corantes }}</td>
+                        <td>{{ linha.c_estoque_corantes|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Estoque Fio Algodão</th>
                     {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_fio_algodao }}</td>
+                        <td>{{ linha.c_estoque_fio_algodao|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Estoque Fio Sintético</th>
                     {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_fio_sintetico }}</td>
+                        <td>{{ linha.c_estoque_fio_sintetico|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Estoque Colmeia</th>
                     {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_colmeia }}</td>
+                        <td>{{ linha.c_estoque_colmeia|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Estoque Piquet</th>
                     {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_piquet }}</td>
+                        <td>{{ linha.c_estoque_piquet|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Estoque Maxim</th>
                     {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_maxim }}</td>
+                        <td>{{ linha.c_estoque_maxim|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Estoque Total</th>
                     {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_total }}</td>
+                        <td>{{ linha.c_estoque_total|round(2) }}</td>
                     {% endfor %}
                 </tr>
             </tbody>
@@ -303,25 +303,25 @@
                 <tr>
                     <th>C. Terceirização Tecelagem</th>
                     {% for linha in tabelas['Custos Terceirização'] %}
-                        <td>{{ linha.c_terc_tecelagem }}</td>
+                        <td>{{ linha.c_terc_tecelagem|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Terceirização Purga Tinturaria</th>
                     {% for linha in tabelas['Custos Terceirização'] %}
-                        <td>{{ linha.c_terc_purga_tinturaria }}</td>
+                        <td>{{ linha.c_terc_purga_tinturaria|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Terceirização Fixação Acabamento</th>
                     {% for linha in tabelas['Custos Terceirização'] %}
-                        <td>{{ linha.c_terc_fixacao_acabamento }}</td>
+                        <td>{{ linha.c_terc_fixacao_acabamento|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Terceirização Total</th>
                     {% for linha in tabelas['Custos Terceirização'] %}
-                        <td>{{ linha.c_terc_total }}</td>
+                        <td>{{ linha.c_terc_total|round(2) }}</td>
                     {% endfor %}
                 </tr>
             </tbody>
@@ -344,37 +344,37 @@
                 <tr>
                     <th>C. Capital Teares</th>
                     {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_teares }}</td>
+                        <td>{{ linha.custo_capital_teares|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Capital Jets</th>
                     {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_jets }}</td>
+                        <td>{{ linha.custo_capital_jets|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Capital Ramas</th>
                     {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_ramas }}</td>
+                        <td>{{ linha.custo_capital_ramas|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Capital MP</th>
                     {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_mp }}</td>
+                        <td>{{ linha.custo_capital_mp|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Capital PA</th>
                     {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_pa }}</td>
+                        <td>{{ linha.custo_capital_pa|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. Capital Total</th>
                     {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_total }}</td>
+                        <td>{{ linha.custo_capital_total|round(2) }}</td>
                     {% endfor %}
                 </tr>
             </tbody>
@@ -397,25 +397,25 @@
                 <tr>
                     <th>C. VP Colmeia</th>
                     {% for linha in tabelas['Custos Vendas Perdidas'] %}
-                        <td>{{ linha.c_vp_comeia }}</td>
+                        <td>{{ linha.c_vp_comeia|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. VP Piquet</th>
                     {% for linha in tabelas['Custos Vendas Perdidas'] %}
-                        <td>{{ linha.c_vp_piquet }}</td>
+                        <td>{{ linha.c_vp_piquet|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. VP Maxim</th>
                     {% for linha in tabelas['Custos Vendas Perdidas'] %}
-                        <td>{{ linha.c_vp_maxim }}</td>
+                        <td>{{ linha.c_vp_maxim|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>C. VP Total</th>
                     {% for linha in tabelas['Custos Vendas Perdidas'] %}
-                        <td>{{ linha.c_vp_total }}</td>
+                        <td>{{ linha.c_vp_total|round(2) }}</td>
                     {% endfor %}
                 </tr>
             </tbody>
@@ -438,25 +438,25 @@
                 <tr>
                     <th>R. Vendas Colmeia</th>
                     {% for linha in tabelas['Receitas Vendas'] %}
-                        <td>{{ linha.r_vendas_colmeia }}</td>
+                        <td>{{ linha.r_vendas_colmeia|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>R. Vendas Piquet</th>
                     {% for linha in tabelas['Receitas Vendas'] %}
-                        <td>{{ linha.r_vendas_piquet }}</td>
+                        <td>{{ linha.r_vendas_piquet|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>R. Vendas Maxim</th>
                     {% for linha in tabelas['Receitas Vendas'] %}
-                        <td>{{ linha.r_vendas_maxim }}</td>
+                        <td>{{ linha.r_vendas_maxim|round(2) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <th>R. Vendas Total</th>
                     {% for linha in tabelas['Receitas Vendas'] %}
-                        <td>{{ linha.r_vendas_total }}</td>
+                        <td>{{ linha.r_vendas_total|round(2) }}</td>
                     {% endfor %}
                 </tr>
             </tbody>
