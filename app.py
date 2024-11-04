@@ -643,6 +643,7 @@ def tecelagem():
                 capacidade_teceirizada = capacidade_teceirizada_dici[maquina][period].data
                 ampliacoes = ampliacoes_dici[maquina][period].data
                 reducoes = reducoes_dici[maquina][period].data
+                quantidade = quantidade_dici[maquina][period].data
 
                 # Atualizar ou criar CapacidadeTeares
                 existing_plan = CapacidadeTeares.query.filter_by(
@@ -656,6 +657,7 @@ def tecelagem():
                         existing_plan.capacidade_terceirizada = capacidade_teceirizada
                         existing_plan.ampliacoes = ampliacoes
                         existing_plan.reducoes = reducoes
+                        existing_plan.quantidade = quantidade
 
                     else:
                         # Criar um novo plano
@@ -810,12 +812,15 @@ def purga_tinturaria():
                         # Atualizar o plano existente
                         existing_plan.numero_turnos = numero_turnos
                         existing_plan.capacidade_terceirizada = capacidade_teceirizada
-                        existing_plan.ampliacoes_tipo1 = ampliacoes_jet1
-                        existing_plan.ampliacoes_tipo2 = ampliacoes_jet2
-                        existing_plan.ampliacoes_tipo3 = ampliacoes_jet3
-                        existing_plan.reducoes_tipo1 = reducoes_jet1
-                        existing_plan.reducoes_tipo2 = reducoes_jet2
-                        existing_plan.reducoes_tipo3 = reducoes_jet3
+                        existing_plan.ampliacoes_jet1 = ampliacoes_jet1
+                        existing_plan.ampliacoes_jet2 = ampliacoes_jet2
+                        existing_plan.ampliacoes_jet3 = ampliacoes_jet3
+                        existing_plan.reducoes_jet1 = reducoes_jet1
+                        existing_plan.reducoes_jet2 = reducoes_jet2
+                        existing_plan.reducoes_jet3 = reducoes_jet3
+                        existing_plan.quantidade_jet1 = quantidade_jet1
+                        existing_plan.quantidade_jet2 = quantidade_jet2
+                        existing_plan.quantidade_jet3 = quantidade_jet3
 
                     else:
                         # Criar um novo plano
@@ -824,27 +829,27 @@ def purga_tinturaria():
                             periodo_numero=period,
                             periodo_modificado=periodo_atual,
 
-                           numero_turnos = numero_turnos,
-                           capacidade_disponivel = capacidade_disponivel,
-                           capacidade_necessaria = capacidade_necessaria,
-                           colmeia_horas = colmeia_horas,
-                           piquet_horas = piquet_horas,
-                           maxim_horas = maxim_horas,
-                           setup = setup,
-                           produtividade = produtividade,
-                           capacidade_instalada_tipo1 = capacidade_instalada_jet1,
-                           capacidade_instalada_tipo2 = capacidade_instalada_jet2,
-                           capacidade_instalada_tipo3 = capacidade_instalada_jet3,
-                           capacidade_teceirizada = capacidade_teceirizada,
-                           ampliacoes_tipo1 = ampliacoes_jet1,
-                           ampliacoes_tipo2 = ampliacoes_jet2,
-                           ampliacoes_tipo3 = ampliacoes_jet3,
-                           reducoes_tipo1 = reducoes_jet1,
-                           reducoes_tipo2 = reducoes_jet2,
-                           reducoes_tipo3 = reducoes_jet3,
-                           quantidade_jet1 = quantidade_jet1,
-                           quantidade_jet2 = quantidade_jet2,
-                           quantidade_jet3 = quantidade_jet3
+                            numero_turnos = numero_turnos,
+                            capacidade_disponivel = capacidade_disponivel,
+                            capacidade_necessaria = capacidade_necessaria,
+                            colmeia_horas = colmeia_horas,
+                            piquet_horas = piquet_horas,
+                            maxim_horas = maxim_horas,
+                            setup = setup,
+                            produtividade = produtividade,
+                            capacidade_instalada_tipo1 = capacidade_instalada_jet1,
+                            capacidade_instalada_tipo2 = capacidade_instalada_jet2,
+                            capacidade_instalada_tipo3 = capacidade_instalada_jet3,
+                            capacidade_teceirizada = capacidade_teceirizada,
+                            ampliacoes_tipo1 = ampliacoes_jet1,
+                            ampliacoes_tipo2 = ampliacoes_jet2,
+                            ampliacoes_tipo3 = ampliacoes_jet3,
+                            reducoes_tipo1 = reducoes_jet1,
+                            reducoes_tipo2 = reducoes_jet2,
+                            reducoes_tipo3 = reducoes_jet3,
+                            quantidade_jet1 = quantidade_jet1,
+                            quantidade_jet2 = quantidade_jet2,
+                            quantidade_jet3 = quantidade_jet3
                         )
 
                         db.session.add(new_plan)
@@ -936,7 +941,6 @@ def fixacao_acabamento():
     periods = list(range(13, 25))
     periodo_atual = current_user.periodo_atual
 
- #                             'Fio Algodao': {period: getattr(form, f'fio_algodao_estoque_final_{period}', None) for period in periods}
     numero_turnos_dici =          {maquina: {period: getattr(form, f'numero_turnos_{period}', None) for period in periods}}
     capacidade_disponivel_dici =  {maquina: {period: getattr(form, f'capacidade_disponivel_{period}') for period in periods}}
     capacidade_necessaria_dici =  {maquina: {period: getattr(form, f'capacidade_necessaria_{period}') for period in periods}}
@@ -954,8 +958,6 @@ def fixacao_acabamento():
     if request.method == 'POST':
         for period in periods:
             if period >= periodo_atual:
-                print("AQUI ####",numero_turnos_dici[maquina][period].data)
-                #print("###", numero_turnos,"2 ####", numero_turnos[maquina])
                 numero_turnos = numero_turnos_dici[maquina][period].data
                 capacidade_disponivel = capacidade_disponivel_dici[maquina][period].data
                 capacidade_necessaria = capacidade_necessaria_dici[maquina][period].data
@@ -982,6 +984,7 @@ def fixacao_acabamento():
                         existing_plan.capacidade_terceirizada = capacidade_teceirizada
                         existing_plan.ampliacoes = ampliacoes
                         existing_plan.reducoes = reducoes
+                        existing_plan.quantidade = quantidade
 
                     else:
                         # Criar um novo plano
