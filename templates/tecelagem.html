@@ -176,7 +176,8 @@
                 {% for period in periods %}
                 <td>
                     <input type="number" class="form-control" 
-                           id="quantidade_{{ period }}" 
+                           id="quantidade_{{ period }}"
+                           name="{{ quantidade['Teares'][period].name }}"
                            value="{{ quantidade['Teares'][period].data }}" readonly>
                 </td>
                 {% endfor %}

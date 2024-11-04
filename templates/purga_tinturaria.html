@@ -196,7 +196,8 @@
                 {% for period in periods %}
                 <td>
                     <input type="number" class="form-control" 
-                           id="quantidade_jet1_{{ period }}" 
+                           id="quantidade_jet1_{{ period }}"
+                           name="{{ quantidade_jet1['Jet'][period].name }}"
                            value="{{ quantidade_jet1['Jet'][period].data }}" readonly>
                 </td>
                 {% endfor %}
@@ -242,7 +243,8 @@
                 {% for period in periods %}
                 <td>
                     <input type="number" class="form-control" 
-                           id="quantidade_jet2_{{ period }}" 
+                           id="quantidade_jet2_{{ period }}"
+                           name="{{ quantidade_jet2['Jet'][period].name }}"
                            value="{{ quantidade_jet2['Jet'][period].data }}" readonly>
                 </td>
                 {% endfor %}
@@ -286,7 +288,8 @@
                 {% for period in periods %}
                 <td>
                     <input type="number" class="form-control" 
-                           id="quantidade_jet3_{{ period }}" 
+                           id="quantidade_jet3_{{ period }}"
+                           name="{{ quantidade_jet3['Jet'][period].name }}"
                            value="{{ quantidade_jet3['Jet'][period].data }}" readonly>
                 </td>
                 {% endfor %}
