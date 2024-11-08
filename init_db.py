@@ -64,6 +64,22 @@ def adicionar_objetos_no_db(objetos):
         db.session.merge(objeto)
     db.session.commit()
 
+def criar_usuario_admin():
+    # TEMP
+    estilo_demanda = EstiloDemanda.query.get(1)
+
+    admin = Grupo(
+        grupo_nome='Admin', password='123', estilo_demanda_id=1,
+        quantidade_teares=estilo_demanda.quantidade_teares,
+        quantidade_ramas=estilo_demanda.quantidade_ramas,
+        quantidade_jets_tipo1=estilo_demanda.quantidade_jets_tipo1,
+        quantidade_jets_tipo2=estilo_demanda.quantidade_jets_tipo2,
+        quantidade_jets_tipo3=estilo_demanda.quantidade_jets_tipo3,
+        is_admin = True)
+
+    db.session.add(admin)
+    db.session.commit()
+
 def criar_grupo_teste():
 
     estilo_demanda = EstiloDemanda.query.get(1)
@@ -155,6 +171,7 @@ def inicializar_banco_de_dados():
 
         inicializar_demandas()
 
+        criar_usuario_admin()
         grupo_teste = criar_grupo_teste()
 
         inicializar_taxas_producao()

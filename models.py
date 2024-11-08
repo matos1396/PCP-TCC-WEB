@@ -31,6 +31,7 @@ class Grupo(db.Model, UserMixin):
     __tablename__ = 'grupo'
 
     id = db.Column(db.Integer, primary_key=True)
+    is_admin = db.Column(db.Boolean, default=False)
     grupo_nome = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     periodo_atual = db.Column(db.Integer, nullable=False, default=12)

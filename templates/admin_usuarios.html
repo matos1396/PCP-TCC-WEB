@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Gerenciar Usuários{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Admin - Gerenciar Usuários</h2>
+
+    <!-- Formulário para consulta -->
+    <form method="POST" class="mb-4">
+        <div class="form-group">
+            <label for="criterio">Critério de Consulta de Usuários:</label>
+            <select class="form-control" id="criterio" name="criterio">
+                <option value="todos">Todos os Usuários</option>
+                <option value="administradores">Administradores</option>
+                <option value="grupos">Por Grupo</option>
+            </select>
+        </div>
+        <div class="form-group" id="grupo-nome-div" style="display: none;">
+            <label for="grupo_nome">Nome do Grupo:</label>
+            <input type="text" class="form-control" id="grupo_nome" name="grupo_nome" placeholder="Digite o nome do grupo">
+        </div>
+        <div class="form-group">
+            <label for="periodo_inicio">Período Inicial:</label>
+            <input type="number" class="form-control" id="periodo_inicio" name="periodo_inicio">
+        </div>
+        <div class="form-group">
+            <label for="periodo_fim">Período Final:</label>
+            <input type="number" class="form-control" id="periodo_fim" name="periodo_fim">
+        </div>
+        <button type="submit" class="btn btn-primary">Consultar</button>
+    </form>
+
+    <!-- Exibição dos Usuários -->
+    <h3>Usuários</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome do Grupo</th>
+                <th>Administrador</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.id }}</td>
+                    <td>{{ usuario.grupo_nome }}</td>
+                    <td>{{ 'Sim' if usuario.is_admin else 'Não' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Exibição dos Resultados Financeiros -->
+    <h3>Resultados Financeiros</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Grupo ID</th>
+                <th>Período</th>
+                <th>Custos Fixos</th>
+                <th>Receitas Vendas</th>
+                <!-- Adicione outras colunas conforme necessário -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for resultado in resultados_financeiros %}
+                <tr>
+                    <td>{{ resultado.id }}</td>
+                    <td>{{ resultado.grupo_id }}</td>
+                    <td>{{ resultado.periodo }}</td>
+                    <td>{{ resultado.custos_fixos }}</td>
+                    <td>{{ resultado.receitas_vendas }}</td>
+                    <!-- Adicione outras colunas conforme necessário -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Mostrar/ocultar o campo de nome do grupo com base no critério selecionado
+    document.getElementById('criterio').addEventListener('change', function() {
+        const grupoNomeDiv = document.getElementById('grupo-nome-div');
+        if (this.value === 'grupos') {
+            grupoNomeDiv.style.display = 'block';
+        } else {
+            grupoNomeDiv.style.display = 'none';
+        }
+    });
+</script>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function() {
+        alert('Formulário enviado!');  // Isso exibirá uma mensagem quando o formulário for enviado
+    });
+</script>
+{% endblock %}

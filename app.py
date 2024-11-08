@@ -16,8 +16,8 @@ from utils.func_auxiliares import (atualizar_plano_compras, atualizar_capacidade
                                    atualizar_financeiro, set_flag_controle)
 from flask import session
 
-import plotly.express as px
-import plotly.graph_objs as go
+# import plotly.express as px
+# import plotly.graph_objs as go
 
 
 import time # Para Testes
@@ -555,6 +555,8 @@ def purchases():
         atualizar_plano_compras(current_user)
         atualizar_capacidade_maquinas(current_user)
         atualizar_financeiro(current_user)
+
+        set_flag_controle(current_user, "compras")
 
         end_time = time.time()  # Tempo final
         execution_time = end_time - start_time  # Calcular o tempo de execução
@@ -1182,6 +1184,57 @@ def reset():
         flash('Banco de dados resetado e período atual reiniciado para 12.', 'success')
 
     return redirect(url_for('dashboard'))
+
+
+
+@app.route('/admin_usuarios', methods=['GET', 'POST'])
+@login_required
+def admin_usuarios():
+    if not current_user.is_admin:
+        flash('Acesso negado.')
+        return redirect(url_for('dashboard'))
+
+    # Inicializa a lista de usuários e resultados financeiros
+    usuarios = []
+    resultados_financeiros = []
+
+    # Se o método for POST, realiza a consulta
+    if request.method == 'POST':
+        # Obtém os parâmetros do formulário
+        criterio = request.form.get('criterio')
+        grupo_nome = request.form.get('grupo_nome')
+        periodo_inicio = request.form.get('periodo_inicio')
+        periodo_fim = request.form.get('periodo_fim')
+
+        # Realiza a consulta de usuários com base no critério selecionado
+        if criterio == 'todos':
+            usuarios = Grupo.query.all()
+        elif criterio == 'administradores':
+            usuarios = Grupo.query.filter_by(is_admin=True).all()
+        elif criterio == 'grupos' and grupo_nome:
+            usuarios = Grupo.query.filter(Grupo.grupo_nome.ilike(f"%{grupo_nome}%")).all()
+
+        # Realiza a consulta de resultados financeiros se os períodos forem fornecidos
+        if periodo_inicio and periodo_fim:
+            try:
+                # Converte os períodos para inteiros
+                periodo_inicio = int(periodo_inicio)
+                periodo_fim = int(periodo_fim)
+
+                # Consulta a tabela RelatorioFinanceiro para o intervalo de períodos
+                resultados_financeiros = RelatorioFinanceiro.query.filter(
+                    RelatorioFinanceiro.periodo.between(periodo_inicio, periodo_fim)
+                ).all()
+            except ValueError:
+                flash('Os períodos devem ser números inteiros.')
+
+    # Renderiza a página com os resultados da consulta
+    return render_template(
+        'admin_usuarios.html',
+        usuarios=usuarios,
+        resultados_financeiros=resultados_financeiros
+    )
+
 
 
 
