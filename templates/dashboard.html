@@ -4,8 +4,11 @@
 
 {% block content %}
 <div class="container mt-4">
-    <!-- Nav tabs -->
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <!-- Título principal -->
+    <h2 class="text-center mb-5">Dashboard de Controle</h2>
+
+    <!-- Nav tabs para selecionar categorias -->
+    <ul class="nav nav-pills justify-content-center mb-4" id="dashboardTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" id="producao-tab" data-toggle="tab" href="#producao" role="tab" aria-controls="producao" aria-selected="true">Produção</a>
         </li>
@@ -17,72 +20,81 @@
         </li>
     </ul>
 
-    <!-- Tab panes -->
+    <!-- Conteúdo das Abas -->
     <div class="tab-content mt-3">
         <!-- Aba da Produção -->
         <div class="tab-pane fade show active" id="producao" role="tabpanel" aria-labelledby="producao-tab">
-            <div class="d-flex align-items-start">
-                <!-- Menu Dropdown para Produção -->
-                <div class="mr-4">
-                    <label for="filtroProducao">Selecione Produção:</label>
-                    <select id="filtroProducao" class="form-control">
-                        <option value="real">Produção Real</option>
-                        <option value="planejada">Produção Planejada</option>
-                    </select>
+            <div class="card p-4 mb-4">
+                <h4 class="card-title">Produção</h4>
+                <div class="d-flex align-items-start">
+                    <!-- Dropdown para seleção de Produção -->
+                    <div class="mr-4">
+                        <label for="filtroProducao">Selecione Produção:</label>
+                        <select id="filtroProducao" class="form-control">
+                            <option value="real">Produção Real</option>
+                            <option value="planejada">Produção Planejada</option>
+                        </select>
+                    </div>
+                    <!-- Gráfico de Produção -->
+                    <div id="producao-graph" style="flex-grow: 1; height: 400px;"></div>
                 </div>
-
-                <!-- Gráfico de Produção -->
-                <div id="producao-graph" style="flex-grow: 1;"></div>
             </div>
 
-            <hr>
-
-            <div class="d-flex align-items-start mt-4">
-                <!-- Menu Dropdown para Demanda -->
-                <div class="mr-4">
-                    <label for="filtroDemanda">Selecione Demanda:</label>
-                    <select id="filtroDemanda" class="form-control">
-                        <option value="prevista">Demanda Prevista</option>
-                        <option value="real">Demanda Real</option>
-                    </select>
+            <div class="card p-4 mb-4">
+                <h4 class="card-title">Demanda</h4>
+                <div class="d-flex align-items-start">
+                    <!-- Dropdown para seleção de Demanda -->
+                    <div class="mr-4">
+                        <label for="filtroDemanda">Selecione Demanda:</label>
+                        <select id="filtroDemanda" class="form-control">
+                            <option value="prevista">Demanda Prevista</option>
+                            <option value="real">Demanda Real</option>
+                        </select>
+                    </div>
+                    <!-- Gráfico de Demanda -->
+                    <div id="demanda-graph" style="flex-grow: 1; height: 400px;"></div>
                 </div>
-
-                <!-- Gráfico de Demanda -->
-                <div id="demanda-graph" style="flex-grow: 1;"></div>
             </div>
         </div>
 
         <!-- Aba de Compras -->
         <div class="tab-pane fade" id="compras" role="tabpanel" aria-labelledby="compras-tab">
-            <div class="row">
-                <div class="col-md-3">
-                    <label for="filtroCompras">Tipo de Compras:</label>
-                    <select class="form-control" id="filtroCompras">
-                        <option value="reais">Compras Reais</option>
-                        <option value="planejadas">Compras Planejadas</option>
-                    </select>
+            <div class="card p-4">
+                <h4 class="card-title">Compras</h4>
+                <div class="d-flex align-items-start">
+                    <!-- Dropdown para seleção de Compras -->
+                    <div class="mr-4">
+                        <label for="filtroCompras">Tipo de Compras:</label>
+                        <select class="form-control" id="filtroCompras">
+                            <option value="reais">Compras Reais</option>
+                            <option value="planejadas">Compras Planejadas</option>
+                        </select>
+                    </div>
+                    <!-- Gráfico de Compras -->
+                    <div id="compras-graph" style="flex-grow: 1; height: 400px;"></div>
                 </div>
-                <div id="compras-graph" style="flex-grow: 1;"></div>
             </div>
         </div>
 
-        <!-- Aba de Teares -->
+        <!-- Aba de Capacidades -->
         <div class="tab-pane fade" id="capacidades" role="tabpanel" aria-labelledby="capacidades-tab">
-            <div class="row"></div>
-                <div class="col-md-3">
-                    <label for="filtroCapacidades">Tipo Máquina:</label>
-                    <select class="form-control" id="filtroCapacidades">
-                        <option value="teares">Teares</option>
-                        <option value="ramas">Ramas</option>
-                        <option value="jets">Jets</option>
-                    </select>
+            <div class="card p-4">
+                <h4 class="card-title">Capacidades das Máquinas</h4>
+                <div class="d-flex align-items-start">
+                    <!-- Dropdown para seleção de Máquina -->
+                    <div class="mr-4">
+                        <label for="filtroCapacidades">Tipo de Máquina:</label>
+                        <select class="form-control" id="filtroCapacidades">
+                            <option value="teares">Teares</option>
+                            <option value="ramas">Ramas</option>
+                            <option value="jets">Jets</option>
+                        </select>
+                    </div>
+                    <!-- Gráfico de Capacidades -->
+                    <div id="capacidades-graph" style="flex-grow: 1; height: 400px;"></div>
                 </div>
-                <div id="capacidades-graph" style="flex-grow: 1;"></div>
             </div>
         </div>
-
-        <!-- Abas  -->
-
     </div>
 </div>
 
@@ -161,7 +173,4 @@
         });
     });
 </script>
-
-
-
 {% endblock %}

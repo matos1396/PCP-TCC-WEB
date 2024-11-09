@@ -395,6 +395,7 @@ def production():
         # TODO: Finalizar Implementação
         ####### Atualizar as outras TABELAS#####
         ### TEST
+
         start_time = time.time()
 
         atualizar_plano_compras(current_user)
@@ -1115,7 +1116,16 @@ def simulate():
     capacidade_jets_nao_validado = CapacidadeJets.query.filter_by(grupo_id=grupo.id, validacao=False).first()
     capacidade_ramas_nao_validado = CapacidadeRamas.query.filter_by(grupo_id=grupo.id, validacao=False).first()
 
-    #check_producao = ControlePlanos.filter_by(grupo_id=grupo.id, plano_producao_salvo=False)
+    check_producao = ControlePlanos.filter_by(grupo_id=grupo.id, plano_producao_salvo=False)
+    check_compras = ControlePlanos.filter_by(grupo_id=grupo.id, plano_producao_salvo=False)
+
+    if check_producao or check_compras == False:
+        if check_producao == False:
+            flash("Você não salvou um Plano de Produção para o período atual. Por favor clique no botão para salvar o plano na página Plano de Produção.", "warning")
+            return redirect(url_for('dashboard'))
+        if check_compras == False:
+            flash("Você não salvou um Plano de Compras para o período atual. Por favor clique no botão para salvar o plano na página Plano de Compras.", "warning")
+            return redirect(url_for('dashboard'))
 
     if capacidade_teares_nao_validado or capacidade_jets_nao_validado or capacidade_ramas_nao_validado:
         flash("Existem configurações de capacidade necessária não atendidas. Verifique as tabelas das máquinas antes de continuar a simulação.", "warning")
@@ -1209,8 +1219,8 @@ def admin_usuarios():
         # Realiza a consulta de usuários com base no critério selecionado
         if criterio == 'todos':
             usuarios = Grupo.query.all()
-        elif criterio == 'administradores':
-            usuarios = Grupo.query.filter_by(is_admin=True).all()
+        # elif criterio == 'administradores':
+        #     usuarios = Grupo.query.filter_by(is_admin=True).all()
         elif criterio == 'grupos' and grupo_nome:
             usuarios = Grupo.query.filter(Grupo.grupo_nome.ilike(f"%{grupo_nome}%")).all()
 
@@ -1235,6 +1245,66 @@ def admin_usuarios():
         resultados_financeiros=resultados_financeiros
     )
 
+import csv
+from io import StringIO
+from flask import make_response
+
+@app.route('/baixar_csv', methods=['POST'])
+@login_required
+def baixar_csv():
+    if not current_user.is_admin:
+        flash('Acesso negado.')
+        return redirect(url_for('dashboard'))
+
+    # Receber parâmetros da consulta do formulário
+    criterio = request.form.get('criterio')
+    grupo_nome = request.form.get('grupo_nome')
+    periodo_inicio = request.form.get('periodo_inicio')
+    periodo_fim = request.form.get('periodo_fim')
+
+    # Consultar os dados conforme o critério
+    usuarios = []
+    resultados_financeiros = []
+
+    if criterio == 'todos':
+        usuarios = Grupo.query.all()
+    elif criterio == 'grupos' and grupo_nome:
+        usuarios = Grupo.query.filter(Grupo.grupo_nome.ilike(f"%{grupo_nome}%")).all()
+
+    if periodo_inicio and periodo_fim:
+        try:
+            periodo_inicio = int(periodo_inicio)
+            periodo_fim = int(periodo_fim)
+            resultados_financeiros = RelatorioFinanceiro.query.filter(
+                RelatorioFinanceiro.periodo.between(periodo_inicio, periodo_fim)
+            ).all()
+        except ValueError:
+            flash('Os períodos devem ser números inteiros.')
+            return redirect(url_for('admin_usuarios'))
+
+    # Criar o CSV na memória
+    si = StringIO()
+    writer = csv.writer(si)
+
+    # Cabeçalho dos dados
+    writer.writerow(["Grupo ID", "Nome do Grupo", "Período", "Custos Fixos", "Custos Compras MP", 
+                     "Custos Terceirização", "Custos Capital", "Custos Vendas Perdidas", 
+                     "Custos Totais", "Receitas Vendas", "Resultado Operacional", "Resultado Operacional Acumulado"])
+
+    # Adicionar linhas dos dados financeiros
+    for resultado in resultados_financeiros:
+        writer.writerow([
+            resultado.grupo_id, resultado.grupo.grupo_nome, resultado.periodo,
+            resultado.custos_fixos, resultado.custos_compra_mp, resultado.custos_terceirizacao,
+            resultado.custos_capital, resultado.custos_vendas_perdidas, resultado.custos_totais,
+            resultado.receitas_vendas, resultado.resultado_operacional, resultado.ro_acumulado
+        ])
+
+    # Configurar o CSV para download
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=resultados_financeiros.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
 
 
 

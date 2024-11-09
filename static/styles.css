@@ -3,3 +3,19 @@
 body {
     padding-top: 56px; /* Para evitar que o conteúdo fique atrás da navbar */
 }
+
+
+
+/* Estilização adicional para que os cartões ocupem a largura completa em telas grandes e pequenas */
+.container-fluid {
+    max-width: 100%; /* Ajuste para expandir ao máximo */
+}
+.card {
+    width: 100%; /* Ocupa toda a largura disponível */
+}
+/* Em telas muito pequenas, empilha os cards em uma coluna única */
+@media (max-width: 768px) {
+    .card {
+        margin: 0;
+    }
+}

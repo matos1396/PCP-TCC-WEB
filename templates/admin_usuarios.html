@@ -3,97 +3,137 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">Admin - Gerenciar Usuários</h2>
+    <h2 class="mb-4 text-center">Admin - Gerenciar Usuários</h2>
 
-    <!-- Formulário para consulta -->
-    <form method="POST" class="mb-4">
-        <div class="form-group">
-            <label for="criterio">Critério de Consulta de Usuários:</label>
-            <select class="form-control" id="criterio" name="criterio">
-                <option value="todos">Todos os Usuários</option>
-                <option value="administradores">Administradores</option>
-                <option value="grupos">Por Grupo</option>
-            </select>
+    <!-- Card do Formulário para consulta -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5>Consulta de Usuários e Resultados Financeiros</h5>
         </div>
-        <div class="form-group" id="grupo-nome-div" style="display: none;">
-            <label for="grupo_nome">Nome do Grupo:</label>
-            <input type="text" class="form-control" id="grupo_nome" name="grupo_nome" placeholder="Digite o nome do grupo">
+        <div class="card-body">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="criterio">Critério de Consulta de Usuários:</label>
+                    <select class="form-control" id="criterio" name="criterio">
+                        <option value="todos">Todos os Usuários</option>
+                        <option value="grupos">Por Grupo</option>
+                    </select>
+                </div>
+                <div class="form-group" id="grupo-nome-div" style="display: none;">
+                    <label for="grupo_nome">Nome do Grupo:</label>
+                    <input type="text" class="form-control" id="grupo_nome" name="grupo_nome" placeholder="Digite o nome do grupo">
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="periodo_inicio">Período Inicial:</label>
+                        <input type="number" class="form-control" id="periodo_inicio" name="periodo_inicio">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="periodo_fim">Período Final:</label>
+                        <input type="number" class="form-control" id="periodo_fim" name="periodo_fim">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Consultar</button>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="periodo_inicio">Período Inicial:</label>
-            <input type="number" class="form-control" id="periodo_inicio" name="periodo_inicio">
-        </div>
-        <div class="form-group">
-            <label for="periodo_fim">Período Final:</label>
-            <input type="number" class="form-control" id="periodo_fim" name="periodo_fim">
-        </div>
-        <button type="submit" class="btn btn-primary">Consultar</button>
-    </form>
+    </div>
 
     <!-- Exibição dos Usuários -->
-    <h3>Usuários</h3>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome do Grupo</th>
-                <th>Administrador</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for usuario in usuarios %}
-                <tr>
-                    <td>{{ usuario.id }}</td>
-                    <td>{{ usuario.grupo_nome }}</td>
-                    <td>{{ 'Sim' if usuario.is_admin else 'Não' }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-info text-white">
+            <h5>Usuários</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome do Grupo</th>
+                        <th>Período Atual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for usuario in usuarios %}
+                        <tr>
+                            <td>{{ usuario.id }}</td>
+                            <td>{{ usuario.grupo_nome }}</td>
+                            <td>{{ usuario.periodo_atual }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <!-- Exibição dos Resultados Financeiros -->
-    <h3>Resultados Financeiros</h3>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Grupo ID</th>
-                <th>Período</th>
-                <th>Custos Fixos</th>
-                <th>Receitas Vendas</th>
-                <!-- Adicione outras colunas conforme necessário -->
-            </tr>
-        </thead>
-        <tbody>
-            {% for resultado in resultados_financeiros %}
-                <tr>
-                    <td>{{ resultado.id }}</td>
-                    <td>{{ resultado.grupo_id }}</td>
-                    <td>{{ resultado.periodo }}</td>
-                    <td>{{ resultado.custos_fixos }}</td>
-                    <td>{{ resultado.receitas_vendas }}</td>
-                    <!-- Adicione outras colunas conforme necessário -->
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h5>Resultados Financeiros</h5>
+        </div>
+        <div class="card-body">
+            <div style="overflow-x: auto;">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Grupo ID</th>
+                            <th>Nome Grupo</th>
+                            <th>Período</th>
+                            <th>Custos Fixos</th>
+                            <th>Custos Compras MP</th>
+                            <th>Custos Terceirização</th>
+                            <th>Custos Capital</th>
+                            <th>Custos Vendas Perdidas</th>
+                            <th>Custos Totais</th>
+                            <th>Receitas Vendas</th>
+                            <th>Resultado Operacional</th>
+                            <th>Resultado Operacional Acumulado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for resultado in resultados_financeiros %}
+                            <tr>
+                                <td>{{ resultado.grupo_id }}</td>
+                                <td>{{ resultado.grupo.grupo_nome }}</td>
+                                <td>{{ resultado.periodo }}</td>
+                                <td>{{ resultado.custos_fixos }}</td>
+                                <td>{{ resultado.custos_compra_mp }}</td>
+                                <td>{{ resultado.custos_terceirizacao }}</td>
+                                <td>{{ resultado.custos_capital }}</td>
+                                <td>{{ resultado.custos_vendas_perdidas }}</td>
+                                <td>{{ resultado.custos_totais }}</td>
+                                <td>{{ resultado.receitas_vendas }}</td>
+                                <td>{{ resultado.resultado_operacional }}</td>
+                                <td>{{ resultado.ro_acumulado }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ url_for('baixar_csv') }}">
+            <!-- Inputs de critério e filtros -->
+            <input type="hidden" name="criterio" value="{{ request.form.get('criterio') }}">
+            <input type="hidden" name="grupo_nome" value="{{ request.form.get('grupo_nome') }}">
+            <input type="hidden" name="periodo_inicio" value="{{ request.form.get('periodo_inicio') }}">
+            <input type="hidden" name="periodo_fim" value="{{ request.form.get('periodo_fim') }}">
+
+            <button type="submit" class="btn btn-secondary">Baixar CSV</button>
+        </form>
+
+    </div>
 </div>
 
 <script>
     // Mostrar/ocultar o campo de nome do grupo com base no critério selecionado
     document.getElementById('criterio').addEventListener('change', function() {
         const grupoNomeDiv = document.getElementById('grupo-nome-div');
-        if (this.value === 'grupos') {
-            grupoNomeDiv.style.display = 'block';
-        } else {
-            grupoNomeDiv.style.display = 'none';
-        }
+        grupoNomeDiv.style.display = (this.value === 'grupos') ? 'block' : 'none';
     });
-</script>
 
-<script>
+    // Alerta de confirmação no envio do formulário
     document.querySelector('form').addEventListener('submit', function() {
-        alert('Formulário enviado!');  // Isso exibirá uma mensagem quando o formulário for enviado
+        alert('Consulta em andamento...'); 
     });
 </script>
 {% endblock %}

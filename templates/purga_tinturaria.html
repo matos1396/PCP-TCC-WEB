@@ -214,7 +214,7 @@
                            name="{{ ampliacoes_jet1['Jet'][period].name }}"
                            value="{{ ampliacoes_jet1['Jet'][period].data|int }}" readonly>
                     {% else %}
-                        {{ ampliacoes_jet1['Jet'][period](class="form-control", id="ampliacoes_jet1_" ~ period, step=1) }}
+                        {{ ampliacoes_jet1['Jet'][period](class="form-control", id="ampliacoes_jet1_" ~ period, step=1, max=3) }}
                     {% endif %}
                 </td>
                 {% endfor %}
@@ -231,12 +231,12 @@
                            name="{{ reducoes_jet1['Jet'][period].name }}"
                            value="{{ reducoes_jet1['Jet'][period].data|int }}" readonly>
                     {% else %}
-                        {{ reducoes_jet1['Jet'][period](class="form-control", id="reducoes_jet1_" ~ period, step=1) }}
+                        {{ reducoes_jet1['Jet'][period](class="form-control", id="reducoes_jet1_" ~ period, step=1, max=3) }}
                     {% endif %}
                 </td>
                 {% endfor %}
             </tr>
-            
+
             <!-- Linha para Quantidade -->
             <tr>
                 <th>Quantidade Jet 2</th>
@@ -260,7 +260,7 @@
                            name="{{ ampliacoes_jet2['Jet'][period].name }}"
                            value="{{ ampliacoes_jet2['Jet'][period].data|int }}" readonly>
                     {% else %}
-                        {{ ampliacoes_jet2['Jet'][period](class="form-control", id="ampliacoes_jet2_" ~ period, step=1) }}
+                        {{ ampliacoes_jet2['Jet'][period](class="form-control", id="ampliacoes_jet2_" ~ period, step=1, max=3) }}
                     {% endif %}
                 </td>
                 {% endfor %}
@@ -277,7 +277,7 @@
                            name="{{ reducoes_jet2['Jet'][period].name }}"
                            value="{{ reducoes_jet2['Jet'][period].data|int }}" readonly>
                     {% else %}
-                        {{ reducoes_jet2['Jet'][period](class="form-control", id="reducoes_jet2_" ~ period, step=1) }}
+                        {{ reducoes_jet2['Jet'][period](class="form-control", id="reducoes_jet2_" ~ period, step=1, max=3) }}
                     {% endif %}
                 </td>
                 {% endfor %}
@@ -305,7 +305,7 @@
                            name="{{ ampliacoes_jet3['Jet'][period].name }}"
                            value="{{ ampliacoes_jet3['Jet'][period].data|int }}" readonly>
                     {% else %}
-                        {{ ampliacoes_jet3['Jet'][period](class="form-control", id="ampliacoes_jet3_" ~ period, step=1) }}
+                        {{ ampliacoes_jet3['Jet'][period](class="form-control", id="ampliacoes_jet3_" ~ period, step=1, max=3) }}
                     {% endif %}
                 </td>
                 {% endfor %}
@@ -322,7 +322,7 @@
                            name="{{ reducoes_jet3['Jet'][period].name }}"
                            value="{{ reducoes_jet3['Jet'][period].data|int }}" readonly>
                     {% else %}
-                        {{ reducoes_jet3['Jet'][period](class="form-control", id="reducoes_jet3_" ~ period, step=1) }}
+                        {{ reducoes_jet3['Jet'][period](class="form-control", id="reducoes_jet3_" ~ period, step=1, max=3) }}
                     {% endif %}
                 </td>
                 {% endfor %}

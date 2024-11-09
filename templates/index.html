@@ -8,8 +8,11 @@
     <hr class="my-4">
     {% if not current_user.is_authenticated %}
         <a class="btn btn-primary btn-lg" href="{{ url_for('login') }}" role="button">Login</a>
-    {% else %}
+        {% if current_user.is_admin %}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('admin_usuarios') }}" role="button">Ir para Gerenciar Usuários</a>
+        {% else %}
         <a class="btn btn-primary btn-lg" href="{{ url_for('dashboard') }}" role="button">Ir para o Dashboard</a>
+        {% endif %}
     {% endif %}
 </div>
 {% endblock %}

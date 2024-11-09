@@ -19,17 +19,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
-                    </li>
-
                     {% if current_user.is_admin %}
                         <!-- Links para o administrador -->
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('admin_usuarios') }}">Gerenciar Usuários</a>
                         </li>
+
                     {% else %}
                         <!-- Links para o usuário normal -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('production') }}">Plano de Produção</a>
                         </li>
