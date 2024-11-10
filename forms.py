@@ -1,7 +1,7 @@
 # forms.py
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, SubmitField, FloatField, DecimalField, ValidationError
-from wtforms.validators import DataRequired, Optional
+from wtforms import StringField, PasswordField, IntegerField, SubmitField, ValidationError, SelectField
+from wtforms.validators import DataRequired, Optional, Length, EqualTo
 
 class LoginForm(FlaskForm):
     grupo_nome = StringField('Nome do Grupo', validators=[DataRequired()])
@@ -210,3 +210,11 @@ class FixacaoAcabamentoForm(FlaskForm):
 
     # Botão para Submeter o Formulário
     submit = SubmitField('Salvar Plano de Fixação e Acabamento')
+
+
+class CadastroGrupoForm(FlaskForm):
+    grupo_nome = StringField('Nome do Grupo', validators=[DataRequired(), Length(min=2, max=50)])
+    password = PasswordField('Senha', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('password', message='As senhas devem coincidir.')])
+    estilo_demanda = SelectField('Estilo de Demanda', validators=[DataRequired()], coerce=int)
+    submit = SubmitField('Cadastrar Grupo')

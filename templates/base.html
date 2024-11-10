@@ -22,9 +22,11 @@
                     {% if current_user.is_admin %}
                         <!-- Links para o administrador -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin_usuarios') }}">Gerenciar Usuários</a>
+                            <a class="nav-link" href="{{ url_for('consultar_usuarios') }}">Gerenciar Usuários</a>
                         </li>
-
+                        <li class="nav-item"></li>
+                            <a class="nav-link" href="{{ url_for('cadastrar_grupos') }}">Cadastro de Grupos</a>
+                        </li>
                     {% else %}
                         <!-- Links para o usuário normal -->
                         <li class="nav-item">

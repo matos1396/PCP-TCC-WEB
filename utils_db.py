@@ -1,4 +1,4 @@
-from app import db, app
+from models import db
 from models import (Grupo, EstiloDemanda, PrevisaoDemanda, PlanoCompras, PlanoProducao, 
                     TaxaProducao, Custos, CapacidadeJets, CapacidadeRamas, CapacidadeTeares, 
                     RelatorioFinanceiro, CustosFixos, CustosCapital, CustosTerceirizacao, 
@@ -41,35 +41,7 @@ def adicionar_objetos_no_db(objetos):
         db.session.merge(objeto)
     db.session.commit()
 
-def criar_usuario_admin():
-    # TEMP
-    estilo_demanda = EstiloDemanda.query.get(1)
 
-    admin = Grupo(
-        grupo_nome='Admin', password='123', estilo_demanda_id=1,
-        quantidade_teares=estilo_demanda.quantidade_teares,
-        quantidade_ramas=estilo_demanda.quantidade_ramas,
-        quantidade_jets_tipo1=estilo_demanda.quantidade_jets_tipo1,
-        quantidade_jets_tipo2=estilo_demanda.quantidade_jets_tipo2,
-        quantidade_jets_tipo3=estilo_demanda.quantidade_jets_tipo3,
-        is_admin = True)
-
-    db.session.add(admin)
-    db.session.commit()
-
-def criar_grupo_teste():
-
-    estilo_demanda = EstiloDemanda.query.get(1)
-    grupo_teste = Grupo(
-        grupo_nome='Grupo Teste', password='123', estilo_demanda_id=1,
-        quantidade_teares=estilo_demanda.quantidade_teares,
-        quantidade_ramas=estilo_demanda.quantidade_ramas,
-        quantidade_jets_tipo1=estilo_demanda.quantidade_jets_tipo1,
-        quantidade_jets_tipo2=estilo_demanda.quantidade_jets_tipo2,
-        quantidade_jets_tipo3=estilo_demanda.quantidade_jets_tipo3)
-    db.session.add(grupo_teste)
-    db.session.commit()
-    return grupo_teste
 
 def inicializar_previsoes_demanda(estilo_demanda_id):
 
@@ -112,66 +84,6 @@ def inicializar_capacidades_maquinas(grupo_id):
             capacidade_necessaria=0, capacidade_terceirizada=0, produtividade=0.1, colmeia=0, piquet=0, maxim=0))
     adicionar_objetos_no_db(capacidades)
 
-def inicializar_custos():
-    custos = Custos(
-        custo_fixo_tecelagem=5.00, custo_fixo_purga_jet1=0.50, custo_fixo_purga_jet2=0.25, 
-        custo_fixo_purga_jet3=0.10, custo_fixo_fixacao_acabamento=100.00, tma=0.03, 
-        custo_unitario_compra_emergencia=2, taxa_armazenagem=0.05, 
-        custo_terceirizacao_tecelagem=20.00, custo_terceirizacao_purga_tinturaria=2.00, 
-        custo_terceirizacao_fixacao_acabamento=150.00, taxa_desempenho_producao=0.95, 
-        taxa_desempenho_fornecimento_fios=0.90, taxa_desempenho_fornecimento_corantes=0.85, 
-        preco_aquisicao_teares=10000.00, preco_venda_teares=1000.00, 
-        preco_aquisicao_jet1=90000.00, preco_venda_jet1=9000.00, 
-        preco_aquisicao_jet2=50000.00, preco_venda_jet2=5000.00, 
-        preco_aquisicao_jet3=20000.00, preco_venda_jet3=2000.00, 
-        preco_aquisicao_rama=120000.00, preco_venda_rama=12000.00, 
-        preco_venda_colmeia=5.50, preco_venda_piquet=6.5, preco_venda_maxim=7.5, 
-        custo_venda_perdida_colmeia=30.00, custo_venda_perdida_piquet=40.00, 
-        custo_venda_perdida_maxim=45.00, custo_unitario_colmeia=4.50, 
-        custo_unitario_piquet=5.00, custo_unitario_maxim=5.50, custo_unitario_corantes=20.00, 
-        custo_unitario_fio_algodao=1.00, custo_unitario_fio_sintetico=1.50)
-    db.session.add(custos)
-    db.session.commit()
-
-def inicializar_lead_time_maquinas():
-    lead_times = [
-        LeadTimeMaquinas(tipo_maquina='Teares', lead_time_ampliacao=2, lead_time_reducao=2),
-        LeadTimeMaquinas(tipo_maquina='Jets', lead_time_ampliacao=3, lead_time_reducao=2),
-        LeadTimeMaquinas(tipo_maquina='Ramas', lead_time_ampliacao=3, lead_time_reducao=3)
-    ]
-    adicionar_objetos_no_db(lead_times)
-
-# Função principal de inicialização
-def inicializar_banco_de_dados():
-    with app.app_context():
-        db.create_all()
-
-        inicializar_demandas()
-
-        criar_usuario_admin()
-        grupo_teste = criar_grupo_teste()
-
-        inicializar_taxas_producao()
-        inicializar_lead_time_maquinas()
-        inicializar_custos()
-
-        inicializar_controle_planos(grupo_teste.id)
-
-        # Rever essa previsoes_demanda e planos_producao
-        inicializar_previsoes_demanda(grupo_teste.estilo_demanda_id)
-        inicializar_planos_producao(grupo_teste.id)
-
-        # Inicializar estoques iniciais de produção e compras
-        estilo_demanda = EstiloDemanda.query.get(grupo_teste.estilo_demanda_id)
-        inicializar_estoques_iniciais_producao(grupo_teste.id, 'Média')
-        #inicializar_estoques_producao(grupo_teste.id, estilo_demanda)
-        inicializar_estoques_compras(grupo_teste.id, estilo_demanda)
-        inicializar_planos_compras(grupo_teste.id, grupo_teste.periodo_atual)
-
-        inicializar_capacidades_maquinas(grupo_teste.id)
-        inicializar_tabelas_financeiras(grupo_teste.id)
-
-        print("Banco de dados inicializado com sucesso.")
 
 def cadastrar_grupo_db(dados_grupo):
 
@@ -196,14 +108,14 @@ def cadastrar_grupo_db(dados_grupo):
 def inicializar_grupo(dados_grupo):
     dados_grupo
     estilo_id = dados_grupo["Estilo"]
-
+    estilo_demanda = EstiloDemanda.query.get(estilo_id)
     novo_grupo = Grupo(
         grupo_nome = dados_grupo["Nome"], password = dados_grupo["Senha"], estilo_demanda_id = estilo_id,
-        quantidade_teares=estilo_id.quantidade_teares,
-        quantidade_ramas=estilo_id.quantidade_ramas,
-        quantidade_jets_tipo1=estilo_id.quantidade_jets_tipo1,
-        quantidade_jets_tipo2=estilo_id.quantidade_jets_tipo2,
-        quantidade_jets_tipo3=estilo_id.quantidade_jets_tipo3)
+        quantidade_teares=estilo_demanda.quantidade_teares,
+        quantidade_ramas=estilo_demanda.quantidade_ramas,
+        quantidade_jets_tipo1=estilo_demanda.quantidade_jets_tipo1,
+        quantidade_jets_tipo2=estilo_demanda.quantidade_jets_tipo2,
+        quantidade_jets_tipo3=estilo_demanda.quantidade_jets_tipo3)
 
     db.session.add(novo_grupo)
     db.session.commit()
@@ -224,7 +136,6 @@ def inicializar_estoques_iniciais_producao(grupo_id, estilo):
         filtros = {'grupo_id': grupo_id, 'familia': familia, 'periodo_numero': 13}
         novos_valores = {'estoques_iniciais': estoque}
         atualizar_ou_adicionar_tabela(PlanoProducao, filtros, novos_valores)
-
 
 
 def atualizar_ou_adicionar_tabela(modelo, filtros, novos_valores):
@@ -336,38 +247,6 @@ def inicializar_tabelas_financeiras(grupo_id):
         atualizar_ou_adicionar_tabela(ReceitasVendas, filtros, novos_valores)
 
 
-def inicializar_taxas_producao():
-    taxas_producao = [
-        {'familia': 'Colmeia', 'processo': 'Malharia', 'tipo_equipamento': 'Teares', 'taxa': 0.090},
-        {'familia': 'Colmeia', 'processo': 'Purga', 'tipo_equipamento': 'Jets', 'taxa': 1.0},
-        {'familia': 'Colmeia', 'processo': 'Fixação', 'tipo_equipamento': 'Ramas', 'taxa': 0.002},
-        {'familia': 'Colmeia', 'processo': 'Tinturaria', 'tipo_equipamento': 'Jets', 'taxa': 3.000},
-        {'familia': 'Colmeia', 'processo': 'Acabamento', 'tipo_equipamento': 'Ramas', 'taxa': 0.003},
-
-        {'familia': 'Piquet', 'processo': 'Malharia', 'tipo_equipamento': 'Teares', 'taxa': 0.100},
-        {'familia': 'Piquet', 'processo': 'Purga', 'tipo_equipamento': 'Jets', 'taxa': 1.0},
-        {'familia': 'Piquet', 'processo': 'Fixação', 'tipo_equipamento': 'Ramas', 'taxa': 0.002},
-        {'familia': 'Piquet', 'processo': 'Tinturaria', 'tipo_equipamento': 'Jets', 'taxa': 3.500},
-        {'familia': 'Piquet', 'processo': 'Acabamento', 'tipo_equipamento': 'Ramas', 'taxa': 0.003},
-
-        {'familia': 'Maxim', 'processo': 'Malharia', 'tipo_equipamento': 'Teares', 'taxa': 0.110},
-        {'familia': 'Maxim', 'processo': 'Purga', 'tipo_equipamento': 'Jets', 'taxa': 1.500},
-        {'familia': 'Maxim', 'processo': 'Fixação', 'tipo_equipamento': 'Ramas', 'taxa': 0.003},
-        {'familia': 'Maxim', 'processo': 'Tinturaria', 'tipo_equipamento': 'Jets', 'taxa': 4.000},
-        {'familia': 'Maxim', 'processo': 'Acabamento', 'tipo_equipamento': 'Ramas', 'taxa': 0.004},
-    ]
-
-    for taxa in taxas_producao:
-        filtros = {
-            'familia': taxa['familia'],
-            'processo': taxa['processo'],
-            'tipo_equipamento': taxa['tipo_equipamento']
-        }
-        novos_valores = {'taxa': taxa['taxa']}
-
-        atualizar_ou_adicionar_tabela(TaxaProducao, filtros, novos_valores)
-
-
 def inicializar_controle_planos(grupo_id):
     # Define os períodos de 13 a 24
     periods = range(13, 25)
@@ -385,7 +264,7 @@ def inicializar_controle_planos(grupo_id):
                 plano_compras_salvo=False
             )
             db.session.add(novo_controle)
-    
+
     # Commit após adicionar todos os registros
     db.session.commit()
 
@@ -420,25 +299,3 @@ def inicializar_planos_compras(grupo_id, periodo_atual):
     # Commit após adicionar ou atualizar todos os registros
     db.session.commit()
 
-def inicializar_demandas():
-    #TODO: Adicionar para os outros estilos de demanda
-    demanda_baixa = EstiloDemanda(
-        nome_estilo='Baixa', quantidade_teares=5, quantidade_ramas=1, 
-        quantidade_jets_tipo1=0, quantidade_jets_tipo2=3, quantidade_jets_tipo3=0)
-    demanda_media = EstiloDemanda(
-        nome_estilo='Média', quantidade_teares=5, quantidade_ramas=1, 
-        quantidade_jets_tipo1=0, quantidade_jets_tipo2=3, quantidade_jets_tipo3=0)
-    demanda_alta = EstiloDemanda(
-        nome_estilo='Alta', quantidade_teares=5, quantidade_ramas=1, 
-        quantidade_jets_tipo1=0, quantidade_jets_tipo2=3, quantidade_jets_tipo3=0)
-
-    db.session.add(demanda_baixa)
-    db.session.add(demanda_media)
-    db.session.add(demanda_alta)
-    db.session.commit()
-
-
-
-# Chamada da função principal
-if __name__ == '__main__':
-    inicializar_banco_de_dados()

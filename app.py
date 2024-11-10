@@ -4,18 +4,20 @@ from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
-from forms import LoginForm, ProductionForm, PurchaseForm, TecelagemForm, PurgaTinturariaForm, FixacaoAcabamentoForm
+from forms import (LoginForm, ProductionForm, PurchaseForm,
+                   TecelagemForm, PurgaTinturariaForm, FixacaoAcabamentoForm,
+                   CadastroGrupoForm)
 from models import (Grupo,PlanoProducao,PlanoCompras,PrevisaoDemanda,
                     CapacidadeJets,CapacidadeRamas,CapacidadeTeares,TaxaProducao,Custos,
                     RelatorioFinanceiro,CustosCapital,CustosCompraMP,CustosEstoques,
                     CustosFixos,CustosTerceirizacao,CustosVendasPerdidas,ReceitasVendas,
-                    ControlePlanos,
+                    ControlePlanos, EstiloDemanda,
                     db)
 from simulacao import simulacao
 from utils.func_auxiliares import (atualizar_plano_compras, atualizar_capacidade_maquinas,
                                    atualizar_financeiro, set_flag_controle)
 from flask import session
-
+from utils_db import cadastrar_grupo_db
 import time # Para Testes
 
 app = Flask(__name__)
@@ -1193,9 +1195,9 @@ def reset():
 
 
 
-@app.route('/admin_usuarios', methods=['GET', 'POST'])
+@app.route('/consultar_usuarios', methods=['GET', 'POST'])
 @login_required
-def admin_usuarios():
+def consultar_usuarios():
     if not current_user.is_admin:
         flash('Acesso negado.')
         return redirect(url_for('dashboard'))
@@ -1236,10 +1238,48 @@ def admin_usuarios():
 
     # Renderiza a página com os resultados da consulta
     return render_template(
-        'admin_usuarios.html',
+        'consultar_usuarios.html',
         usuarios=usuarios,
         resultados_financeiros=resultados_financeiros
     )
+
+
+@app.route('/cadastrar_grupos', methods=['GET', 'POST'])
+@login_required
+def cadastrar_grupos():
+    if not current_user.is_admin:
+        flash('Acesso negado.')
+        return redirect(url_for('dashboard'))
+
+    form = CadastroGrupoForm()
+    # Obter os estilos de demanda disponíveis
+    estilos = EstiloDemanda.query.all()
+    form.estilo_demanda.choices = [(estilo.id, estilo.nome_estilo) for estilo in estilos]
+
+    if form.validate_on_submit():
+        grupo_nome = form.grupo_nome.data
+        password = form.password.data
+        estilo_demanda_id = form.estilo_demanda.data
+
+        # Verificar se o nome do grupo já existe
+        existing_group = Grupo.query.filter_by(grupo_nome=grupo_nome).first()
+        if existing_group:
+            flash('Já existe um grupo com esse nome. Por favor, escolha outro nome.', 'danger')
+        else:
+            dados_grupo = {
+                "Nome": grupo_nome,
+                "Estilo": estilo_demanda_id,
+                "Senha": password
+            }
+
+            cadastrar_grupo_db(dados_grupo)
+
+            flash('Grupo cadastrado com sucesso!', 'success')
+            return redirect(url_for('cadastrar_grupos'))
+
+    return render_template('cadastrar_grupos.html', form=form)
+
+
 
 import csv
 from io import StringIO
@@ -1276,7 +1316,7 @@ def baixar_csv():
             ).all()
         except ValueError:
             flash('Os períodos devem ser números inteiros.')
-            return redirect(url_for('admin_usuarios'))
+            return redirect(url_for('consultar_usuarios'))
 
     # Criar o CSV na memória
     si = StringIO()

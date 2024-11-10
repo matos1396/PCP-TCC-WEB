@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Cadastrar Grupos - PCP Game{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Cadastrar Novo Grupo</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.grupo_nome.label(class="form-label") }}
+            {{ form.grupo_nome(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.confirm_password.label(class="form-label") }}
+            {{ form.confirm_password(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.estilo_demanda.label(class="form-label") }}
+            {{ form.estilo_demanda(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+    </form>
+</div>
+{% endblock %}
