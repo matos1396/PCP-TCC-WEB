@@ -16,10 +16,6 @@ from utils.func_auxiliares import (atualizar_plano_compras, atualizar_capacidade
                                    atualizar_financeiro, set_flag_controle)
 from flask import session
 
-# import plotly.express as px
-# import plotly.graph_objs as go
-
-
 import time # Para Testes
 
 app = Flask(__name__)

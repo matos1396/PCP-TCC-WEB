@@ -32,10 +32,10 @@
                                 <td>
                                     {% if period <= periodo_atual %}
                                     <!-- Campo somente leitura para períodos passados -->
-                                    <input type="number" class="form-control demanda-prevista" 
-                                           id="colmeia_demanda_prevista_{{ period }}" 
+                                    <input type="number" class="form-control demanda-prevista"
+                                           id="colmeia_demanda_prevista_{{ period }}"
                                            name="{{ previsoes_por_familia['Colmeia'][period].name }}"
-                                           data-familia="Colmeia" data-period="{{ period }}" 
+                                           data-familia="Colmeia" data-period="{{ period }}"
                                            value="{{ previsoes_por_familia['Colmeia'][period].data }}" readonly>
                                     {% else %}
                                         {{ previsoes_por_familia['Colmeia'][period](class="form-control demanda-prevista", id="colmeia_demanda_prevista_" ~ period, data_familia="Colmeia", data_period=period) }}
@@ -47,8 +47,8 @@
                             <th>Demanda Real</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control demanda-real" 
-                                       id="colmeia_demanda_real_{{ period }}" 
+                                <input type="number" class="form-control demanda-real"
+                                       id="colmeia_demanda_real_{{ period }}"
                                        name="{{ demanda_real_por_familia['Colmeia'][period].name }}"
                                        value="{{ demanda_real_por_familia['Colmeia'][period].data }}" readonly>
                             </td>

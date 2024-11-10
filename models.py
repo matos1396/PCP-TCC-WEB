@@ -127,7 +127,7 @@ class PrevisaoDemanda(db.Model):
     estilo_demanda = db.relationship('EstiloDemanda', backref=db.backref('previsoes', lazy=True))
 
 
-# Modelo de Capacidade Teares 
+# Modelo de Capacidade Teares
 class CapacidadeTeares(db.Model):
     __tablename__ = 'capacidade_teares'
 
@@ -136,7 +136,6 @@ class CapacidadeTeares(db.Model):
     lead_time_id = db.Column(db.Integer, db.ForeignKey('lead_time_maquinas.id'), nullable=True)
     periodo_numero = db.Column(db.Integer, nullable=False)
     periodo_modificado = db.Column(db.Integer, nullable=False)
-
 
     quantidade = db.Column(db.Float, nullable=True)
     ampliacoes = db.Column(db.Integer, nullable=False, default=0)
