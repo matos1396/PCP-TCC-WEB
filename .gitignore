@@ -78,3 +78,5 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+init_db copy.py
+erd_from_sqlite.pdf
