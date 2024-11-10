@@ -223,26 +223,50 @@ def dashboard():
         CapacidadeJets.periodo_numero.between(13, 25)
     ).all()
 
-    capacidade_disponivel_teares = [cap.capacidade_disponivel for cap in capacidades_teares]
-    capacidade_disponivel_ramas = [cap.capacidade_disponivel for cap in capacidades_ramas]
-    capacidade_disponivel_jets = [cap.capacidade_disponivel for cap in capacidades_teares]
+    # Periodos 
     periodos_teares = [cap.periodo_numero for cap in capacidades_teares]
     periodos_ramas = [cap.periodo_numero for cap in capacidades_ramas]
     periodos_jets = [cap.periodo_numero for cap in capacidades_jets]
+    # Capacidade instalada
+    capacidade_instalada_teares = [cap.capacidade_instalada for cap in capacidades_teares]
+    capacidade_instalada_ramas = [cap.capacidade_instalada for cap in capacidades_ramas]
+    capacidade_instalada_jets = [cap.capacidade_instalada for cap in capacidades_jets]
+    # Capacidade Terceirizada
+    capacidade_terceirizada_teares = [cap.capacidade_terceirizada for cap in capacidades_teares]
+    capacidade_terceirizada_ramas = [cap.capacidade_terceirizada for cap in capacidades_ramas]
+    capacidade_terceirizada_jets = [cap.capacidade_terceirizada for cap in capacidades_jets]
+
+
+    # capacidade_disponivel_teares = [cap.capacidade_disponivel for cap in capacidades_teares]
+    # capacidade_disponivel_ramas = [cap.capacidade_disponivel for cap in capacidades_ramas]
+    # capacidade_disponivel_jets_tipo1 = [cap.capacidade_tipo1 for cap in capacidades_jets]
+    # capacidade_disponivel_jets_tipo2 = [cap.capacidade_tipo2 for cap in capacidades_jets]
+    # capacidade_disponivel_jets_tipo3 = [cap.capacidade_tipo3 for cap in capacidades_jets]
+    # capacidade_disponivel_jets = [cap.capacidade_disponivel for cap in capacidades_jets]
+
+
+
 
     fig_teares = {
         "data": [
             {
                 "x": periodos_teares,
-                "y": capacidade_disponivel_teares,
+                "y": capacidade_instalada_teares,
                 "type": "bar",
-                "name": "Capacidade Disponível"
+                "name": "Capacidade Instalada"
+            },
+            {
+                "x": periodos_teares,
+                "y": capacidade_terceirizada_teares,
+                "type": "bar",
+                "name": "Capacidade Terceirizada"
             }
         ],
         "layout": {
             "title": "Capacidade Disponível dos Teares",
             "xaxis": {"title": "Períodos"},
-            "yaxis": {"title": "Capacidade"}
+            "yaxis": {"title": "Capacidade"},
+            "barmode": "overlay"
         }
     }
 
@@ -250,17 +274,78 @@ def dashboard():
         "data": [
             {
                 "x": periodos_ramas,
-                "y": capacidade_disponivel_ramas,
+                "y": capacidade_instalada_ramas,
                 "type": "bar",
-                "name": "Capacidade Disponível"
+                "name": "Capacidade Instalada"
+            },
+            {
+                "x": periodos_ramas,
+                "y": capacidade_terceirizada_ramas,
+                "type": "bar",
+                "name": "Capacidade Terceirizada"
             }
         ],
         "layout": {
-            "title": "Capacidade Disponível das Ramas",
+            "title": "Capacidade Disponível dos Ramas",
             "xaxis": {"title": "Períodos"},
-            "yaxis": {"title": "Capacidade"}
+            "yaxis": {"title": "Capacidade"},
+            "barmode": "overlay"
         }
     }
+
+    fig_jets = {
+        "data": [
+            {
+                "x": periodos_jets,
+                "y": capacidade_instalada_jets,
+                "type": "bar",
+                "name": "Capacidade Instalada"
+            },
+            {
+                "x": periodos_jets,
+                "y": capacidade_terceirizada_jets,
+                "type": "bar",
+                "name": "Capacidade Terceirizada"
+            }
+        ],
+        "layout": {
+            "title": "Capacidade Disponível dos Jets",
+            "xaxis": {"title": "Períodos"},
+            "yaxis": {"title": "Capacidade"},
+            "barmode": "overlay"
+        }
+    }
+
+
+
+    # fig_jets = {
+    #     "data": [
+    #         {
+    #             "x": periodos_jets,
+    #             "y": capacidade_disponivel_jets_tipo1,
+    #             "type": "bar",
+    #             "name": "Capacidade Tipo 1"
+    #         },
+    #         {
+    #             "x": periodos_jets,
+    #             "y": capacidade_disponivel_jets_tipo2,
+    #             "type": "bar",
+    #             "name": "Capacidade Tipo 2"
+    #         },
+    #         {
+    #             "x": periodos_jets,
+    #             "y": capacidade_disponivel_jets_tipo3,
+    #             "type": "bar",
+    #             "name": "Capacidade Tipo 3"
+    #         }
+    #     ],
+    #     "layout": {
+    #         "title": "Capacidade Disponível dos Jets por Tipo",
+    #         "xaxis": {"title": "Períodos"},
+    #         "yaxis": {"title": "Capacidade"},
+    #         "barmode": "overlay"  # Configura as barras como sobrepostas
+    #     }
+    # }
 
 
     return render_template(
@@ -273,7 +358,7 @@ def dashboard():
         fig_compras_planejadas=fig_compras_planejadas,
         fig_teares=fig_teares,
         fig_ramas=fig_ramas,
-        fig_jets=fig_ramas
+        fig_jets=fig_jets
     )
 
 
