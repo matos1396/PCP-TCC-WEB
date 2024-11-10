@@ -16,10 +16,10 @@
                 <h4>Fio de Algodão</h4>
             </div>
             <div class="card-body">
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered table-responsive">
                     <thead class="thead-light">
                         <tr>
-                            <th>Período</th>
+                            <th class="sticky-col-header sticky-col-header-first">Período</th>
                             {% for period in periods %}
                                 <th>{{ period }}</th>
                             {% endfor %}
@@ -27,10 +27,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>Consumo Previsto</th>
+                            <th class="sticky-col">Consumo Previsto</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control consumo-previsto" 
+                                    <input type="number" class="form-control fixed-input consumo-previsto" 
                                            id="fio_algodao_consumo_previsto_{{ period }}" 
                                            name="{{ consumo_previsto_por_material['Fio Algodao'][period].name }}"
                                            value="{{ consumo_previsto_por_material['Fio Algodao'][period].data }}" readonly>
@@ -38,10 +38,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Consumo Real</th>
+                            <th class="sticky-col">Consumo Real</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control consumo-real" 
+                                    <input type="number" class="form-control fixed-input consumo-real" 
                                            id="fio_algodao_consumo_real_{{ period }}" 
                                            name="{{ consumo_real_por_material['Fio Algodao'][period].name }}"
                                            value="{{ consumo_real_por_material['Fio Algodao'][period].data }}" readonly>
@@ -49,10 +49,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Iniciais</th>
+                            <th class="sticky-col">Estoques Iniciais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control estoque-inicial" 
+                                    <input type="number" class="form-control fixed-input estoque-inicial" 
                                            id="fio_algodao_estoque_inicial_{{ period }}" 
                                            name="{{ estoques_iniciais_por_material['Fio Algodao'][period].name }}"
                                            value="{{ estoques_iniciais_por_material['Fio Algodao'][period].data }}" readonly>
@@ -60,26 +60,26 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Compras Planejadas</th>
+                            <th class="sticky-col">Compras Planejadas</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control compra-planejada"
+                                        <input type="number" class="form-control fixed-input compra-planejada"
                                                id="fio_algodao_compra_planejada_{{ period }}"
                                                name="{{ compras_por_material['Fio Algodao'][period].name }}"
                                                data-material="Fio Algodao" data-period="{{ period }}"
                                                value="{{ compras_por_material['Fio Algodao'][period].data }}" readonly>
                                     {% else %}
-                                        {{ compras_por_material['Fio Algodao'][period](class="form-control compra-planejada", id="fio_algodao_compra_planejada_" ~ period, data_material="Fio Algodão", data_period=period) }}
+                                        {{ compras_por_material['Fio Algodao'][period](class="form-control fixed-input compra-planejada", id="fio_algodao_compra_planejada_" ~ period, data_material="Fio Algodão", data_period=period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Compras Reais</th>
+                            <th class="sticky-col">Compras Reais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control compra-real" 
+                                    <input type="number" class="form-control fixed-input compra-real" 
                                            id="fio_algodao_compra_real_{{ period }}" 
                                            name="{{ compras_real_por_material['Fio Algodao'][period].name }}"
                                            value="{{ compras_real_por_material['Fio Algodao'][period].data }}" readonly>
@@ -87,10 +87,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Compras Emergênciais</th>
+                            <th class="sticky-col">Compras Emergênciais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control compra-emergencial" 
+                                    <input type="number" class="form-control fixed-input compra-emergencial" 
                                            id="fio_algodao_compra_emergencial_{{ period }}" 
                                            name="{{ compras_emergencial_por_material['Fio Algodao'][period].name }}"
                                            value="{{ compras_emergencial_por_material['Fio Algodao'][period].data }}" readonly>
@@ -98,10 +98,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Finais</th>
+                            <th class="sticky-col">Estoques Finais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control estoque-final" 
+                                    <input type="number" class="form-control fixed-input estoque-final" 
                                            id="fio_algodao_estoque_final_{{ period }}" 
                                            name="{{ estoques_finais_por_material['Fio Algodao'][period].name }}"
                                            value="{{ estoques_finais_por_material['Fio Algodao'][period].data }}" readonly>
@@ -119,10 +119,10 @@
                 <h4>Fio Sintético</h4>
             </div>
             <div class="card-body">
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered table-responsive">
                     <thead class="thead-light">
                         <tr>
-                            <th>Período</th>
+                            <th class="sticky-col-header sticky-col-header-first">Período</th>
                             {% for period in periods %}
                                 <th>{{ period }}</th>
                             {% endfor %}
@@ -130,10 +130,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>Consumo Previsto</th>
+                            <th class="sticky-col">Consumo Previsto</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control consumo-previsto" 
+                                    <input type="number" class="form-control fixed-input consumo-previsto" 
                                            id="fio_sintetico_consumo_previsto_{{ period }}" 
                                            name="{{ consumo_previsto_por_material['Fio Sintetico'][period].name }}"
                                            value="{{ consumo_previsto_por_material['Fio Sintetico'][period].data }}" readonly>
@@ -141,10 +141,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Consumo Real</th>
+                            <th class="sticky-col">Consumo Real</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control consumo-real" 
+                                    <input type="number" class="form-control fixed-input consumo-real" 
                                            id="fio_sintetico_consumo_real_{{ period }}" 
                                            name="{{ consumo_real_por_material['Fio Sintetico'][period].name }}"
                                            value="{{ consumo_real_por_material['Fio Sintetico'][period].data }}" readonly>
@@ -152,10 +152,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Iniciais</th>
+                            <th class="sticky-col">Estoques Iniciais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control estoque-inicial" 
+                                    <input type="number" class="form-control fixed-input estoque-inicial" 
                                            id="fio_sintetico_estoque_inicial_{{ period }}" 
                                            name="{{ estoques_iniciais_por_material['Fio Sintetico'][period].name }}"
                                            value="{{ estoques_iniciais_por_material['Fio Sintetico'][period].data }}" readonly>
@@ -163,25 +163,25 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Compras Planejadas</th>
+                            <th class="sticky-col">Compras Planejadas</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control compra-planejada"
+                                        <input type="number" class="form-control fixed-input compra-planejada"
                                                id="fio_sintetico_compra_planejada_{{ period }}"
                                                name="{{ compras_por_material['Fio Sintetico'][period].name }}"
                                                value="{{ compras_por_material['Fio Sintetico'][period].data }}" readonly>
                                     {% else %}
-                                        {{ compras_por_material['Fio Sintetico'][period](class="form-control compra-planejada", id="fio_sintetico_compra_planejada_" ~ period) }}
+                                        {{ compras_por_material['Fio Sintetico'][period](class="form-control fixed-input compra-planejada", id="fio_sintetico_compra_planejada_" ~ period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Compras Reais</th>
+                            <th class="sticky-col">Compras Reais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control compra-real" 
+                                    <input type="number" class="form-control fixed-input compra-real" 
                                            id="fio_sintetico_compra_real_{{ period }}" 
                                            name="{{ compras_real_por_material['Fio Sintetico'][period].name }}"
                                            value="{{ compras_real_por_material['Fio Sintetico'][period].data }}" readonly>
@@ -189,10 +189,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Compras Emergênciais</th>
+                            <th class="sticky-col">Compras Emergênciais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control compra-emergencial" 
+                                    <input type="number" class="form-control fixed-input compra-emergencial" 
                                            id="fio_sintetico_compra_emergencial_{{ period }}" 
                                            name="{{ compras_emergencial_por_material['Fio Sintetico'][period].name }}"
                                            value="{{ compras_emergencial_por_material['Fio Sintetico'][period].data }}" readonly>
@@ -200,10 +200,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Finais</th>
+                            <th class="sticky-col">Estoques Finais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control estoque-final" 
+                                    <input type="number" class="form-control fixed-input estoque-final" 
                                            id="fio_sintetico_estoque_final_{{ period }}" 
                                            name="{{ estoques_finais_por_material['Fio Sintetico'][period].name }}"
                                            value="{{ estoques_finais_por_material['Fio Sintetico'][period].data }}" readonly>
@@ -221,10 +221,10 @@
                 <h4>Corantes</h4>
             </div>
             <div class="card-body">
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered table-responsive">
                     <thead class="thead-light">
                         <tr>
-                            <th>Período</th>
+                            <th class="sticky-col-header sticky-col-header-first">Período</th>
                             {% for period in periods %}
                                 <th>{{ period }}</th>
                             {% endfor %}
@@ -232,10 +232,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>Consumo Previsto</th>
+                            <th class="sticky-col">Consumo Previsto</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control consumo-previsto" 
+                                    <input type="number" class="form-control fixed-input consumo-previsto" 
                                            id="corantes_consumo_previsto_{{ period }}" 
                                            name="{{ consumo_previsto_por_material['Corantes'][period].name }}"
                                            value="{{ consumo_previsto_por_material['Corantes'][period].data }}" readonly>
@@ -243,10 +243,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Consumo Real</th>
+                            <th class="sticky-col">Consumo Real</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control consumo-real" 
+                                    <input type="number" class="form-control fixed-input consumo-real" 
                                            id="corantes_consumo_real_{{ period }}" 
                                            name="{{ consumo_real_por_material['Corantes'][period].name }}"
                                            value="{{ consumo_real_por_material['Corantes'][period].data }}" readonly>
@@ -254,10 +254,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Iniciais</th>
+                            <th class="sticky-col">Estoques Iniciais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control estoque-inicial" 
+                                    <input type="number" class="form-control fixed-input estoque-inicial" 
                                            id="corantes_estoque_inicial_{{ period }}" 
                                            name="{{ estoques_iniciais_por_material['Corantes'][period].name }}"
                                            value="{{ estoques_iniciais_por_material['Corantes'][period].data }}" readonly>
@@ -265,25 +265,25 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Compras Planejadas</th>
+                            <th class="sticky-col">Compras Planejadas</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control compra-planejada"
+                                        <input type="number" class="form-control fixed-input compra-planejada"
                                                id="corantes_compra_planejada_{{ period }}"
                                                name="{{ compras_por_material['Corantes'][period].name }}"
                                                value="{{ compras_por_material['Corantes'][period].data }}" readonly>
                                     {% else %}
-                                        {{ compras_por_material['Corantes'][period](class="form-control compra-planejada", id="corantes_compra_planejada_" ~ period) }}
+                                        {{ compras_por_material['Corantes'][period](class="form-control fixed-input compra-planejada", id="corantes_compra_planejada_" ~ period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Compras Reais</th>
+                            <th class="sticky-col">Compras Reais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control compra-real" 
+                                    <input type="number" class="form-control fixed-input compra-real" 
                                            id="corantes_compra_real_{{ period }}" 
                                            name="{{ compras_real_por_material['Corantes'][period].name }}"
                                            value="{{ compras_real_por_material['Corantes'][period].data }}" readonly>
@@ -291,10 +291,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Compras Emergênciais</th>
+                            <th class="sticky-col">Compras Emergênciais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control compra-emergencial" 
+                                    <input type="number" class="form-control fixed-input compra-emergencial" 
                                            id="corantes_compra_emergencial_{{ period }}" 
                                            name="{{ compras_emergencial_por_material['Corantes'][period].name }}"
                                            value="{{ compras_emergencial_por_material['Corantes'][period].data }}" readonly>
@@ -302,10 +302,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Finais</th>
+                            <th class="sticky-col">Estoques Finais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control estoque-final" 
+                                    <input type="number" class="form-control fixed-input estoque-final" 
                                            id="corantes_estoque_final_{{ period }}" 
                                            name="{{ estoques_finais_por_material['Corantes'][period].name }}"
                                            value="{{ estoques_finais_por_material['Corantes'][period].data }}" readonly>

@@ -19,3 +19,36 @@ body {
         margin: 0;
     }
 }
+
+
+/* Define a largura mínima para os campos de entrada */
+.fixed-input {
+    min-width: 100px;
+}
+/* Responsividade para tabelas */
+.table-responsive input[type="number"] {
+    min-width: 90px; /* Define uma largura mínima para os inputs */
+}
+
+/* Estilo para a coluna fixa */
+.sticky-col {
+    position: -webkit-sticky; /* Suporte para Safari */
+    position: sticky;
+    left: 0;
+    background-color: #f8f9fa; /* Cor de fundo para a coluna fixa */
+    z-index: 2; /* Garantir que a coluna fixa fique acima das outras células */
+}
+
+/* Estilo para o cabeçalho da coluna fixa */
+.sticky-col-header {
+    position: -webkit-sticky; /* Suporte para Safari */
+    position: sticky;
+    left: 0;
+    background-color: #e9ecef; /* Cor de fundo para o cabeçalho */
+    z-index: 3; /* Z-index mais alto para o cabeçalho */
+}
+
+/* Ajuste para a célula no canto superior esquerdo */
+.sticky-col-header-first {
+    z-index: 5;
+}

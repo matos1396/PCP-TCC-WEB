@@ -16,10 +16,10 @@
                 <h4>Família Colméia</h4>
             </div>
             <div class="card-body">
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered table-responsive">
                     <thead class="thead-light">
                         <tr>
-                            <th>Período</th>
+                            <th class="sticky-col-header sticky-col-header-first">Período</th>
                             {% for period in periods %}
                                 <th>{{ period }}</th>
                             {% endfor %}
@@ -27,27 +27,27 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>Demanda Prevista</th>
+                            <th class="sticky-col">Demanda Prevista</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
                                     <!-- Campo somente leitura para períodos passados -->
-                                    <input type="number" class="form-control demanda-prevista"
+                                    <input type="number" class="form-control fixed-input demanda-prevista"
                                            id="colmeia_demanda_prevista_{{ period }}"
                                            name="{{ previsoes_por_familia['Colmeia'][period].name }}"
                                            data-familia="Colmeia" data-period="{{ period }}"
                                            value="{{ previsoes_por_familia['Colmeia'][period].data }}" readonly>
                                     {% else %}
-                                        {{ previsoes_por_familia['Colmeia'][period](class="form-control demanda-prevista", id="colmeia_demanda_prevista_" ~ period, data_familia="Colmeia", data_period=period) }}
+                                        {{ previsoes_por_familia['Colmeia'][period](class="form-control fixed-input demanda-prevista", id="colmeia_demanda_prevista_" ~ period, data_familia="Colmeia", data_period=period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Demanda Real</th>
+                            <th class="sticky-col">Demanda Real</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control demanda-real"
+                                <input type="number" class="form-control fixed-input demanda-real"
                                        id="colmeia_demanda_real_{{ period }}"
                                        name="{{ demanda_real_por_familia['Colmeia'][period].name }}"
                                        value="{{ demanda_real_por_familia['Colmeia'][period].data }}" readonly>
@@ -55,10 +55,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Iniciais</th>
+                            <th class="sticky-col">Estoques Iniciais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control estoque-inicial" 
+                                    <input type="number" class="form-control fixed-input estoque-inicial" 
                                            id="colmeia_estoque_inicial_{{ period }}" 
                                            name="{{ estoques_iniciais_por_familia['Colmeia'][period].name }}"
                                            value="{{ estoques_iniciais_por_familia['Colmeia'][period].data }}" readonly>
@@ -66,27 +66,27 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Produção Planejada</th>
+                            <th class="sticky-col">Produção Planejada</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
                                     <!-- Campo somente leitura para períodos passados -->
-                                    <input type="number" class="form-control producao-planejada" 
+                                    <input type="number" class="form-control fixed-input producao-planejada" 
                                            id="colmeia_producao_planejada_{{ period }}" 
                                            name="{{ producao_planejada_por_familia['Colmeia'][period].name }}"
                                            data-familia="Colmeia" data-period="{{ period }}"
                                            value="{{ producao_planejada_por_familia['Colmeia'][period].data }}" readonly>
                                     {% else %}
-                                        {{ producao_planejada_por_familia['Colmeia'][period](class="form-control producao-planejada", id="colmeia_producao_planejada_" ~ period, data_familia="Colmeia", data_period=period) }}
+                                        {{ producao_planejada_por_familia['Colmeia'][period](class="form-control fixed-input producao-planejada", id="colmeia_producao_planejada_" ~ period, data_familia="Colmeia", data_period=period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Produção Real</th>
+                            <th class="sticky-col">Produção Real</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control producao-real" 
+                                <input type="number" class="form-control fixed-input producao-real" 
                                        id="colmeia_producao_real_{{ period }}" 
                                        name="{{ producao_real_por_familia['Colmeia'][period].name }}"
                                        value="{{ producao_real_por_familia['Colmeia'][period].data }}" readonly>
@@ -94,10 +94,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Finais</th>
+                            <th class="sticky-col">Estoques Finais</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control estoque-final" 
+                                <input type="number" class="form-control fixed-input estoque-final" 
                                        id="colmeia_estoque_final_{{ period }}" 
                                        name="{{ estoques_finais_por_familia['Colmeia'][period].name }}"
                                        value="{{ estoques_finais_por_familia['Colmeia'][period].data }}" readonly>
@@ -105,10 +105,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Vendas Perdidas</th>
+                            <th class="sticky-col">Vendas Perdidas</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control venda-perdida" 
+                                <input type="number" class="form-control fixed-input venda-perdida" 
                                        id="colmeia_vendas_perdidas_{{ period }}" 
                                        name="{{ vendas_perdidas_por_familia['Colmeia'][period].name }}"
                                        value="{{ vendas_perdidas_por_familia['Colmeia'][period].data }}" readonly>
@@ -116,10 +116,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Vendas</th>
+                            <th class="sticky-col">Vendas</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control vendas" 
+                                <input type="number" class="form-control fixed-input vendas" 
                                        id="colmeia_vendas_{{ period }}" 
                                        name="{{ vendas_por_familia['Colmeia'][period].name }}"
                                        value="{{ vendas_por_familia['Colmeia'][period].data }}" readonly>
@@ -137,10 +137,10 @@
                 <h4>Família Piquet</h4>
             </div>
             <div class="card-body">
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered table-responsive">
                     <thead class="thead-light">
                         <tr>
-                            <th>Período</th>
+                            <th class="sticky-col-header sticky-col-header-first">Período</th>
                             {% for period in periods %}
                                 <th>{{ period }}</th>
                             {% endfor %}
@@ -148,25 +148,25 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>Demanda Prevista</th>
+                            <th class="sticky-col">Demanda Prevista</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control demanda-prevista" 
+                                        <input type="number" class="form-control fixed-input demanda-prevista" 
                                                id="piquet_demanda_prevista_{{ period }}" 
                                                name="{{ previsoes_por_familia['Piquet'][period].name }}"
                                                value="{{ previsoes_por_familia['Piquet'][period].data }}" readonly>
                                     {% else %}
-                                        {{ previsoes_por_familia['Piquet'][period](class="form-control demanda-prevista", id="piquet_demanda_prevista_" ~ period) }}
+                                        {{ previsoes_por_familia['Piquet'][period](class="form-control fixed-input demanda-prevista", id="piquet_demanda_prevista_" ~ period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Demanda Real</th>
+                            <th class="sticky-col">Demanda Real</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control demanda-real" 
+                                <input type="number" class="form-control fixed-input demanda-real" 
                                        id="piquet_demanda_real_{{ period }}" 
                                        name="{{ demanda_real_por_familia['Piquet'][period].name }}"
                                        value="{{ demanda_real_por_familia['Piquet'][period].data }}" readonly>
@@ -174,10 +174,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Iniciais</th>
+                            <th class="sticky-col">Estoques Iniciais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control estoque-inicial" 
+                                    <input type="number" class="form-control fixed-input estoque-inicial" 
                                            id="piquet_estoque_inicial_{{ period }}" 
                                            name="{{ estoques_iniciais_por_familia['Piquet'][period].name }}"
                                            value="{{ estoques_iniciais_por_familia['Piquet'][period].data }}" readonly>
@@ -185,27 +185,27 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Produção Planejada</th>
+                            <th class="sticky-col">Produção Planejada</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
                                     <!-- Campo somente leitura para períodos passados -->
-                                    <input type="number" class="form-control producao-planejada" 
+                                    <input type="number" class="form-control fixed-input producao-planejada" 
                                            id="piquet_producao_planejada_{{ period }}" 
                                            name="{{ producao_planejada_por_familia['Piquet'][period].name }}"
                                            data-familia="Piquet" data-period="{{ period }}"
                                            value="{{ producao_planejada_por_familia['Piquet'][period].data }}" readonly>
                                     {% else %}
-                                        {{ producao_planejada_por_familia['Piquet'][period](class="form-control producao-planejada", id="piquet_producao_planejada_" ~ period, data_familia="Piquet", data_period=period) }}
+                                        {{ producao_planejada_por_familia['Piquet'][period](class="form-control fixed-input producao-planejada", id="piquet_producao_planejada_" ~ period, data_familia="Piquet", data_period=period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Produção Real</th>
+                            <th class="sticky-col">Produção Real</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control producao-real" 
+                                <input type="number" class="form-control fixed-input producao-real" 
                                        id="piquet_producao_real_{{ period }}" 
                                        name="{{ producao_real_por_familia['Piquet'][period].name }}"
                                        value="{{ producao_real_por_familia['Piquet'][period].data }}" readonly>
@@ -213,10 +213,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Finais</th>
+                            <th class="sticky-col">Estoques Finais</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control estoque-final" 
+                                <input type="number" class="form-control fixed-input estoque-final" 
                                        id="piquet_estoque_final_{{ period }}" 
                                        name="{{ estoques_finais_por_familia['Piquet'][period].name }}"
                                        value="{{ estoques_finais_por_familia['Piquet'][period].data }}" readonly>
@@ -224,10 +224,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Vendas Perdidas</th>
+                            <th class="sticky-col">Vendas Perdidas</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control venda-perdida" 
+                                <input type="number" class="form-control fixed-input venda-perdida" 
                                        id="piquet_vendas_perdidas_{{ period }}" 
                                        name="{{ vendas_perdidas_por_familia['Piquet'][period].name }}"
                                        value="{{ vendas_perdidas_por_familia['Piquet'][period].data }}" readonly>
@@ -235,10 +235,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Vendas</th>
+                            <th class="sticky-col">Vendas</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control vendas" 
+                                <input type="number" class="form-control fixed-input vendas" 
                                        id="piquet_vendas_{{ period }}" 
                                        name="{{ vendas_por_familia['Piquet'][period].name }}"
                                        value="{{ vendas_por_familia['Piquet'][period].data }}" readonly>
@@ -256,10 +256,10 @@
                 <h4>Família Maxim</h4>
             </div>
             <div class="card-body">
-                <table class="table table-hover table-bordered">
+                <table class="table table-hover table-bordered table-responsive">
                     <thead class="thead-light">
                         <tr>
-                            <th>Período</th>
+                            <th class="sticky-col-header sticky-col-header-first">Período</th>
                             {% for period in periods %}
                                 <th>{{ period }}</th>
                             {% endfor %}
@@ -267,25 +267,25 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>Demanda Prevista</th>
+                            <th class="sticky-col">Demanda Prevista</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control demanda-prevista" 
+                                        <input type="number" class="form-control fixed-input demanda-prevista" 
                                                id="maxim_demanda_prevista_{{ period }}" 
                                                name="{{ previsoes_por_familia['Maxim'][period].name }}"
                                                value="{{ previsoes_por_familia['Maxim'][period].data }}" readonly>
                                     {% else %}
-                                        {{ previsoes_por_familia['Maxim'][period](class="form-control demanda-prevista", id="maxim_demanda_prevista_" ~ period) }}
+                                        {{ previsoes_por_familia['Maxim'][period](class="form-control fixed-input demanda-prevista", id="maxim_demanda_prevista_" ~ period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Demanda Real</th>
+                            <th class="sticky-col">Demanda Real</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control demanda-real" 
+                                <input type="number" class="form-control fixed-input demanda-real" 
                                        id="maxim_demanda_real_{{ period }}" 
                                        name="{{ demanda_real_por_familia['Maxim'][period].name }}"
                                        value="{{ demanda_real_por_familia['Maxim'][period].data }}" readonly>
@@ -293,10 +293,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Iniciais</th>
+                            <th class="sticky-col">Estoques Iniciais</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control estoque-inicial" 
+                                    <input type="number" class="form-control fixed-input estoque-inicial" 
                                            id="maxim_estoque_inicial_{{ period }}" 
                                            name="{{ estoques_iniciais_por_familia['Maxim'][period].name }}"
                                            value="{{ estoques_iniciais_por_familia['Maxim'][period].data }}" readonly>
@@ -304,27 +304,27 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Produção Planejada</th>
+                            <th class="sticky-col">Produção Planejada</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
                                     <!-- Campo somente leitura para períodos passados -->
-                                    <input type="number" class="form-control producao-planejada" 
+                                    <input type="number" class="form-control fixed-input producao-planejada" 
                                            id="maxim_producao_planejada_{{ period }}" 
                                            name="{{ producao_planejada_por_familia['Maxim'][period].name }}"
                                            data-familia="Maxim" data-period="{{ period }}"
                                            value="{{ producao_planejada_por_familia['Maxim'][period].data }}" readonly>
                                     {% else %}
-                                        {{ producao_planejada_por_familia['Maxim'][period](class="form-control producao-planejada", id="maxim_producao_planejada_" ~ period, data_familia="Maxim", data_period=period) }}
+                                        {{ producao_planejada_por_familia['Maxim'][period](class="form-control fixed-input producao-planejada", id="maxim_producao_planejada_" ~ period, data_familia="Maxim", data_period=period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Produção Real</th>
+                            <th class="sticky-col">Produção Real</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control producao-real" 
+                                <input type="number" class="form-control fixed-input producao-real" 
                                        id="maxim_producao_real_{{ period }}" 
                                        name="{{ producao_real_por_familia['Maxim'][period].name }}"
                                        value="{{ producao_real_por_familia['Maxim'][period].data }}" readonly>
@@ -332,10 +332,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Estoques Finais</th>
+                            <th class="sticky-col">Estoques Finais</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control estoque-final" 
+                                <input type="number" class="form-control fixed-input estoque-final" 
                                        id="maxim_estoque_final_{{ period }}" 
                                        name="{{ estoques_finais_por_familia['Maxim'][period].name }}"
                                        value="{{ estoques_finais_por_familia['Maxim'][period].data }}" readonly>
@@ -343,10 +343,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Vendas Perdidas</th>
+                            <th class="sticky-col">Vendas Perdidas</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control venda-perdida" 
+                                <input type="number" class="form-control fixed-input venda-perdida" 
                                        id="maxim_vendas_perdidas_{{ period }}" 
                                        name="{{ vendas_perdidas_por_familia['Maxim'][period].name }}"
                                        value="{{ vendas_perdidas_por_familia['Maxim'][period].data }}" readonly>
@@ -354,10 +354,10 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Vendas</th>
+                            <th class="sticky-col">Vendas</th>
                             {% for period in periods %}
                             <td>
-                                <input type="number" class="form-control vendas" 
+                                <input type="number" class="form-control fixed-input vendas" 
                                        id="maxim_vendas_{{ period }}" 
                                        name="{{ vendas_por_familia['Maxim'][period].name }}"
                                        value="{{ vendas_por_familia['Maxim'][period].data }}" readonly>

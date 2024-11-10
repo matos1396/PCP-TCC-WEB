@@ -19,7 +19,7 @@
                 <table class="table table-hover table-bordered">
                     <thead class="thead-light">
                         <tr>
-                            <th>Período</th>
+                            <th class="sticky-col-header sticky-col-header-first">Período</th>
                             {% for period in periods %}
                                 <th>{{ period }}</th>
                             {% endfor %}
@@ -27,70 +27,70 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>Capacidade Disponível</th>
+                            <th class="sticky-col">Capacidade Disponível</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="capacidade_disponivel_1_{{ period }}" 
                                            value="{{ capacidade_disponivel['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Capacidade Necessária</th>
+                            <th class="sticky-col">Capacidade Necessária</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="capacidade_necessaria_{{ period }}" 
                                            value="{{ capacidade_necessaria['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Colméia</th>
+                            <th class="sticky-col">Colméia</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="colmeia_horas_{{ period }}" 
                                            value="{{ colmeia_horas['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Piquet</th>
+                            <th class="sticky-col">Piquet</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="piquet_horas_{{ period }}" 
                                            value="{{ piquet_horas['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Maxim</th>
+                            <th class="sticky-col">Maxim</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="maxim_horas_{{ period }}" 
                                            value="{{ maxim_horas['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Setup</th>
+                            <th class="sticky-col">Setup</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="setup_{{ period }}" 
                                            value="{{ setup['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Produtividade</th>
+                            <th class="sticky-col">Produtividade</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="produtividade_{{ period }}" 
                                            value="{{ produtividade['Jet'][period].data }}" readonly>
                                 </td>
@@ -110,7 +110,7 @@
                 <table class="table table-hover table-bordered">
                     <thead class="thead-light">
                         <tr>
-                            <th>Período</th>
+                            <th class="sticky-col-header sticky-col-header-first">Período</th>
                             {% for period in periods %}
                                 <th>{{ period }}</th>
                             {% endfor %}
@@ -118,71 +118,71 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>Capacidade Disponível</th>
+                            <th class="sticky-col">Capacidade Disponível</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="capacidade_disponivel_2_{{ period }}" 
                                            value="{{ capacidade_disponivel['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Capacidade Instalada Jet 1</th>
+                            <th class="sticky-col">Capacidade Instalada Jet 1</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="capacidade_instalada_jet1_{{ period }}" 
                                            value="{{ capacidade_instalada_jet1['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Capacidade Instalada Jet 2</th>
+                            <th class="sticky-col">Capacidade Instalada Jet 2</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="capacidade_instalada_jet2_{{ period }}" 
                                            value="{{ capacidade_instalada_jet2['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Capacidade Instalada Jet 3</th>
+                            <th class="sticky-col">Capacidade Instalada Jet 3</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="capacidade_instalada_jet3_{{ period }}" 
                                            value="{{ capacidade_instalada_jet3['Jet'][period].data }}" readonly>
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Número de Turnos</th>
+                            <th class="sticky-col">Número de Turnos</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control numero-turnos" 
+                                        <input type="number" class="form-control fixed-input numero-turnos" 
                                                id="numero_turnos_{{ period }}"
                                                name="{{ numero_turnos['Jet'][period].name }}"
                                                value="{{ numero_turnos['Jet'][period].data }}" readonly>
                                     {% else %}
-                                        {{ numero_turnos['Jet'][period](class="form-control numero-turnos", id="numero_turnos_" ~ period) }}
+                                        {{ numero_turnos['Jet'][period](class="form-control fixed-input numero-turnos", id="numero_turnos_" ~ period) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Capacidade Terceirizada</th>
+                            <th class="sticky-col">Capacidade Terceirizada</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control" 
+                                        <input type="number" class="form-control fixed-input" 
                                                id="capacidade_terceirizada_{{ period }}"
                                                name="{{ capacidade_teceirizada['Jet'][period].name }}"
                                                value="{{ capacidade_teceirizada['Jet'][period].data }}" readonly>
                                     {% else %}
-                                        {{ capacidade_teceirizada['Jet'][period](class="form-control capacidade-terceirizada", id="capacidade_terceirizada_" ~ period, step=11200) }}
+                                        {{ capacidade_teceirizada['Jet'][period](class="form-control fixed-input capacidade-terceirizada", id="capacidade_terceirizada_" ~ period, step=11200) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
@@ -201,7 +201,7 @@
                 <table class="table table-hover table-bordered">
                     <thead class="thead-light">
                         <tr>
-                            <th>Período</th>
+                            <th class="sticky-col-header sticky-col-header-first">Período</th>
                             {% for period in periods %}
                                 <th>{{ period }}</th>
                             {% endfor %}
@@ -209,10 +209,10 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <th>Quantidade Jet 1</th>
+                            <th class="sticky-col">Quantidade Jet 1</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="quantidade_jet1_{{ period }}"
                                            name="{{ quantidade_jet1['Jet'][period].name }}"
                                            value="{{ quantidade_jet1['Jet'][period].data }}" readonly>
@@ -220,40 +220,40 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Ampliações Jet 1</th>
+                            <th class="sticky-col">Ampliações Jet 1</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control" 
+                                        <input type="number" class="form-control fixed-input" 
                                                id="ampliacoes_jet1_{{ period }}"
                                                name="{{ ampliacoes_jet1['Jet'][period].name }}"
                                                value="{{ ampliacoes_jet1['Jet'][period].data|int }}" readonly>
                                     {% else %}
-                                        {{ ampliacoes_jet1['Jet'][period](class="form-control", id="ampliacoes_jet1_" ~ period, step=1, max=3) }}
+                                        {{ ampliacoes_jet1['Jet'][period](class="form-control fixed-input", id="ampliacoes_jet1_" ~ period, step=1, max=3) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Reduções Jet 1</th>
+                            <th class="sticky-col">Reduções Jet 1</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control" 
+                                        <input type="number" class="form-control fixed-input" 
                                                id="reducoes_jet1_{{ period }}"
                                                name="{{ reducoes_jet1['Jet'][period].name }}"
                                                value="{{ reducoes_jet1['Jet'][period].data|int }}" readonly>
                                     {% else %}
-                                        {{ reducoes_jet1['Jet'][period](class="form-control", id="reducoes_jet1_" ~ period, step=1, max=3) }}
+                                        {{ reducoes_jet1['Jet'][period](class="form-control fixed-input", id="reducoes_jet1_" ~ period, step=1, max=3) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Quantidade Jet 2</th>
+                            <th class="sticky-col">Quantidade Jet 2</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="quantidade_jet2_{{ period }}"
                                            name="{{ quantidade_jet2['Jet'][period].name }}"
                                            value="{{ quantidade_jet2['Jet'][period].data }}" readonly>
@@ -261,40 +261,40 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Ampliações Jet 2</th>
+                            <th class="sticky-col">Ampliações Jet 2</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control" 
+                                        <input type="number" class="form-control fixed-input" 
                                                id="ampliacoes_jet2_{{ period }}"
                                                name="{{ ampliacoes_jet2['Jet'][period].name }}"
                                                value="{{ ampliacoes_jet2['Jet'][period].data|int }}" readonly>
                                     {% else %}
-                                        {{ ampliacoes_jet2['Jet'][period](class="form-control", id="ampliacoes_jet2_" ~ period, step=1, max=3) }}
+                                        {{ ampliacoes_jet2['Jet'][period](class="form-control fixed-input", id="ampliacoes_jet2_" ~ period, step=1, max=3) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Reduções Jet 2</th>
+                            <th class="sticky-col">Reduções Jet 2</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control" 
+                                        <input type="number" class="form-control fixed-input" 
                                                id="reducoes_jet2_{{ period }}"
                                                name="{{ reducoes_jet2['Jet'][period].name }}"
                                                value="{{ reducoes_jet2['Jet'][period].data|int }}" readonly>
                                     {% else %}
-                                        {{ reducoes_jet2['Jet'][period](class="form-control", id="reducoes_jet2_" ~ period, step=1, max=3) }}
+                                        {{ reducoes_jet2['Jet'][period](class="form-control fixed-input", id="reducoes_jet2_" ~ period, step=1, max=3) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Quantidade Jet 3</th>
+                            <th class="sticky-col">Quantidade Jet 3</th>
                             {% for period in periods %}
                                 <td>
-                                    <input type="number" class="form-control" 
+                                    <input type="number" class="form-control fixed-input" 
                                            id="quantidade_jet3_{{ period }}"
                                            name="{{ quantidade_jet3['Jet'][period].name }}"
                                            value="{{ quantidade_jet3['Jet'][period].data }}" readonly>
@@ -302,31 +302,31 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Ampliações Jet 3</th>
+                            <th class="sticky-col">Ampliações Jet 3</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control" 
+                                        <input type="number" class="form-control fixed-input" 
                                                id="ampliacoes_jet3_{{ period }}"
                                                name="{{ ampliacoes_jet3['Jet'][period].name }}"
                                                value="{{ ampliacoes_jet3['Jet'][period].data|int }}" readonly>
                                     {% else %}
-                                        {{ ampliacoes_jet3['Jet'][period](class="form-control", id="ampliacoes_jet3_" ~ period, step=1, max=3) }}
+                                        {{ ampliacoes_jet3['Jet'][period](class="form-control fixed-input", id="ampliacoes_jet3_" ~ period, step=1, max=3) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                         </tr>
                         <tr>
-                            <th>Reduções Jet 3</th>
+                            <th class="sticky-col">Reduções Jet 3</th>
                             {% for period in periods %}
                                 <td>
                                     {% if period <= periodo_atual %}
-                                        <input type="number" class="form-control" 
+                                        <input type="number" class="form-control fixed-input" 
                                                id="reducoes_jet3_{{ period }}"
                                                name="{{ reducoes_jet3['Jet'][period].name }}"
                                                value="{{ reducoes_jet3['Jet'][period].data|int }}" readonly>
                                     {% else %}
-                                        {{ reducoes_jet3['Jet'][period](class="form-control", id="reducoes_jet3_" ~ period, step=1, max=3) }}
+                                        {{ reducoes_jet3['Jet'][period](class="form-control fixed-input", id="reducoes_jet3_" ~ period, step=1, max=3) }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
