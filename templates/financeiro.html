@@ -1,466 +1,533 @@
+<!-- templates/financeiro.html -->
 {% extends 'base.html' %}
 {% block title %}Financeiro - PCP Game{% endblock %}
+
 {% block content %}
-<h2 class="mb-4">Relatório Financeiro</h2>
+<div class="container-fluid mt-4">
+    <h2 class="text-center mb-5">Relatório Financeiro</h2>
 
-<!-- Abas de navegação -->
-<ul class="nav nav-tabs" id="financeiroTab" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="relatorio-tab" data-bs-toggle="tab" data-bs-target="#relatorio-financeiro" type="button" role="tab" aria-controls="relatorio-financeiro" aria-selected="true">Resumo Financeiro</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="custos-fixos-tab" data-bs-toggle="tab" data-bs-target="#custos-fixos" type="button" role="tab" aria-controls="custos-fixos" aria-selected="false">Custos Fixos</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="custos-compra-tab" data-bs-toggle="tab" data-bs-target="#custos-compra_mp" type="button" role="tab" aria-controls="custos-compra_mp" aria-selected="false">Custos de Compra MP</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="custos-estoques-tab" data-bs-toggle="tab" data-bs-target="#custos-estoques" type="button" role="tab" aria-controls="custos-estoques" aria-selected="false">Custos de Estoques</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="custos-terceirizacao-tab" data-bs-toggle="tab" data-bs-target="#custos-terceirizacao" type="button" role="tab" aria-controls="custos-terceirizacao" aria-selected="false">Custos de Terceirização</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="custos-capital-tab" data-bs-toggle="tab" data-bs-target="#custos-capital" type="button" role="tab" aria-controls="custos-capital" aria-selected="false">Custos de Capital</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="custos-vendas-perdidas-tab" data-bs-toggle="tab" data-bs-target="#custos-vendas-perdidas" type="button" role="tab" aria-controls="custos-vendas-perdidas" aria-selected="false">Custos de Vendas Perdidas</button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="receitas-vendas-tab" data-bs-toggle="tab" data-bs-target="#receitas-vendas" type="button" role="tab" aria-controls="receitas-vendas" aria-selected="false">Receitas de Vendas</button>
-    </li>
-</ul>
+    <!-- Abas de navegação -->
+    <ul class="nav nav-tabs" id="financeiroTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="relatorio-tab" data-bs-toggle="tab" data-bs-target="#relatorio-financeiro" type="button" role="tab" aria-controls="relatorio-financeiro" aria-selected="true">
+                📊 Resumo Financeiro
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="custos-fixos-tab" data-bs-toggle="tab" data-bs-target="#custos-fixos" type="button" role="tab" aria-controls="custos-fixos" aria-selected="false">
+                💸 Custos Fixos
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="custos-compra-tab" data-bs-toggle="tab" data-bs-target="#custos-compra_mp" type="button" role="tab" aria-controls="custos-compra_mp" aria-selected="false">
+                🛒 Custos de Compra MP
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="custos-estoques-tab" data-bs-toggle="tab" data-bs-target="#custos-estoques" type="button" role="tab" aria-controls="custos-estoques" aria-selected="false">
+                📦 Custos de Estoques
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="custos-terceirizacao-tab" data-bs-toggle="tab" data-bs-target="#custos-terceirizacao" type="button" role="tab" aria-controls="custos-terceirizacao" aria-selected="false">
+                🤝 Custos de Terceirização
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="custos-capital-tab" data-bs-toggle="tab" data-bs-target="#custos-capital" type="button" role="tab" aria-controls="custos-capital" aria-selected="false">
+                💰 Custos de Capital
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="custos-vendas-perdidas-tab" data-bs-toggle="tab" data-bs-target="#custos-vendas-perdidas" type="button" role="tab" aria-controls="custos-vendas-perdidas" aria-selected="false">
+                ❌ Custos de Vendas Perdidas
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="receitas-vendas-tab" data-bs-toggle="tab" data-bs-target="#receitas-vendas" type="button" role="tab" aria-controls="receitas-vendas" aria-selected="false">
+                💵 Receitas de Vendas
+            </button>
+        </li>
+    </ul>
 
-<div class="tab-content mt-3">
-    <!-- Relatório Financeiro -->
-    <div class="tab-pane fade show active" id="relatorio-financeiro" role="tabpanel" aria-labelledby="relatorio-tab">
-        <h4>Resumo Financeiro</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <th>Período {{ linha.periodo }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>Custos Fixos</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_fixos|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>Custos Compra MP</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_compra_mp|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>Custos Estoques</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_estoques|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>Custos Terceirização</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_terceirizacao|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>Custos Capital</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_capital|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>Custos Vendas Perdidas</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_vendas_perdidas|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>Custos Totais</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.custos_totais|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>Receitas Vendas</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.receitas_vendas|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>Resultado Operacional</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.resultado_operacional|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>RO Acumulado</th>
-                    {% for linha in tabelas['Relatorio Financeiro'] %}
-                        <td>{{ linha.ro_acumulado|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <div class="tab-content mt-3">
+        <!-- Relatório Financeiro -->
+        <div class="tab-pane fade show active" id="relatorio-financeiro" role="tabpanel" aria-labelledby="relatorio-tab">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4>Resumo Financeiro</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered text-center table-responsive">
+                        <thead class="table-light">
+                            <tr>
+                                <th></th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <th>Período {{ linha.periodo }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>Custos Fixos</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.custos_fixos|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Custos Compra MP</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.custos_compra_mp|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Custos Estoques</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.custos_estoques|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Custos Terceirização</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.custos_terceirizacao|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Custos Capital</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.custos_capital|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Custos Vendas Perdidas</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.custos_vendas_perdidas|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Custos Totais</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.custos_totais|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Receitas Vendas</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.receitas_vendas|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>Resultado Operacional</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.resultado_operacional|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>RO Acumulado</th>
+                                {% for linha in tabelas['Relatorio Financeiro'] %}
+                                    <td>{{ linha.ro_acumulado|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-<div class="tab-content mt-3">
-    <!-- Custos Fixos -->
-    <div class="tab-pane fade" id="custos-fixos" role="tabpanel" aria-labelledby="custos-fixos-tab">
-        <h4>Custos Fixos</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    {% for linha in tabelas['Custos Fixos'] %}
-                        <th>Período {{ linha.periodo }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>C. Fixo Tecelagem</th>
-                    {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_tecelagem|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Fixo Purga Tinturaria</th>
-                    {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_purga_tinturaria|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Fixo Fixação Acabamento</th>
-                    {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_fixacao_acabamento|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Fixo Depreciação Tecelagem</th>
-                    {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_depreciacao_tecelagem|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Fixo Depreciação Purga Tinturaria</th>
-                    {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_depreciacao_purga_tinturaria|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Fixo Depreciação Fixação Acabamento</th>
-                    {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_depreciacao_fixacao_acabamento|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Fixo Total</th>
-                    {% for linha in tabelas['Custos Fixos'] %}
-                        <td>{{ linha.c_fixo_total|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- Custos Fixos -->
+        <div class="tab-pane fade" id="custos-fixos" role="tabpanel" aria-labelledby="custos-fixos-tab">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4>Custos Fixos</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered text-center table-responsive">
+                        <thead class="table-light">
+                            <tr>
+                                <th></th>
+                                {% for linha in tabelas['Custos Fixos'] %}
+                                    <th>Período {{ linha.periodo }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>C. Fixo Tecelagem</th>
+                                {% for linha in tabelas['Custos Fixos'] %}
+                                    <td>{{ linha.c_fixo_tecelagem|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Fixo Purga Tinturaria</th>
+                                {% for linha in tabelas['Custos Fixos'] %}
+                                    <td>{{ linha.c_fixo_purga_tinturaria|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Fixo Fixação Acabamento</th>
+                                {% for linha in tabelas['Custos Fixos'] %}
+                                    <td>{{ linha.c_fixo_fixacao_acabamento|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Fixo Depreciação Tecelagem</th>
+                                {% for linha in tabelas['Custos Fixos'] %}
+                                    <td>{{ linha.c_fixo_depreciacao_tecelagem|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Fixo Depreciação Purga Tinturaria</th>
+                                {% for linha in tabelas['Custos Fixos'] %}
+                                    <td>{{ linha.c_fixo_depreciacao_purga_tinturaria|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Fixo Depreciação Fixação Acabamento</th>
+                                {% for linha in tabelas['Custos Fixos'] %}
+                                    <td>{{ linha.c_fixo_depreciacao_fixacao_acabamento|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Fixo Total</th>
+                                {% for linha in tabelas['Custos Fixos'] %}
+                                    <td>{{ linha.c_fixo_total|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <!-- Custos Compra MP -->
-    <div class="tab-pane fade" id="custos-compra_mp" role="tabpanel" aria-labelledby="custos-compra-tab">
-        <h4>Custos Compra MP</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    {% for linha in tabelas['Custos Compra MP'] %}
-                        <th>Período {{ linha.periodo }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>C. Compras Corantes</th>
-                    {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_compras_corantes|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Compras Fio Algodão</th>
-                    {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_compras_fio_algodao|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Compras Fio Sintético</th>
-                    {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_compras_fio_sintetico|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Emergência Corante</th>
-                    {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_emergencia_corante|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Emergência Fio Algodão</th>
-                    {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_emergencia_fio_algodao|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Emergência Fio Sintético</th>
-                    {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_emergencia_fio_sintetico|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Compras Total</th>
-                    {% for linha in tabelas['Custos Compra MP'] %}
-                        <td>{{ linha.c_compras_total|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- Custos Compra MP -->
+        <div class="tab-pane fade" id="custos-compra_mp" role="tabpanel" aria-labelledby="custos-compra-tab">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4>Custos de Compra MP</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered text-center table-responsive">
+                        <thead class="table-light">
+                            <tr>
+                                <th></th>
+                                {% for linha in tabelas['Custos Compra MP'] %}
+                                    <th>Período {{ linha.periodo }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>C. Compras Corantes</th>
+                                {% for linha in tabelas['Custos Compra MP'] %}
+                                    <td>{{ linha.c_compras_corantes|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Compras Fio Algodão</th>
+                                {% for linha in tabelas['Custos Compra MP'] %}
+                                    <td>{{ linha.c_compras_fio_algodao|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Compras Fio Sintético</th>
+                                {% for linha in tabelas['Custos Compra MP'] %}
+                                    <td>{{ linha.c_compras_fio_sintetico|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Emergência Corante</th>
+                                {% for linha in tabelas['Custos Compra MP'] %}
+                                    <td>{{ linha.c_emergencia_corante|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Emergência Fio Algodão</th>
+                                {% for linha in tabelas['Custos Compra MP'] %}
+                                    <td>{{ linha.c_emergencia_fio_algodao|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Emergência Fio Sintético</th>
+                                {% for linha in tabelas['Custos Compra MP'] %}
+                                    <td>{{ linha.c_emergencia_fio_sintetico|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Compras Total</th>
+                                {% for linha in tabelas['Custos Compra MP'] %}
+                                    <td>{{ linha.c_compras_total|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <!-- Custos Estoques -->
-    <div class="tab-pane fade" id="custos-estoques" role="tabpanel" aria-labelledby="custos-estoques-tab">
-        <h4>Custos Estoques</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    {% for linha in tabelas['Custos Estoques'] %}
-                        <th>Período {{ linha.periodo }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>C. Estoque Corantes</th>
-                    {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_corantes|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Estoque Fio Algodão</th>
-                    {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_fio_algodao|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Estoque Fio Sintético</th>
-                    {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_fio_sintetico|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Estoque Colmeia</th>
-                    {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_colmeia|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Estoque Piquet</th>
-                    {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_piquet|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Estoque Maxim</th>
-                    {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_maxim|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Estoque Total</th>
-                    {% for linha in tabelas['Custos Estoques'] %}
-                        <td>{{ linha.c_estoque_total|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- Custos Estoques -->
+        <div class="tab-pane fade" id="custos-estoques" role="tabpanel" aria-labelledby="custos-estoques-tab">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h4>Custos de Estoques</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered text-center table-responsive">
+                        <thead class="table-light">
+                            <tr>
+                                <th></th>
+                                {% for linha in tabelas['Custos Estoques'] %}
+                                    <th>Período {{ linha.periodo }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>C. Estoque Corantes</th>
+                                {% for linha in tabelas['Custos Estoques'] %}
+                                    <td>{{ linha.c_estoque_corantes|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Estoque Fio Algodão</th>
+                                {% for linha in tabelas['Custos Estoques'] %}
+                                    <td>{{ linha.c_estoque_fio_algodao|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Estoque Fio Sintético</th>
+                                {% for linha in tabelas['Custos Estoques'] %}
+                                    <td>{{ linha.c_estoque_fio_sintetico|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Estoque Colmeia</th>
+                                {% for linha in tabelas['Custos Estoques'] %}
+                                    <td>{{ linha.c_estoque_colmeia|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Estoque Piquet</th>
+                                {% for linha in tabelas['Custos Estoques'] %}
+                                    <td>{{ linha.c_estoque_piquet|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Estoque Maxim</th>
+                                {% for linha in tabelas['Custos Estoques'] %}
+                                    <td>{{ linha.c_estoque_maxim|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Estoque Total</th>
+                                {% for linha in tabelas['Custos Estoques'] %}
+                                    <td>{{ linha.c_estoque_total|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <!-- Custos Terceirização -->
-    <div class="tab-pane fade" id="custos-terceirizacao" role="tabpanel" aria-labelledby="custos-terceirizacao-tab">
-        <h4>Custos Terceirização</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    {% for linha in tabelas['Custos Terceirização'] %}
-                        <th>Período {{ linha.periodo }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>C. Terceirização Tecelagem</th>
-                    {% for linha in tabelas['Custos Terceirização'] %}
-                        <td>{{ linha.c_terc_tecelagem|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Terceirização Purga Tinturaria</th>
-                    {% for linha in tabelas['Custos Terceirização'] %}
-                        <td>{{ linha.c_terc_purga_tinturaria|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Terceirização Fixação Acabamento</th>
-                    {% for linha in tabelas['Custos Terceirização'] %}
-                        <td>{{ linha.c_terc_fixacao_acabamento|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Terceirização Total</th>
-                    {% for linha in tabelas['Custos Terceirização'] %}
-                        <td>{{ linha.c_terc_total|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- Custos Terceirização -->
+        <div class="tab-pane fade" id="custos-terceirizacao" role="tabpanel" aria-labelledby="custos-terceirizacao-tab">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h4>Custos de Terceirização</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered text-center table-responsive">
+                        <thead class="table-light">
+                            <tr>
+                                <th></th>
+                                {% for linha in tabelas['Custos Terceirização'] %}
+                                    <th>Período {{ linha.periodo }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>C. Terceirização Tecelagem</th>
+                                {% for linha in tabelas['Custos Terceirização'] %}
+                                    <td>{{ linha.c_terc_tecelagem|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Terceirização Purga Tinturaria</th>
+                                {% for linha in tabelas['Custos Terceirização'] %}
+                                    <td>{{ linha.c_terc_purga_tinturaria|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Terceirização Fixação Acabamento</th>
+                                {% for linha in tabelas['Custos Terceirização'] %}
+                                    <td>{{ linha.c_terc_fixacao_acabamento|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Terceirização Total</th>
+                                {% for linha in tabelas['Custos Terceirização'] %}
+                                    <td>{{ linha.c_terc_total|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <!-- Custos Capital -->
-    <div class="tab-pane fade" id="custos-capital" role="tabpanel" aria-labelledby="custos-capital-tab">
-        <h4>Custos Capital</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    {% for linha in tabelas['Custos Capital'] %}
-                        <th>Período {{ linha.periodo }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>C. Capital Teares</th>
-                    {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_teares|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Capital Jets</th>
-                    {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_jets|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Capital Ramas</th>
-                    {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_ramas|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Capital MP</th>
-                    {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_mp|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Capital PA</th>
-                    {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_pa|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. Capital Total</th>
-                    {% for linha in tabelas['Custos Capital'] %}
-                        <td>{{ linha.custo_capital_total|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- Custos Capital -->
+        <div class="tab-pane fade" id="custos-capital" role="tabpanel" aria-labelledby="custos-capital-tab">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h4>Custos de Capital</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered text-center table-responsive">
+                        <thead class="table-light">
+                            <tr>
+                                <th></th>
+                                {% for linha in tabelas['Custos Capital'] %}
+                                    <th>Período {{ linha.periodo }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>C. Capital Teares</th>
+                                {% for linha in tabelas['Custos Capital'] %}
+                                    <td>{{ linha.custo_capital_teares|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Capital Jets</th>
+                                {% for linha in tabelas['Custos Capital'] %}
+                                    <td>{{ linha.custo_capital_jets|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Capital Ramas</th>
+                                {% for linha in tabelas['Custos Capital'] %}
+                                    <td>{{ linha.custo_capital_ramas|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Capital MP</th>
+                                {% for linha in tabelas['Custos Capital'] %}
+                                    <td>{{ linha.custo_capital_mp|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Capital PA</th>
+                                {% for linha in tabelas['Custos Capital'] %}
+                                    <td>{{ linha.custo_capital_pa|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. Capital Total</th>
+                                {% for linha in tabelas['Custos Capital'] %}
+                                    <td>{{ linha.custo_capital_total|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <!-- Custos Vendas Perdidas -->
-    <div class="tab-pane fade" id="custos-vendas-perdidas" role="tabpanel" aria-labelledby="custos-vendas-perdidas-tab">
-        <h4>Custos Vendas Perdidas</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
-                        <th>Período {{ linha.periodo }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>C. VP Colmeia</th>
-                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
-                        <td>{{ linha.c_vp_comeia|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. VP Piquet</th>
-                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
-                        <td>{{ linha.c_vp_piquet|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. VP Maxim</th>
-                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
-                        <td>{{ linha.c_vp_maxim|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>C. VP Total</th>
-                    {% for linha in tabelas['Custos Vendas Perdidas'] %}
-                        <td>{{ linha.c_vp_total|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- Custos Vendas Perdidas -->
+        <div class="tab-pane fade" id="custos-vendas-perdidas" role="tabpanel" aria-labelledby="custos-vendas-perdidas-tab">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h4>Custos de Vendas Perdidas</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered text-center table-responsive">
+                        <thead class="table-light">
+                            <tr>
+                                <th></th>
+                                {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                                    <th>Período {{ linha.periodo }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>C. VP Colmeia</th>
+                                {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                                    <td>{{ linha.c_vp_comeia|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. VP Piquet</th>
+                                {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                                    <td>{{ linha.c_vp_piquet|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. VP Maxim</th>
+                                {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                                    <td>{{ linha.c_vp_maxim|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>C. VP Total</th>
+                                {% for linha in tabelas['Custos Vendas Perdidas'] %}
+                                    <td>{{ linha.c_vp_total|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <!-- Receitas Vendas -->
-    <div class="tab-pane fade" id="receitas-vendas" role="tabpanel" aria-labelledby="receitas-vendas-tab">
-        <h4>Receitas Vendas</h4>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    {% for linha in tabelas['Receitas Vendas'] %}
-                        <th>Período {{ linha.periodo }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th>R. Vendas Colmeia</th>
-                    {% for linha in tabelas['Receitas Vendas'] %}
-                        <td>{{ linha.r_vendas_colmeia|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>R. Vendas Piquet</th>
-                    {% for linha in tabelas['Receitas Vendas'] %}
-                        <td>{{ linha.r_vendas_piquet|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>R. Vendas Maxim</th>
-                    {% for linha in tabelas['Receitas Vendas'] %}
-                        <td>{{ linha.r_vendas_maxim|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-                <tr>
-                    <th>R. Vendas Total</th>
-                    {% for linha in tabelas['Receitas Vendas'] %}
-                        <td>{{ linha.r_vendas_total|round(2) }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
+        <!-- Receitas Vendas -->
+        <div class="tab-pane fade" id="receitas-vendas" role="tabpanel" aria-labelledby="receitas-vendas-tab">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4>Receitas de Vendas</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover table-striped table-bordered text-center table-responsive">
+                        <thead class="table-light">
+                            <tr>
+                                <th></th>
+                                {% for linha in tabelas['Receitas Vendas'] %}
+                                    <th>Período {{ linha.periodo }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>R. Vendas Colmeia</th>
+                                {% for linha in tabelas['Receitas Vendas'] %}
+                                    <td>{{ linha.r_vendas_colmeia|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>R. Vendas Piquet</th>
+                                {% for linha in tabelas['Receitas Vendas'] %}
+                                    <td>{{ linha.r_vendas_piquet|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>R. Vendas Maxim</th>
+                                {% for linha in tabelas['Receitas Vendas'] %}
+                                    <td>{{ linha.r_vendas_maxim|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                <th>R. Vendas Total</th>
+                                {% for linha in tabelas['Receitas Vendas'] %}
+                                    <td>{{ linha.r_vendas_total|round(2) }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
