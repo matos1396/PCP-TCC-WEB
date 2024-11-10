@@ -76,7 +76,7 @@ def dashboard():
     grupo_id = current_user.id
 
     # Filtrar dados de produção e demanda apenas para os períodos de 13 a 25
-    planos_producao = PlanoProducao.query.filter_by(grupo_id=grupo_id).filter(
+    planos_producao = PlanoProducao.query.filter_by(grupo_id=grupo_id, periodo_modificado=current_user.periodo_atual).filter(
         PlanoProducao.periodo_numero.between(13, 25)
     ).all()
 
@@ -146,7 +146,6 @@ def dashboard():
             "yaxis": {"title": "Demanda (unidades)"}
         }
     }
-
     fig_demanda_real = {
         "data": [
             {
@@ -163,9 +162,9 @@ def dashboard():
             "yaxis": {"title": "Demanda (unidades)"}
         }
     }
-
+    print(fig_demanda_real)
     # Filtrar dados de compras apenas para os períodos de 13 a 25
-    planos_compras = PlanoCompras.query.filter_by(grupo_id=grupo_id).filter(
+    planos_compras = PlanoCompras.query.filter_by(grupo_id=grupo_id, periodo_modificado=current_user.periodo_atual).filter(
         PlanoCompras.periodo_numero.between(13, 25)
     ).all()
 
@@ -215,13 +214,13 @@ def dashboard():
     }
 
     # Dados de capacidade dos Teares (Permanece igual)
-    capacidades_teares = CapacidadeTeares.query.filter_by(grupo_id=grupo_id).filter(
+    capacidades_teares = CapacidadeTeares.query.filter_by(grupo_id=grupo_id, periodo_modificado=current_user.periodo_atual).filter(
         CapacidadeTeares.periodo_numero.between(13, 25)
     ).all()
-    capacidades_ramas = CapacidadeRamas.query.filter_by(grupo_id=grupo_id).filter(
+    capacidades_ramas = CapacidadeRamas.query.filter_by(grupo_id=grupo_id, periodo_modificado=current_user.periodo_atual).filter(
         CapacidadeRamas.periodo_numero.between(13, 25)
     ).all()
-    capacidades_jets = CapacidadeJets.query.filter_by(grupo_id=grupo_id).filter(
+    capacidades_jets = CapacidadeJets.query.filter_by(grupo_id=grupo_id, periodo_modificado=current_user.periodo_atual).filter(
         CapacidadeJets.periodo_numero.between(13, 25)
     ).all()
 
@@ -1196,9 +1195,13 @@ def financeiro():
 @app.route('/simulate', methods=['POST', 'GET'])
 @login_required
 def simulate():
-    periods = range(13, 25)
-    # Pega o grupo completo do usuário autenticado
+
     grupo = current_user
+
+    if grupo.periodo_atual == 25:
+        flash("O jogo acabou e você está no período 25")
+        flash("Não é mais possível simular")
+        return redirect(url_for('dashboard'))
 
     capacidade_teares_nao_validado = CapacidadeTeares.query.filter_by(grupo_id=grupo.id, validacao=False).first()
     capacidade_jets_nao_validado = CapacidadeJets.query.filter_by(grupo_id=grupo.id, validacao=False).first()
