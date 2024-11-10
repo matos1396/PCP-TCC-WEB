@@ -53,6 +53,192 @@ def atualizar_plano_compras(grupo):
     db.session.commit()
 
 
+def atualizar_quantidade_teares(grupo):
+    periodo_atual = grupo.periodo_atual
+    periods = list(range(13, 25))
+
+    capacidades_teares = CapacidadeTeares.query.filter(
+        CapacidadeTeares.grupo_id == grupo.id
+    ).order_by(
+        CapacidadeTeares.periodo_numero.asc(),
+        CapacidadeTeares.periodo_modificado.desc()
+    ).all()
+
+    capacidades_teares_dict = {ct.periodo_numero: ct for ct in capacidades_teares}
+
+    quantidade_calculada_teares = {
+        period: capacidades_teares_dict.get(period, CapacidadeTeares(quantidade=0)).quantidade for period in periods
+    }
+
+    ampliacoes_teares = {period: capacidades_teares_dict.get(period, CapacidadeTeares(ampliacoes=0)).ampliacoes for period in periods}
+    reducoes_teares = {period: capacidades_teares_dict.get(period, CapacidadeTeares(reducoes=0)).reducoes for period in periods}
+
+    for p in periods:
+        if p > periodo_atual:
+            if p >= periodo_atual + 2:
+                quantidade_base_teares = quantidade_calculada_teares.get(p - 1, 0)
+                ampliacao_teares = ampliacoes_teares.get(p - 2, 0)
+                reducao_teares = reducoes_teares.get(p - 2, 0)
+
+                nova_quantidade_teares = quantidade_base_teares + ampliacao_teares - reducao_teares
+                quantidade_calculada_teares[p] = max(nova_quantidade_teares, 0)
+
+                capacidade_teares = capacidades_teares_dict.get(p)
+                if capacidade_teares:
+                    capacidade_teares.quantidade = quantidade_calculada_teares[p]
+                else:
+                    capacidade_teares = CapacidadeTeares(
+                        grupo_id=grupo.id,
+                        periodo_numero=p,
+                        periodo_modificado=periodo_atual,
+                        quantidade=quantidade_calculada_teares[p]
+                    )
+                    db.session.add(capacidade_teares)
+
+    db.session.commit()
+
+
+def atualizar_quantidade_ramas(grupo):
+    periodo_atual = grupo.periodo_atual
+    periods = list(range(13, 25))
+
+    # Carregar todos os registros de CapacidadeRamas do grupo para cada período
+    capacidades_ramas = CapacidadeRamas.query.filter(
+        CapacidadeRamas.grupo_id == grupo.id
+    ).order_by(
+        CapacidadeRamas.periodo_numero.asc(),
+        CapacidadeRamas.periodo_modificado.desc()
+    ).all()
+
+    # Organizar em dicionário por período
+    capacidades_ramas_dict = {cr.periodo_numero: cr for cr in capacidades_ramas}
+
+    # Iniciar o dicionário de quantidade calculada com os valores existentes para cada período
+    quantidade_calculada_ramas = {
+        period: capacidades_ramas_dict.get(period, CapacidadeRamas(quantidade=0)).quantidade for period in periods
+    }
+
+    # Construir dicionários de ampliações e reduções para cada período
+    ampliacoes_ramas = {period: capacidades_ramas_dict.get(period, CapacidadeRamas(ampliacoes=0)).ampliacoes for period in periods}
+    reducoes_ramas = {period: capacidades_ramas_dict.get(period, CapacidadeRamas(reducoes=0)).reducoes for period in periods}
+
+    # Iterar pelos períodos e aplicar ampliações e reduções exatamente após o lead time de 2 períodos
+    for p in periods:
+        if p > periodo_atual:
+            # Aplicar ampliação e redução considerando o lead time de 2 períodos
+            if p >= periodo_atual + 2:
+                quantidade_base_ramas = quantidade_calculada_ramas.get(p - 1, 0)
+                ampliacao_effective = ampliacoes_ramas.get(p - 2, 0)
+                reducao_effective = reducoes_ramas.get(p - 2, 0)
+
+                # Calcular a nova quantidade para o período atual com ampliação e redução aplicadas
+                nova_quantidade_ramas = quantidade_base_ramas + ampliacao_effective - reducao_effective
+                quantidade_calculada_ramas[p] = max(nova_quantidade_ramas, 0)
+
+                # Recuperar ou criar o registro de CapacidadeRamas para atualizar a quantidade
+                capacidade_ramas = capacidades_ramas_dict.get(p)
+                if capacidade_ramas:
+                    capacidade_ramas.quantidade = quantidade_calculada_ramas[p]
+                else:
+                    capacidade_ramas = CapacidadeRamas(
+                        grupo_id=grupo.id,
+                        periodo_numero=p,
+                        periodo_modificado=periodo_atual,
+                        quantidade=quantidade_calculada_ramas[p]
+                    )
+                    db.session.add(capacidade_ramas)
+
+    # Commit final para salvar alterações no banco de dados
+    db.session.commit()
+
+
+
+def atualizar_quantidade_jets(grupo):
+    periodo_atual = grupo.periodo_atual
+    periods = list(range(13, 25))
+
+    # Carregar todos os registros de CapacidadeJets do grupo para cada período
+    capacidades_jets = CapacidadeJets.query.filter(
+        CapacidadeJets.grupo_id == grupo.id
+    ).order_by(
+        CapacidadeJets.periodo_numero.asc(),
+        CapacidadeJets.periodo_modificado.desc()
+    ).all()
+
+    # Organizar em dicionário por período
+    capacidades_jets_dict = {cj.periodo_numero: cj for cj in capacidades_jets}
+
+    # Iniciar o dicionário de quantidade calculada para cada tipo com os valores existentes para cada período
+    quantidade_calculada_tipo1 = {
+        period: capacidades_jets_dict.get(period, CapacidadeJets(quantidade_tipo1=0)).quantidade_tipo1 for period in periods
+    }
+    quantidade_calculada_tipo2 = {
+        period: capacidades_jets_dict.get(period, CapacidadeJets(quantidade_tipo2=0)).quantidade_tipo2 for period in periods
+    }
+    quantidade_calculada_tipo3 = {
+        period: capacidades_jets_dict.get(period, CapacidadeJets(quantidade_tipo3=0)).quantidade_tipo3 for period in periods
+    }
+
+    # Construir dicionários de ampliações e reduções para cada tipo e cada período
+    ampliacoes_tipo1 = {period: capacidades_jets_dict.get(period, CapacidadeJets(ampliacoes_tipo1=0)).ampliacoes_tipo1 for period in periods}
+    reducoes_tipo1 = {period: capacidades_jets_dict.get(period, CapacidadeJets(reducoes_tipo1=0)).reducoes_tipo1 for period in periods}
+
+    ampliacoes_tipo2 = {period: capacidades_jets_dict.get(period, CapacidadeJets(ampliacoes_tipo2=0)).ampliacoes_tipo2 for period in periods}
+    reducoes_tipo2 = {period: capacidades_jets_dict.get(period, CapacidadeJets(reducoes_tipo2=0)).reducoes_tipo2 for period in periods}
+
+    ampliacoes_tipo3 = {period: capacidades_jets_dict.get(period, CapacidadeJets(ampliacoes_tipo3=0)).ampliacoes_tipo3 for period in periods}
+    reducoes_tipo3 = {period: capacidades_jets_dict.get(period, CapacidadeJets(reducoes_tipo3=0)).reducoes_tipo3 for period in periods}
+
+    # Iterar pelos períodos e aplicar ampliações e reduções exatamente após o lead time de 2 períodos para cada tipo
+    for p in periods:
+        if p > periodo_atual:
+            # Aplicar ampliação e redução para cada tipo de quantidade considerando o lead time de 2 períodos
+            if p >= periodo_atual + 2:
+                # Tipo 1
+                quantidade_base_tipo1 = quantidade_calculada_tipo1.get(p - 1, 0)
+                ampliacao_tipo1_effective = ampliacoes_tipo1.get(p - 2, 0)
+                reducao_tipo1_effective = reducoes_tipo1.get(p - 2, 0)
+                nova_quantidade_tipo1 = quantidade_base_tipo1 + ampliacao_tipo1_effective - reducao_tipo1_effective
+                quantidade_calculada_tipo1[p] = max(nova_quantidade_tipo1, 0)
+
+                # Tipo 2
+                quantidade_base_tipo2 = quantidade_calculada_tipo2.get(p - 1, 0)
+                ampliacao_tipo2_effective = ampliacoes_tipo2.get(p - 2, 0)
+                reducao_tipo2_effective = reducoes_tipo2.get(p - 2, 0)
+                nova_quantidade_tipo2 = quantidade_base_tipo2 + ampliacao_tipo2_effective - reducao_tipo2_effective
+                quantidade_calculada_tipo2[p] = max(nova_quantidade_tipo2, 0)
+
+                # Tipo 3
+                quantidade_base_tipo3 = quantidade_calculada_tipo3.get(p - 1, 0)
+                ampliacao_tipo3_effective = ampliacoes_tipo3.get(p - 2, 0)
+                reducao_tipo3_effective = reducoes_tipo3.get(p - 2, 0)
+                nova_quantidade_tipo3 = quantidade_base_tipo3 + ampliacao_tipo3_effective - reducao_tipo3_effective
+                quantidade_calculada_tipo3[p] = max(nova_quantidade_tipo3, 0)
+
+                # Recuperar ou criar o registro de CapacidadeJets para atualizar as quantidades
+                capacidade_jets = capacidades_jets_dict.get(p)
+                if capacidade_jets:
+                    capacidade_jets.quantidade_tipo1 = quantidade_calculada_tipo1[p]
+                    capacidade_jets.quantidade_tipo2 = quantidade_calculada_tipo2[p]
+                    capacidade_jets.quantidade_tipo3 = quantidade_calculada_tipo3[p]
+                else:
+                    capacidade_jets = CapacidadeJets(
+                        grupo_id=grupo.id,
+                        periodo_numero=p,
+                        periodo_modificado=periodo_atual,
+                        quantidade_tipo1=quantidade_calculada_tipo1[p],
+                        quantidade_tipo2=quantidade_calculada_tipo2[p],
+                        quantidade_tipo3=quantidade_calculada_tipo3[p]
+                    )
+                    db.session.add(capacidade_jets)
+
+    # Commit final para salvar alterações no banco de dados
+    db.session.commit()
+
+
+
+
+
 def atualizar_capacidade_maquinas(grupo):
     periodo_atual = grupo.periodo_atual
     periods = list(range(13, 25))
@@ -147,7 +333,6 @@ def atualizar_capacidade_maquinas(grupo):
             soma_teares = capacidade_teares.colmeia + capacidade_teares.piquet + capacidade_teares.maxim
             capacidade_teares.capacidade_necessaria = math.ceil(
                 soma_teares + capacidade_teares.produtividade + capacidade_teares.setup)
-            print("SOMA TEARES", soma_teares)
         if capacidade_ramas:
             soma_ramas = capacidade_ramas.colmeia + capacidade_ramas.piquet + capacidade_ramas.maxim
             capacidade_ramas.capacidade_necessaria = math.ceil(
@@ -158,7 +343,6 @@ def atualizar_capacidade_maquinas(grupo):
                 soma_jets + capacidade_jets.produtividade + capacidade_jets.setup)
 
     db.session.commit()
-
 
 
 

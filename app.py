@@ -15,7 +15,9 @@ from models import (Grupo,PlanoProducao,PlanoCompras,PrevisaoDemanda,
                     db)
 from simulacao import simulacao
 from utils.func_auxiliares import (atualizar_plano_compras, atualizar_capacidade_maquinas,
-                                   atualizar_financeiro, set_flag_controle)
+                                   atualizar_financeiro, set_flag_controle,
+                                   atualizar_quantidade_jets, atualizar_quantidade_ramas,
+                                   atualizar_quantidade_teares)
 from flask import session
 from utils_db import cadastrar_grupo_db
 import time # Para Testes
@@ -743,7 +745,7 @@ def tecelagem():
                         existing_plan.capacidade_terceirizada = capacidade_teceirizada
                         existing_plan.ampliacoes = ampliacoes
                         existing_plan.reducoes = reducoes
-                        existing_plan.quantidade = quantidade
+                        #existing_plan.quantidade = quantidade
 
                     else:
                         # Criar um novo plano
@@ -774,6 +776,7 @@ def tecelagem():
         start_time = time.time()
 
         # atualizar_plano_compras(current_user)
+        atualizar_quantidade_teares(current_user)
         atualizar_capacidade_maquinas(current_user)
         atualizar_financeiro(current_user)
 
@@ -898,15 +901,15 @@ def purga_tinturaria():
                         # Atualizar o plano existente
                         existing_plan.numero_turnos = numero_turnos
                         existing_plan.capacidade_terceirizada = capacidade_teceirizada
-                        existing_plan.ampliacoes_jet1 = ampliacoes_jet1
-                        existing_plan.ampliacoes_jet2 = ampliacoes_jet2
-                        existing_plan.ampliacoes_jet3 = ampliacoes_jet3
-                        existing_plan.reducoes_jet1 = reducoes_jet1
-                        existing_plan.reducoes_jet2 = reducoes_jet2
-                        existing_plan.reducoes_jet3 = reducoes_jet3
-                        existing_plan.quantidade_jet1 = quantidade_jet1
-                        existing_plan.quantidade_jet2 = quantidade_jet2
-                        existing_plan.quantidade_jet3 = quantidade_jet3
+                        existing_plan.ampliacoes_tipo1 = ampliacoes_jet1
+                        existing_plan.ampliacoes_tipo2 = ampliacoes_jet2
+                        existing_plan.ampliacoes_tipo3 = ampliacoes_jet3
+                        existing_plan.reducoes_tipo1 = reducoes_jet1
+                        existing_plan.reducoes_tipo2 = reducoes_jet2
+                        existing_plan.reducoes_tipo3 = reducoes_jet3
+                        # existing_plan.quantidade_jet1 = quantidade_jet1
+                        # existing_plan.quantidade_jet2 = quantidade_jet2
+                        # existing_plan.quantidade_jet3 = quantidade_jet3
 
                     else:
                         # Criar um novo plano
@@ -946,6 +949,7 @@ def purga_tinturaria():
         start_time = time.time()
 
         # atualizar_plano_compras(current_user)
+        atualizar_quantidade_jets(current_user)
         atualizar_capacidade_maquinas(current_user)
         atualizar_financeiro(current_user)
 
@@ -1070,7 +1074,7 @@ def fixacao_acabamento():
                         existing_plan.capacidade_terceirizada = capacidade_teceirizada
                         existing_plan.ampliacoes = ampliacoes
                         existing_plan.reducoes = reducoes
-                        existing_plan.quantidade = quantidade
+                        #existing_plan.quantidade = quantidade
 
                     else:
                         # Criar um novo plano
@@ -1102,6 +1106,7 @@ def fixacao_acabamento():
         start_time = time.time()
 
         # atualizar_plano_compras(current_user)
+        atualizar_quantidade_ramas(current_user)
         atualizar_capacidade_maquinas(current_user)
         atualizar_financeiro(current_user)
 
@@ -1199,14 +1204,16 @@ def simulate():
     capacidade_jets_nao_validado = CapacidadeJets.query.filter_by(grupo_id=grupo.id, validacao=False).first()
     capacidade_ramas_nao_validado = CapacidadeRamas.query.filter_by(grupo_id=grupo.id, validacao=False).first()
 
-    check_producao = ControlePlanos.filter_by(grupo_id=grupo.id, plano_producao_salvo=False)
-    check_compras = ControlePlanos.filter_by(grupo_id=grupo.id, plano_producao_salvo=False)
+    check_producao = ControlePlanos.query.filter_by(grupo_id=grupo.id, periodo=grupo.periodo_atual+1).first()
+    check_compras = ControlePlanos.query.filter_by(grupo_id=grupo.id, periodo=grupo.periodo_atual+1).first()
+    print(check_producao.plano_producao_salvo)
+    print(check_compras.plano_compras_salvo)
 
-    if check_producao or check_compras == False:
-        if check_producao == False:
+    if check_producao.plano_producao_salvo or check_compras.plano_compras_salvo == False:
+        if check_producao.plano_producao_salvo == False:
             flash("Você não salvou um Plano de Produção para o período atual. Por favor clique no botão para salvar o plano na página Plano de Produção.", "warning")
             return redirect(url_for('dashboard'))
-        if check_compras == False:
+        if check_compras.plano_compras_salvo == False:
             flash("Você não salvou um Plano de Compras para o período atual. Por favor clique no botão para salvar o plano na página Plano de Compras.", "warning")
             return redirect(url_for('dashboard'))
 

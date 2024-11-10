@@ -75,7 +75,7 @@ def executar_simulacao(grupo):
     # Buscar os dados do grupo
     periodo_atual = grupo.periodo_atual
     periodo_simular = periodo_atual + 1
-    
+
 
     ##### INICIO PLANO PRODUCAO ####
 
