@@ -26,6 +26,41 @@ taxa_ramas_associativa = db.Table('taxa_ramas_associativa',
     db.Column('processo', db.String(50), nullable=False)
 )
 
+# Modelo de Semestre
+class Semestre(db.Model):
+    __tablename__ = 'semestres'
+
+    id = db.Column(db.Integer, primary_key=True)
+    ano = db.Column(db.Integer, nullable=False)
+    periodo = db.Column(db.String(50), nullable=False)  # Ex.: "1º Semestre", "2º Semestre"
+
+    # Relacionamento com Turma (um semestre pode ter várias turmas)
+    turmas = db.relationship('Turma', backref='semestre', lazy=True)
+
+# Modelo de Turma
+class Turma(db.Model):
+    __tablename__ = 'turmas'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(150), nullable=False, unique=True)
+
+    # Relacionamento com Semestre
+    semestre_id = db.Column(db.Integer, db.ForeignKey('semestres.id'), nullable=False)
+
+    # Relacionamento com Usuário (uma turma pode ter vários usuários)
+    usuarios = db.relationship('Usuario', backref='turma', lazy=True)
+
+# Modelo de Usuário
+class Usuario(db.Model):
+    __tablename__ = 'usuarios'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(150), nullable=False)
+
+    # Relacionamento com Turma
+    turma_id = db.Column(db.Integer, db.ForeignKey('turmas.id'), nullable=False)
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)  # Relacionamento com Grupo
+
 # Modelo de Grupo (Group)
 class Grupo(db.Model, UserMixin):
     __tablename__ = 'grupo'
@@ -48,6 +83,14 @@ class Grupo(db.Model, UserMixin):
     capacidades_teares = db.relationship('CapacidadeTeares', backref='grupo', lazy=True)
     capacidades_jets = db.relationship('CapacidadeJets', backref='grupo', lazy=True)
     capacidades_ramas = db.relationship('CapacidadeRamas', backref='grupo', lazy=True)
+
+    # Relacionamento com Usuários
+    usuarios = db.relationship('Usuario', backref='grupo', lazy=True)
+
+    # (Opcional) Relacionamento com Turma
+    turma_id = db.Column(db.Integer, db.ForeignKey('turmas.id'), nullable=True)
+    turma = db.relationship('Turma', backref=db.backref('grupo', lazy=True))
+
 
 class ControlePlanos(db.Model):
     __tablename__ = 'controle_planos'

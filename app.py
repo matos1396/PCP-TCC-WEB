@@ -1,8 +1,7 @@
 # app.py
 import math
-from flask import Flask, render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from forms import (LoginForm, ProductionForm, PurchaseForm,
                    TecelagemForm, PurgaTinturariaForm, FixacaoAcabamentoForm,
@@ -13,12 +12,12 @@ from models import (Grupo,PlanoProducao,PlanoCompras,PrevisaoDemanda,
                     CustosFixos,CustosTerceirizacao,CustosVendasPerdidas,ReceitasVendas,
                     ControlePlanos, EstiloDemanda,
                     db)
+from flask_session import Session
 from simulacao import simulacao
 from utils.func_auxiliares import (atualizar_plano_compras, atualizar_capacidade_maquinas,
                                    atualizar_financeiro, set_flag_controle,
                                    atualizar_quantidade_jets, atualizar_quantidade_ramas,
                                    atualizar_quantidade_teares)
-from flask import session
 from utils_db import cadastrar_grupo_db
 import time # Para Testes
 
@@ -373,7 +372,6 @@ def production():
     form = ProductionForm()
 
     periodo_atual = current_user.periodo_atual
-    estilo_demanda = current_user.estilo_demanda
     periods = list(range(13, 25))
 
 

@@ -2,27 +2,34 @@
 {% extends 'base.html' %}
 {% block title %}Login - PCP Game{% endblock %}
 {% block content %}
-<h2 class="mb-4">Login</h2>
-<form method="POST" novalidate>
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-        {{ form.grupo_nome.label(class="form-label") }}
-        {{ form.grupo_nome(class="form-control{% if form.grupo_nome.errors %} is-invalid{% endif %}", placeholder="Digite o nome do grupo") }}
-        {% for error in form.grupo_nome.errors %}
-            <div class="invalid-feedback">
-                {{ error }}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card p-4" style="max-width: 400px; width: 100%;">
+        <h1 class="mb-4 text-center">Bem-vindo!</h1>
+        <h2 class="mb-4 text-center">Login</h2>
+        <form method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.grupo_nome.label(class="form-label") }}
+                {{ form.grupo_nome(class="form-control{% if form.grupo_nome.errors %} is-invalid{% endif %}", placeholder="Digite o nome do grupo") }}
+                {% for error in form.grupo_nome.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
-    <div class="form-group">
-        {{ form.password.label(class="form-label") }}
-        {{ form.password(class="form-control{% if form.password.errors %} is-invalid{% endif %}", placeholder="Digite a senha") }}
-        {% for error in form.password.errors %}
-            <div class="invalid-feedback">
-                {{ error }}
+            <div class="mb-3">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control{% if form.password.errors %} is-invalid{% endif %}", placeholder="Digite a senha") }}
+                {% for error in form.password.errors %}
+                    <div class="invalid-feedback">
+                        {{ error }}
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+            <div class="d-grid">
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </div>
+        </form>
     </div>
-    {{ form.submit(class="btn btn-primary") }}
-</form>
+</div>
 {% endblock %}
