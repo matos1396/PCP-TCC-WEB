@@ -3,7 +3,7 @@ from models import (Grupo, EstiloDemanda, PrevisaoDemanda, PlanoCompras, PlanoPr
                     TaxaProducao, Custos, CapacidadeJets, CapacidadeRamas, CapacidadeTeares, 
                     RelatorioFinanceiro, CustosFixos, CustosCapital, CustosTerceirizacao, 
                     CustosCompraMP, ReceitasVendas, CustosEstoques, CustosVendasPerdidas, 
-                    LeadTimeMaquinas, ControlePlanos)
+                    LeadTimeMaquinas, ControlePlanos, Usuario)
 from dados.dados import demanda_base
 
 # Função para inicializar os estoques de compras
@@ -106,19 +106,35 @@ def cadastrar_grupo_db(dados_grupo):
 
 
 def inicializar_grupo(dados_grupo):
-    dados_grupo
     estilo_id = dados_grupo["Estilo"]
     estilo_demanda = EstiloDemanda.query.get(estilo_id)
+
+    # Criar o novo grupo
     novo_grupo = Grupo(
-        grupo_nome = dados_grupo["Nome"], password = dados_grupo["Senha"], estilo_demanda_id = estilo_id,
+        grupo_nome=dados_grupo["Nome"],
+        password=dados_grupo["Senha"],
+        estilo_demanda_id=estilo_id,
+        turma_id = dados_grupo["Turma"],
         quantidade_teares=estilo_demanda.quantidade_teares,
         quantidade_ramas=estilo_demanda.quantidade_ramas,
         quantidade_jets_tipo1=estilo_demanda.quantidade_jets_tipo1,
         quantidade_jets_tipo2=estilo_demanda.quantidade_jets_tipo2,
-        quantidade_jets_tipo3=estilo_demanda.quantidade_jets_tipo3)
+        quantidade_jets_tipo3=estilo_demanda.quantidade_jets_tipo3
+    )
 
     db.session.add(novo_grupo)
+    db.session.flush()  # Garante que o `novo_grupo.id` esteja disponível
+
+    # Associar os integrantes ao grupo
+    for integrante_id in dados_grupo["Integrantes"]:
+        aluno = Usuario.query.get(integrante_id)
+        if aluno:
+            aluno.grupo_id = novo_grupo.id
+            db.session.add(aluno)  # Adiciona ou atualiza o aluno na sessão
+
+    # Salvar todas as alterações no banco de dados
     db.session.commit()
+
     return novo_grupo
 
 

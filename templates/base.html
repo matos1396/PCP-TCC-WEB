@@ -6,6 +6,7 @@
     <title>{% block title %}PCP Game{% endblock %}</title>
     <!-- Incluindo o CSS do Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <!-- CSS customizado opcional -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
@@ -26,6 +27,12 @@
                         </li>
                         <li class="nav-item"></li>
                             <a class="nav-link" href="{{ url_for('cadastrar_grupos') }}">Cadastro de Grupos</a>
+                        </li>
+                        <li class="nav-item"></li>
+                            <a class="nav-link" href="{{ url_for('cadastro_semestre') }}">Cadastro de Semestres</a>
+                        </li>
+                        <li class="nav-item"></li>
+                            <a class="nav-link" href="{{ url_for('cadastro_turmas') }}">Cadastro de Turmas</a>
                         </li>
                     {% else %}
                         <!-- Links para o usuário normal -->

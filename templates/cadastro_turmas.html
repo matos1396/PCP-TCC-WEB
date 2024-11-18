@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Cadastro de Turmas{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card p-4" style="max-width: 1200px; width: 100%;">
+        <h2 class="mb-4 text-center">Cadastrar Turmas</h2>
+        <form method="POST" enctype="multipart/form-data" id="cadastro-turmas-form" novalidate>
+            {{ form.hidden_tag() }}
+
+            <!-- Campo para o ID do Semestre -->
+            <div class="mb-3">
+                {{ form.semestre_id.label(class="form-label") }}
+                {{ form.semestre_id(class="form-control{% if form.semestre_id.errors %} is-invalid{% endif %}", placeholder="ID do semestre") }}
+                {% for error in form.semestre_id.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- Campos Dinâmicos para Turmas -->
+            <div id="turmas-container" data-count="{{ form.turmas | length }}">
+                <label for="turmas" class="form-label">Turmas</label>
+                {% for turma in form.turmas %}
+                    <div class="mb-3 turma-field">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ turma.nome(class="form-control", placeholder="Nome da turma") }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ turma.arquivo(class="form-control-file") }}
+                                <div class="invalid-feedback d-none">É necessário selecionar um arquivo para esta turma.</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="add-turma-btn" class="btn btn-secondary mb-3">Adicionar Turma</button>
+
+            <!-- Botão de Envio -->
+            <div class="d-grid">
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Inicializa contêiner de turmas e contador
+    const turmasContainer = document.getElementById('turmas-container');
+    const form = document.getElementById('cadastro-turmas-form');
+    let turmasCount = parseInt(turmasContainer.getAttribute('data-count')) || 0;
+
+    // Botão para adicionar nova turma
+    const addTurmaBtn = document.getElementById('add-turma-btn');
+
+    addTurmaBtn.addEventListener('click', () => {
+        const index = turmasCount++; // Incrementa o contador para novo campo
+        const newField = document.createElement('div');
+        newField.classList.add('mb-3', 'turma-field');
+
+        newField.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <input class="form-control" id="turmas-${index}-nome" name="turmas-${index}-nome" placeholder="Nome da turma" required>
+                </div>
+                <div class="col-md-6">
+                    <input type="file" class="form-control-file" id="turmas-${index}-arquivo" name="turmas-${index}-arquivo" required>
+                    <div class="invalid-feedback d-none">É necessário selecionar um arquivo para esta turma.</div>
+                </div>
+            </div>
+        `;
+
+        turmasContainer.appendChild(newField); // Adiciona o novo campo ao contêiner
+    });
+
+    // Verifica se todos os arquivos foram enviados antes de submeter o formulário
+    form.addEventListener('submit', (e) => {
+        const turmaFields = document.querySelectorAll('.turma-field');
+        let isValid = true;
+
+        turmaFields.forEach(field => {
+            const fileInput = field.querySelector('input[type="file"]');
+            const errorFeedback = field.querySelector('.invalid-feedback');
+
+            if (!fileInput.files.length) {
+                errorFeedback.classList.remove('d-none');
+                fileInput.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                errorFeedback.classList.add('d-none');
+                fileInput.classList.remove('is-invalid');
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault(); // Impede o envio do formulário se algum arquivo estiver faltando
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,6 +1,9 @@
 # forms.py
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, SubmitField, ValidationError, SelectField
+from flask_wtf.file import FileAllowed
+from wtforms import (StringField, PasswordField, IntegerField, SubmitField,
+                     ValidationError, SelectField, FieldList, FormField, FileField,
+                     SelectMultipleField)
 from wtforms.validators import DataRequired, Optional, Length, EqualTo
 
 class LoginForm(FlaskForm):
@@ -213,8 +216,56 @@ class FixacaoAcabamentoForm(FlaskForm):
 
 
 class CadastroGrupoForm(FlaskForm):
-    grupo_nome = StringField('Nome do Grupo', validators=[DataRequired(), Length(min=2, max=50)])
+    grupo_nome = StringField('Nome do Grupo', validators=[DataRequired(), Length(min=1, max=50)])
     password = PasswordField('Senha', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('password', message='As senhas devem coincidir.')])
     estilo_demanda = SelectField('Estilo de Demanda', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Cadastrar Grupo')
+
+class SemestreForm(FlaskForm):
+    ano = IntegerField('Ano', validators=[DataRequired()])
+    periodo = StringField('Período', validators=[DataRequired()], description="Ex.: '1º Semestre' ou '2º Semestre'")
+    submit = SubmitField('Cadastrar Semestre')
+
+class TurmaItemForm(FlaskForm):
+    nome = StringField(
+        'Nome da Turma',
+        validators=[
+            DataRequired(message="O nome da turma é obrigatório."),
+            Length(max=150, message="O nome da turma deve ter no máximo 150 caracteres.")
+        ]
+    )
+    arquivo = FileField(
+        'Arquivo de Alunos (TXT)',
+        validators=[
+            FileAllowed(['txt'], 'Apenas arquivos TXT são permitidos!')
+        ]
+    )
+
+class TurmaForm(FlaskForm):
+    semestre_id = SelectField(
+        'Semestre',
+        choices=[],  # Preenchido dinamicamente na rota
+        validators=[DataRequired(message="Selecione um semestre válido.")],
+        coerce=int
+    )
+    turmas = FieldList(FormField(TurmaItemForm), min_entries=1, label="Turmas")
+    submit = SubmitField('Salvar Turmas')
+
+class PrimeiroAcessoForm(FlaskForm):
+    grupo_numero = StringField('Número do Grupo', validators=[DataRequired()])
+    semestre_id = SelectField('Semestre', choices=[], validators=[DataRequired()], coerce=int)
+    turma_id = SelectField('Turma', choices=[], validators=[DataRequired()], coerce=int)
+    tipo_demanda = SelectField(
+        'Tipo de Demanda',
+        choices=[(1, 'Baixa'), (2, 'Média'), (3, 'Alta')],
+        validators=[DataRequired()],
+        coerce=int
+    )
+    grupo_senha = PasswordField('Senha do Grupo', validators=[DataRequired()])
+    confirmar_senha = PasswordField(
+        'Confirmar Senha',
+        validators=[DataRequired(), EqualTo('grupo_senha', message="As senhas devem ser iguais.")]
+    )
+    integrantes = SelectMultipleField('Selecione os Integrantes', choices=[], validators=[DataRequired()], coerce=int)
+    submit = SubmitField('Concluir Primeiro Acesso')

@@ -1,16 +1,18 @@
 # app.py
 import math
-from flask import Flask, render_template, redirect, url_for, flash, request, session
+from flask import Flask, render_template, redirect, url_for, flash, jsonify, request, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 from forms import (LoginForm, ProductionForm, PurchaseForm,
                    TecelagemForm, PurgaTinturariaForm, FixacaoAcabamentoForm,
-                   CadastroGrupoForm)
+                   CadastroGrupoForm, SemestreForm,TurmaForm, PrimeiroAcessoForm)
 from models import (Grupo,PlanoProducao,PlanoCompras,PrevisaoDemanda,
                     CapacidadeJets,CapacidadeRamas,CapacidadeTeares,TaxaProducao,Custos,
                     RelatorioFinanceiro,CustosCapital,CustosCompraMP,CustosEstoques,
                     CustosFixos,CustosTerceirizacao,CustosVendasPerdidas,ReceitasVendas,
-                    ControlePlanos, EstiloDemanda,
+                    ControlePlanos, EstiloDemanda, Semestre, Turma,
+                    Usuario,
                     db)
 from flask_session import Session
 from simulacao import simulacao
@@ -24,10 +26,12 @@ import time # Para Testes
 app = Flask(__name__)
 app.config.from_object('config.Config')
 app.config['SESSION_SQLALCHEMY'] = db  # Define explicitamente o uso da instância existente
-
+csrf = CSRFProtect(app)
 
 db.init_app(app)
 Session(app)
+
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -60,6 +64,86 @@ def login():
         else:
             flash('Nome do grupo ou senha incorretos.')
     return render_template('login.html', form=form)
+
+@app.route('/primeiro_acesso', methods=['GET', 'POST'])
+def primeiro_acesso():
+    form = PrimeiroAcessoForm()
+
+    # Preencher as opções de semestres para o SelectField
+    form.semestre_id.choices = [(s.id, f"{s.ano} - {s.periodo}") for s in Semestre.query.all()]
+
+    # Preencher a lista de turmas com base no semestre selecionado
+    if form.semestre_id.data:
+        form.turma_id.choices = [(t.id, t.nome) for t in Turma.query.filter_by(semestre_id=form.semestre_id.data).all()]
+    else:
+        form.turma_id.choices = []
+
+    # Preencher a lista de integrantes com base na turma selecionada
+    if form.turma_id.data:
+        alunos = Usuario.query.filter_by(turma_id=form.turma_id.data).all()
+        form.integrantes.choices = [(aluno.id, aluno.nome) for aluno in alunos]
+    else:
+        form.integrantes.choices = []
+
+    # Método POST: Processar o envio do formulário
+    if request.method == 'POST':
+        # Recuperar os IDs dos integrantes enviados no campo oculto
+        ids_integrantes = [
+            int(i) for i in request.form.get('selected_integrantes', '').split(',') if i.isdigit()
+        ]
+        form.integrantes.data = ids_integrantes  # Associa os IDs ao campo `integrantes`
+
+        # Validar o formulário e processar os dados
+        if form.validate_on_submit():
+            return processar_primeiro_acesso(form)
+        else:
+            print("Erros de validação:", form.errors)  # Log de erros para depuração
+
+    # Método GET: Renderizar a página
+    return render_template('primeiro_acesso.html', form=form)
+
+def processar_primeiro_acesso(form):
+    # Verificar se o semestre e a turma existem
+    semestre = Semestre.query.get(form.semestre_id.data)
+    turma = Turma.query.get(form.turma_id.data)
+
+    if not semestre or not turma:
+        flash("Semestre ou Turma inválidos.", 'danger')
+        return render_template('primeiro_acesso.html', form=form)
+
+    # Verificar se o número do grupo já existe
+    grupo_existente = Grupo.query.filter_by(grupo_nome=form.grupo_numero.data).first()
+    if grupo_existente:
+        flash("O número do grupo já está em uso. Escolha outro.", 'danger')
+        return render_template('primeiro_acesso.html', form=form)
+
+    try:
+        # Criar os dados do grupo
+        dados_grupo = {
+            "Nome": form.grupo_numero.data,
+            "Estilo": form.tipo_demanda.data,
+            "Senha": form.grupo_senha.data,
+            "Integrantes": form.integrantes.data,  # IDs dos integrantes
+            "Turma": form.turma_id.data  # ID da turma
+        }
+
+        print("Dados do grupo:", dados_grupo)  # Log para depuração
+
+        # Criar o grupo e associar os integrantes
+        cadastrar_grupo_db(dados_grupo)
+
+        # Confirmar alterações no banco de dados
+        db.session.commit()
+        flash('Primeiro acesso concluído com sucesso! O grupo foi criado e os integrantes foram associados.', 'success')
+        return redirect(url_for('login'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Erro ao processar o primeiro acesso: {str(e)}", 'danger')
+        return render_template('primeiro_acesso.html', form=form)
+
+
+
+
 
 # logout
 @app.route('/logout')
@@ -1337,6 +1421,74 @@ def consultar_usuarios():
     )
 
 
+@app.route('/cadastro_semestre', methods=['GET', 'POST'])
+def cadastro_semestre():
+    form = SemestreForm()
+    if form.validate_on_submit():
+        # Verificar se o semestre já existe
+        semestre_existente = Semestre.query.filter_by(ano=form.ano.data, periodo=form.periodo.data).first()
+        if semestre_existente:
+            flash("Este semestre já existe!", 'danger')
+            return render_template('cadastro_semestre.html', form=form)
+
+        # Criar e salvar o semestre
+        novo_semestre = Semestre(ano=form.ano.data, periodo=form.periodo.data)
+        db.session.add(novo_semestre)
+        db.session.commit()
+        flash(f"Semestre cadastrado com sucesso! ID: {novo_semestre.id}", 'success')
+        return redirect(url_for('cadastro_turmas'))
+
+    return render_template('cadastro_semestre.html', form=form)
+
+
+
+@app.route('/cadastro_turmas', methods=['GET', 'POST'])
+def cadastro_turmas():
+    form = TurmaForm()
+
+    # Preenche as opções de semestre
+    form.semestre_id.choices = [(s.id, f"{s.ano} - {s.periodo}") for s in Semestre.query.all()]
+
+    if form.validate_on_submit():
+        # Verificar o semestre selecionado
+        semestre = Semestre.query.get(form.semestre_id.data)
+        if not semestre:
+            flash("Semestre não encontrado.", 'danger')
+            return render_template('cadastro_turmas.html', form=form)
+
+        try:
+            for turma_data in form.turmas.data:
+                # Criar a nova turma
+                nova_turma = Turma(nome=turma_data['nome'], semestre_id=semestre.id)
+                db.session.add(nova_turma)
+                db.session.commit()
+
+                # Processar o arquivo de alunos
+                arquivo = turma_data['arquivo']
+                if arquivo:
+                    alunos = []
+                    for line in arquivo.stream:
+                        aluno_nome = line.decode('utf-8').strip()
+                        if aluno_nome:  # Evitar linhas vazias
+                            novo_aluno = Usuario(nome=aluno_nome, turma_id=nova_turma.id)
+                            alunos.append(novo_aluno)
+                    db.session.add_all(alunos)
+
+            db.session.commit()
+            flash("Turmas e alunos cadastrados com sucesso!", 'success')
+            return redirect(url_for('cadastro_semestre'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Ocorreu um erro: {e}", 'danger')
+            return render_template('cadastro_turmas.html', form=form)
+
+    return render_template('cadastro_turmas.html', form=form)
+
+
+
+
+
+
 @app.route('/cadastrar_grupos', methods=['GET', 'POST'])
 @login_required
 def cadastrar_grupos():
@@ -1437,5 +1589,22 @@ def baixar_csv():
 
 
 
+
+@app.route('/turmas/<int:semestre_id>', methods=['GET'])
+def get_turmas(semestre_id):
+    turmas = Turma.query.filter_by(semestre_id=semestre_id).all()
+    return jsonify([{'id': t.id, 'nome': t.nome} for t in turmas])
+
+
+@app.route('/integrantes/<int:turma_id>', methods=['GET'])
+def get_integrantes(turma_id):
+    integrantes = Usuario.query.filter_by(turma_id=turma_id).all()
+    return jsonify([{'id': u.id, 'nome': u.nome} for u in integrantes])
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
+

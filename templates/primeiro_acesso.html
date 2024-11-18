@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block title %}Primeiro Acesso - PCP Game{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-4" style="max-width: 500px; width: 100%;">
+        <h1 class="mb-4 text-center">Primeiro Acesso</h1>
+        <form method="POST" id="primeiro-acesso-form" novalidate>
+            {{ form.hidden_tag() }}
+
+            <!-- Seleção do Semestre -->
+            <div class="mb-3">
+                {{ form.semestre_id.label(class="form-label") }}
+                {{ form.semestre_id(class="form-control{% if form.semestre_id.errors %} is-invalid{% endif %}", id="semestre-select") }}
+                {% for error in form.semestre_id.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- Seleção da Turma -->
+            <div class="mb-3">
+                {{ form.turma_id.label(class="form-label") }}
+                {{ form.turma_id(class="form-control{% if form.turma_id.errors %} is-invalid{% endif %}", id="turma-select") }}
+                {% for error in form.turma_id.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- Seleção do Tipo de Demanda -->
+            <div class="mb-3">
+                {{ form.tipo_demanda.label(class="form-label") }}
+                {{ form.tipo_demanda(class="form-select{% if form.tipo_demanda.errors %} is-invalid{% endif %}") }}
+                {% for error in form.tipo_demanda.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- Número do Grupo -->
+            <div class="mb-3">
+                {{ form.grupo_numero.label(class="form-label") }}
+                {{ form.grupo_numero(class="form-control{% if form.grupo_numero.errors %} is-invalid{% endif %}", placeholder="Digite o número do grupo") }}
+                {% for error in form.grupo_numero.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- Campo para Definir Senha -->
+            <div class="mb-3">
+                <label for="grupo-senha" class="form-label">Definir Senha do Grupo</label>
+                <input type="password" id="grupo-senha" name="grupo_senha" class="form-control" placeholder="Digite a senha do grupo" required>
+            </div>
+
+            <!-- Campo para Confirmar Senha -->
+            <div class="mb-3">
+                <label for="confirmar-senha" class="form-label">Confirmar Senha do Grupo</label>
+                <input type="password" id="confirmar-senha" name="confirmar_senha" class="form-control" placeholder="Confirme a senha do grupo" required>
+                <div class="invalid-feedback" id="senha-erro">As senhas não coincidem.</div>
+            </div>
+
+            <!-- Dropdown para Seleção de Integrantes -->
+            <div class="dropdown mb-3">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Selecione os Integrantes
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="dropdown-list">
+                    <!-- Os integrantes serão preenchidos dinamicamente -->
+                </ul>
+            </div>
+
+            <!-- Exibição de Nomes Selecionados -->
+            <div class="mb-3">
+                <label for="selected-names" class="form-label">Integrantes Selecionados:</label>
+                <ul id="selected-names" class="list-group">
+                    <!-- Os nomes selecionados aparecerão aqui -->
+                </ul>
+            </div>
+
+            <!-- Campo Oculto para Armazenar os IDs Selecionados -->
+            <input type="hidden" name="selected_integrantes" id="selected-integrantes" value="">
+
+            <!-- Botão de Envio -->
+            <div class="d-grid">
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Elementos do formulário
+    const semestreSelect = document.getElementById('semestre-select');
+    const turmaSelect = document.getElementById('turma-select');
+    const dropdownList = document.getElementById('dropdown-list');
+    const selectedNamesContainer = document.getElementById('selected-names');
+    const selectedIntegrantesInput = document.getElementById('selected-integrantes');
+    const senhaInput = document.getElementById('grupo-senha');
+    const confirmarSenhaInput = document.getElementById('confirmar-senha');
+    const senhaErro = document.getElementById('senha-erro');
+
+    // Lista para armazenar os IDs selecionados
+    let selectedIntegrantes = [];
+
+    // Validações
+    function validarSenhas() {
+        if (senhaInput.value !== confirmarSenhaInput.value) {
+            senhaErro.style.display = 'block';
+            return false;
+        }
+        senhaErro.style.display = 'none';
+        return true;
+    }
+
+    // Atualizar a lista de turmas ao mudar o semestre
+    semestreSelect.addEventListener('change', async () => {
+        const semestreId = semestreSelect.value;
+
+        // Chama a rota para buscar as turmas do semestre selecionado
+        const response = await fetch(`/turmas/${semestreId}`);
+        const turmas = await response.json();
+
+        // Atualiza o campo de seleção de turmas
+        turmaSelect.innerHTML = '';
+        turmas.forEach(turma => {
+            const option = document.createElement('option');
+            option.value = turma.id;
+            option.textContent = turma.nome;
+            turmaSelect.appendChild(option);
+        });
+
+        // Atualiza a lista de integrantes para a primeira turma
+        if (turmas.length > 0) {
+            atualizarIntegrantes(turmas[0].id);
+        }
+    });
+
+    // Atualizar a lista de integrantes ao mudar a turma
+    turmaSelect.addEventListener('change', () => {
+        const turmaId = turmaSelect.value;
+        atualizarIntegrantes(turmaId);
+    });
+
+    // Atualiza a lista de integrantes no dropdown
+    async function atualizarIntegrantes(turmaId) {
+        const response = await fetch(`/integrantes/${turmaId}`);
+        const integrantes = await response.json();
+
+        // Atualiza a lista no dropdown
+        dropdownList.innerHTML = '';
+        integrantes.forEach(integrante => {
+            const item = document.createElement('li');
+            item.classList.add('dropdown-item');
+            item.textContent = integrante.nome;
+            item.setAttribute('data-id', integrante.id);
+
+            item.addEventListener('click', () => addSelectedIntegrante(integrante.id, integrante.nome));
+            dropdownList.appendChild(item);
+        });
+    }
+
+    // Adiciona um integrante à lista exibida
+    function addSelectedIntegrante(id, nome) {
+        if (selectedIntegrantes.includes(id)) {
+            alert("Este integrante já foi adicionado!");
+            return;
+        }
+
+        selectedIntegrantes.push(id);
+        selectedIntegrantesInput.value = selectedIntegrantes.join(',');
+
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+        listItem.textContent = nome;
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remover';
+        removeButton.classList.add('btn', 'btn-danger', 'btn-sm');
+        removeButton.addEventListener('click', () => {
+            selectedIntegrantes = selectedIntegrantes.filter(i => i !== id);
+            selectedIntegrantesInput.value = selectedIntegrantes.join(',');
+            listItem.remove();
+        });
+
+        listItem.appendChild(removeButton);
+        selectedNamesContainer.appendChild(listItem);
+    }
+
+    // Inicializa os dados ao carregar a página
+    document.addEventListener('DOMContentLoaded', () => {
+        if (semestreSelect.value) {
+            semestreSelect.dispatchEvent(new Event('change'));
+        }
+    });
+
+    // Atualiza o campo "selected-integrantes" com os IDs selecionados antes de enviar o formulário
+    document.getElementById('primeiro-acesso-form').addEventListener('submit', (event) => {
+        // Garantir que pelo menos um integrante foi selecionado
+        if (selectedIntegrantes.length === 0) {
+            event.preventDefault(); // Impede o envio do formulário
+            alert("Por favor, selecione pelo menos um integrante.");
+        } else {
+            // Atualiza o campo oculto com os IDs selecionados
+            selectedIntegrantesInput.value = selectedIntegrantes.join(',');
+        }
+    });
+</script>
+
+{% endblock %}

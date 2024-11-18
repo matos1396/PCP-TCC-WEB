@@ -42,7 +42,7 @@ class Turma(db.Model):
     __tablename__ = 'turmas'
 
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(150), nullable=False, unique=True)
+    nome = db.Column(db.String(150), nullable=False)
 
     # Relacionamento com Semestre
     semestre_id = db.Column(db.Integer, db.ForeignKey('semestres.id'), nullable=False)
@@ -59,7 +59,7 @@ class Usuario(db.Model):
 
     # Relacionamento com Turma
     turma_id = db.Column(db.Integer, db.ForeignKey('turmas.id'), nullable=False)
-    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'), nullable=False)  # Relacionamento com Grupo
+    grupo_id = db.Column(db.Integer, db.ForeignKey('grupo.id'))  # Relacionamento com Grupo
 
 # Modelo de Grupo (Group)
 class Grupo(db.Model, UserMixin):

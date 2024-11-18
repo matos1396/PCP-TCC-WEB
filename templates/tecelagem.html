@@ -243,128 +243,118 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const periods = JSON.parse('{{ periods|tojson }}');
-        let periodo_atual = parseInt('{{ periodo_atual }}');
-        const capacidadeTerceirizadaInicial = {};
-        const quantidadeInicial = {};
+document.addEventListener('DOMContentLoaded', function() {
+    const periods = JSON.parse('{{ periods|tojson }}');
+    let periodo_atual = parseInt('{{ periodo_atual }}');
+    const capacidadeTerceirizadaInicial = {};
+    const quantidadeInicial = {};
 
-        // Salvar o valor inicial de capacidade terceirizada e quantidade para cada período
-        periods.forEach(function(period) {
-            const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
-            const quantidadeInput = document.getElementById(`quantidade_${period}`);
+    // Salvar o valor inicial de capacidade terceirizada e quantidade para cada período
+    periods.forEach(function(period) {
+        const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
+        const quantidadeInput = document.getElementById(`quantidade_${period}`);
 
-            if (capacidadeTerceirizadaInput && quantidadeInput) {
-                capacidadeTerceirizadaInicial[period] = parseInt(capacidadeTerceirizadaInput.value) || 0;
-                quantidadeInicial[period] = parseInt(quantidadeInput.value) || 0;
-            }
-        });
-
-        // Função para recalcular quantidades considerando ampliações e reduções
-        function recalcularQuantidades() {
-            // Primeiro, recalcular quantidades para todos os períodos futuros
-            periods.forEach(function(p) {
-                if (p >= periodo_atual) {
-                    let quantidadeBase = parseInt(quantidadeInicial[p]) || 0;
-
-                    // Acumular ampliações que afetam o período atual (lead time de 2 períodos)
-                    let totalAmpliacoes = 0;
-                    periods.forEach(function(prevPeriod) {
-                        if (prevPeriod < p && (parseInt(prevPeriod) + 2) <= p) {
-                            const prevAmpliacoesInput = document.getElementById(`ampliacoes_${prevPeriod}`);
-                            if (prevAmpliacoesInput) {
-                                totalAmpliacoes += parseInt(prevAmpliacoesInput.value) || 0;
-                            }
-                        }
-                    });
-
-                    // Acumular reduções que afetam o período atual (lead time de 2 períodos)
-                    let totalReducoes = 0;
-                    periods.forEach(function(prevPeriod) {
-                        if (prevPeriod < p && (parseInt(prevPeriod) + 2) <= p) {
-                            const prevReducoesInput = document.getElementById(`reducoes_${prevPeriod}`);
-                            if (prevReducoesInput) {
-                                totalReducoes += parseInt(prevReducoesInput.value) || 0;
-                            }
-                        }
-                    });
-
-                    const quantidadeInput = document.getElementById(`quantidade_${p}`);
-                    if (quantidadeInput) {
-                        // Calcular a nova quantidade considerando ampliações e reduções
-                        let novaQuantidade = quantidadeBase + totalAmpliacoes - totalReducoes;
-                        // Evitar que a quantidade fique negativa
-                        if (novaQuantidade < 0) {
-                            novaQuantidade = 0;
-                        }
-                        quantidadeInput.value = novaQuantidade;
-                    }
-                }
-            });
-
-            // Depois, recalcular capacidades
-            recalcularCapacidadeDisponivel();
+        if (capacidadeTerceirizadaInput && quantidadeInput) {
+            capacidadeTerceirizadaInicial[period] = parseInt(capacidadeTerceirizadaInput.value) || 0;
+            quantidadeInicial[period] = parseInt(quantidadeInput.value) || 0;
         }
-
-        // Função para recalcular a capacidade disponível considerando turnos, quantidade de máquinas e capacidade terceirizada
-        function recalcularCapacidadeDisponivel() {
-            periods.forEach(function(period) {
-                const turnosInput = document.getElementById(`numero_turnos_${period}`);
-                const quantidadeInput = document.getElementById(`quantidade_${period}`);
-                const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
-                const capacidadeInstaladaInput = document.getElementById(`capacidade_instalada_${period}`);
-                const capacidadeDisponivelInput1 = document.getElementById(`capacidade_disponivel_1_${period}`);
-                const capacidadeDisponivelInput2 = document.getElementById(`capacidade_disponivel_2_${period}`);
-
-                if (turnosInput && quantidadeInput && capacidadeTerceirizadaInput && capacidadeDisponivelInput1 && capacidadeDisponivelInput2 && capacidadeInstaladaInput) {
-                    let numeroTurnos = parseInt(turnosInput.value) || 0;
-                    let quantidade = parseInt(quantidadeInput.value) || 0;
-                    let capacidadeTerceirizadaAtual = parseInt(capacidadeTerceirizadaInput.value) || 0;
-
-                    // Calcular capacidade instalada
-                    let capacidadeInstalada = quantidade * numeroTurnos * 7 * 20; // Ajuste o fator conforme necessário
-                    capacidadeInstaladaInput.value = capacidadeInstalada;
-
-                    // Calcular capacidade disponível
-                    let capacidadeDisponivel = capacidadeInstalada + capacidadeTerceirizadaAtual;
-                    capacidadeDisponivelInput1.value = capacidadeDisponivel;
-                    capacidadeDisponivelInput2.value = capacidadeDisponivel;
-                }
-            });
-        }
-
-        // Adicionar event listeners para os inputs de número de turnos, capacidade terceirizada, quantidade, ampliações e reduções
-        periods.forEach(function(period) {
-            const turnosInput = document.getElementById(`numero_turnos_${period}`);
-            const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
-            const quantidadeInput = document.getElementById(`quantidade_${period}`);
-            const ampliacoesInput = document.getElementById(`ampliacoes_${period}`);
-            const reducoesInput = document.getElementById(`reducoes_${period}`);
-
-            if (turnosInput) {
-                turnosInput.addEventListener('input', recalcularCapacidadeDisponivel);
-            }
-
-            if (capacidadeTerceirizadaInput) {
-                capacidadeTerceirizadaInput.addEventListener('input', recalcularCapacidadeDisponivel);
-            }
-
-            if (quantidadeInput) {
-                quantidadeInput.addEventListener('input', recalcularCapacidadeDisponivel);
-            }
-
-            if (ampliacoesInput) {
-                ampliacoesInput.addEventListener('input', recalcularQuantidades);
-            }
-
-            if (reducoesInput) {
-                reducoesInput.addEventListener('input', recalcularQuantidades);
-            }
-        });
-
-        // Inicialmente calcular a capacidade disponível ao carregar a página
-        recalcularQuantidades();
     });
+
+    // Função para recalcular quantidades considerando ampliações e reduções
+    function recalcularQuantidades() {
+        periods.forEach(function(p) {
+            if (p >= periodo_atual) {
+                let quantidadeBase = parseInt(quantidadeInicial[p]) || 0;
+
+                let totalAmpliacoes = 0;
+                periods.forEach(function(prevPeriod) {
+                    if (prevPeriod < p && (parseInt(prevPeriod) + 2) <= p) {
+                        const prevAmpliacoesInput = document.getElementById(`ampliacoes_${prevPeriod}`);
+                        if (prevAmpliacoesInput) {
+                            totalAmpliacoes += parseInt(prevAmpliacoesInput.value) || 0;
+                        }
+                    }
+                });
+
+                let totalReducoes = 0;
+                periods.forEach(function(prevPeriod) {
+                    if (prevPeriod < p && (parseInt(prevPeriod) + 2) <= p) {
+                        const prevReducoesInput = document.getElementById(`reducoes_${prevPeriod}`);
+                        if (prevReducoesInput) {
+                            totalReducoes += parseInt(prevReducoesInput.value) || 0;
+                        }
+                    }
+                });
+
+                const quantidadeInput = document.getElementById(`quantidade_${p}`);
+                if (quantidadeInput) {
+                    let novaQuantidade = quantidadeBase + totalAmpliacoes - totalReducoes;
+                    if (novaQuantidade < 0) {
+                        novaQuantidade = 0;
+                    }
+                    quantidadeInput.value = novaQuantidade;
+                }
+            }
+        });
+
+        recalcularCapacidadeDisponivel();
+    }
+
+    // Função para recalcular a capacidade disponível e alterar a cor de fundo
+    function recalcularCapacidadeDisponivel() {
+        periods.forEach(function(period) {
+            const capacidadeNecessariaInput = document.getElementById(`capacidade_necessaria_${period}`);
+            const capacidadeDisponivelInput1 = document.getElementById(`capacidade_disponivel_1_${period}`);
+            const capacidadeDisponivelInput2 = document.getElementById(`capacidade_disponivel_2_${period}`);
+
+            if (capacidadeNecessariaInput && capacidadeDisponivelInput1 && capacidadeDisponivelInput2) {
+                const capacidadeNecessaria = parseInt(capacidadeNecessariaInput.value) || 0;
+                const capacidadeDisponivel = parseInt(capacidadeDisponivelInput1.value) || 0;
+
+                // Alterar a cor de fundo
+                if (capacidadeDisponivel < capacidadeNecessaria) {
+                    capacidadeNecessariaInput.style.backgroundColor = 'rgba(255, 0, 0, 0.2)'; // Vermelho claro
+                } else {
+                    capacidadeNecessariaInput.style.backgroundColor = 'rgba(0, 128, 0, 0.2)'; // Verde claro
+                }
+            }
+        });
+    }
+
+    // Adicionar event listeners para os inputs relevantes
+    periods.forEach(function(period) {
+        const turnosInput = document.getElementById(`numero_turnos_${period}`);
+        const capacidadeTerceirizadaInput = document.getElementById(`capacidade_terceirizada_${period}`);
+        const quantidadeInput = document.getElementById(`quantidade_${period}`);
+        const ampliacoesInput = document.getElementById(`ampliacoes_${period}`);
+        const reducoesInput = document.getElementById(`reducoes_${period}`);
+
+        if (turnosInput) {
+            turnosInput.addEventListener('input', recalcularCapacidadeDisponivel);
+        }
+
+        if (capacidadeTerceirizadaInput) {
+            capacidadeTerceirizadaInput.addEventListener('input', recalcularCapacidadeDisponivel);
+        }
+
+        if (quantidadeInput) {
+            quantidadeInput.addEventListener('input', recalcularCapacidadeDisponivel);
+        }
+
+        if (ampliacoesInput) {
+            ampliacoesInput.addEventListener('input', recalcularQuantidades);
+        }
+
+        if (reducoesInput) {
+            reducoesInput.addEventListener('input', recalcularQuantidades);
+        }
+    });
+
+    // Inicializar os cálculos e estilos ao carregar a página
+    recalcularQuantidades();
+    recalcularCapacidadeDisponivel();
+});
+
 </script>
 
 

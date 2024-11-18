@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Cadastro de Semestre{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="mb-4 text-center">Cadastrar Semestre</h2>
+        <form method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.ano.label(class="form-label") }}
+                {{ form.ano(class="form-control{% if form.ano.errors %} is-invalid{% endif %}", placeholder="Digite o ano") }}
+                {% for error in form.ano.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="mb-3">
+                {{ form.periodo.label(class="form-label") }}
+                {{ form.periodo(class="form-control{% if form.periodo.errors %} is-invalid{% endif %}", placeholder="Ex.: '1º Semestre'") }}
+                {% for error in form.periodo.errors %}
+                    <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="d-grid">
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

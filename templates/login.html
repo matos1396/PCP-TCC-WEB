@@ -26,10 +26,14 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class="d-grid">
+            <div class="d-grid mb-3">
                 {{ form.submit(class="btn btn-primary btn-block") }}
             </div>
         </form>
+        <!-- Link para a página de "Primeiro Acesso" -->
+        <div class="text-center mt-3">
+            <a href="{{ url_for('primeiro_acesso') }}" class="btn btn-link">Primeiro Acesso?</a>
+        </div>
     </div>
 </div>
 {% endblock %}
